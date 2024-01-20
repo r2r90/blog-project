@@ -1,5 +1,4 @@
 import express, {Request, Response} from 'express'
-import {blogsDb} from "./db/db";
 import {blogsRouter} from "./routes/blog-router";
 
 export const app = express()

@@ -1,22 +1,17 @@
-import {Request, Response, Router} from "express";
-import {db} from "../db/db";
+import { Request, Response, Router } from "express";
+import { db } from "../db/db";
+import { blogsRepository } from "../repositories/blogs-repository";
+import { authMiddleware } from "../middlewares/auth/auth-middleware";
 
-export const blogsRouter = Router()
+export const blogsRouter = Router();
 
-blogsRouter.get('/', (req: Request, res: Response) => {
-    res.send(db.blogsDb)
-})
+blogsRouter.get("/", (req: Request, res: Response) => {
+  res.send(db.blogsDb);
+});
 
-blogsRouter.get('/:id', (req: Request, res: Response) => {
-    let foundBlogById = db.blogsDb.find((b) => b.id === req.params.id)
-    if (foundBlogById){
-        res.status(200).send(foundBlogById)
-    }else {
-        res.status(400).send('Please provide a valid ID for the resource lookup')
-    }
-})
+blogsRouter.get("/:id", (req: Request, res: Response) => {
+  const foundedBlog = blogsRepository.findBlogById(req.params.id);
+  res.status(200).send(foundedBlog);
+});
 
-
-blogsRouter.post('/', (req: Request, res: Response) => {
-
-})
+blogsRouter.post("/", authMiddleware, (req: Request, res: Response) => {});
