@@ -1,7 +1,14 @@
-import {db} from "../db/db";
+import { BlogType, db } from "../db/db";
 
 export const blogsRepository = {
-    findBlogById(id: string) {
-        return db.blogsDb.find(b => b.id === id)
-    }
-}
+  getAll() {
+    return db.blogsDb;
+  },
+  findBlogById(id: string) {
+    return db.blogsDb.find((b) => b.id === id);
+  },
+  createBlog(createdBlog: BlogType) {
+    db.blogsDb.push(createdBlog);
+    return createdBlog;
+  },
+};
