@@ -7,12 +7,12 @@ export const blogsRouter = Router();
 
 blogsRouter.get("/", (req: Request, res: Response) => {
   const blogs = blogsRepository.getAll();
-  res.send(blogs);
+  res.send(blogs).sendStatus(200);
 });
 
 blogsRouter.get("/:id", (req: Request, res: Response) => {
   const foundedBlog = blogsRepository.findBlogById(req.params.id);
-  res.status(200).send(foundedBlog);
+  res.send(foundedBlog).sendStatus(200);
 });
 
 blogsRouter.post(
@@ -29,7 +29,6 @@ blogsRouter.post(
     };
 
     const createdBlog = blogsRepository.createBlog(newBlog);
-
     res.send(createdBlog);
   }
 );
