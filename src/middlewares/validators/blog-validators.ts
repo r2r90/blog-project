@@ -16,7 +16,7 @@ export const descriptionValidator = body("description")
   .isLength({ min: 1, max: 500 })
   .withMessage("Incorrect description - min 1 character & max 500 character");
 
-export const webSiteUrlValidator = body("name")
+export const webSiteUrlValidator = body("websiteUrl")
   .isString()
   .withMessage("Incorrect description - must be a string")
   .trim()
