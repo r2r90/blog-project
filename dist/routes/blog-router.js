@@ -38,7 +38,7 @@ exports.blogsRouter.put("/:id", auth_middleware_1.authMiddleware, (0, blog_valid
     const updates = req.body;
     const updatedBlog = blogs_repository_1.blogsRepository.updateBlog(id, updates);
     if (updatedBlog) {
-        res.send(updatedBlog);
+        res.sendStatus(204);
     }
     else {
         res.status(500).send("Internal Server Error");
