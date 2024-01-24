@@ -36,7 +36,7 @@ const contentValidator = body("content")
   .withMessage("Incorrect description - min 1 character & max 500 character");
 
 const blogIdValidator = body("blogId").custom((value) => {
-  const blog = blogsRepository.findBlogById(value);
+  const blog = blogsRepository.getBlogById(value);
   if (!blog) {
     throw Error("Incorrect Blog ID");
   }

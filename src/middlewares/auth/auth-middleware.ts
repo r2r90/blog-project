@@ -22,7 +22,7 @@ export const authMiddleware = (
 
   const [basic, token] = auth?.split(" ");
 
-  if (basic !== "basic") {
+  if (basic !== "Basic") {
     res.sendStatus(401);
     return;
   }
