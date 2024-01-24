@@ -18,7 +18,7 @@ postsRouter.get("/", (req: Request, res: Response) => {
 
 postsRouter.get("/:id", (req: Request<ParamType>, res: Response) => {
   let post = postsRepository.getPostById(req.params.id);
-  post ? res.send(post) : res.send(404);
+  post ? res.send(post) : res.sendStatus(404);
 });
 
 postsRouter.post(
@@ -36,16 +36,15 @@ postsRouter.put(
   authMiddleware,
   postValidation(),
   (req: RequestWithParamAndBody<ParamType, PostInputType>, res: Response) => {
-    const { id } = req.params;
-    const updates = req.body;
-    const foundedPost = postsRepository.getPostById(id);
-    if (!foundedPost) {
+    const postToUpdate = postsRepository.getPostById(req.params.id);
+    if (!postToUpdate) {
       res.status(404).send("Post not found");
       return;
     }
 
-    const updatedPost = postsRepository.updatePost(id, updates);
+    const updates = req.body;
 
+    const updatedPost = postsRepository.updatePost(postToUpdate, updates);
     updatedPost ? res.sendStatus(204) : res.sendStatus(400);
   }
 );
@@ -54,7 +53,13 @@ postsRouter.delete(
   "/:id",
   authMiddleware,
   (req: Request<ParamType>, res: Response) => {
-    const isDeleted = postsRepository.deletePost(req.params.id);
-    isDeleted ? res.sendStatus(204) : res.status(404);
+    const postToDelete = postsRepository.getPostById(req.params.id);
+    if (!postToDelete) {
+      res.sendStatus(404);
+      return;
+    } else {
+      postsRepository.deletePost(req.params.id);
+      res.send(204);
+    }
   }
 );

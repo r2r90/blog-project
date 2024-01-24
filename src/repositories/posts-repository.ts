@@ -1,6 +1,11 @@
 import { db } from "../db/db";
 import { blogsRepository } from "./blogs-repository";
 import { PostInputType } from "../models/posts/input";
+import { PostType } from "../models/posts/output";
+
+const findPost = (id: string) => {
+  return db.postsDb.find((p) => p.id === id);
+};
 
 export const postsRepository = {
   getAll() {
@@ -8,7 +13,7 @@ export const postsRepository = {
   },
 
   getPostById(id: string) {
-    const post = db.postsDb.find((p) => p.id === id);
+    const post = findPost(id);
     if (!post) {
       return false;
     }
@@ -34,22 +39,17 @@ export const postsRepository = {
     }
   },
 
-  updatePost(id: string, updates: PostInputType) {
-    const postToUpdate = db.postsDb.find((p) => p.id === id);
-    if (!postToUpdate) {
-      return;
-    } else {
-      postToUpdate.title = updates.title;
-      postToUpdate.shortDescription = updates.shortDescription;
-      postToUpdate.content = updates.content;
+  updatePost(postToUpdate: PostType, updates: PostInputType) {
+    postToUpdate.title = updates.title;
+    postToUpdate.shortDescription = updates.shortDescription;
+    postToUpdate.content = updates.content;
 
-      return postToUpdate;
-    }
+    return postToUpdate;
   },
   deletePost(id: string) {
-    const postToDelete = db.postsDb.find((p) => p.id === id);
-    if (postToDelete) {
-      db.postsDb = db.postsDb.filter((p) => p.id !== postToDelete.id);
+    const post = db.postsDb.find((p) => p.id === id);
+    if (post) {
+      db.postsDb = db.postsDb.filter((p) => p.id !== post.id);
       return true;
     }
     return false;

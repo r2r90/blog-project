@@ -29,14 +29,13 @@ exports.blogsRouter.post("/", auth_middleware_1.authMiddleware, (0, blog_validat
     res.status(201).send(createdBlog);
 });
 exports.blogsRouter.put("/:id", auth_middleware_1.authMiddleware, (0, blog_validators_1.blogValidation)(), (req, res) => {
-    const foundedBlog = blogs_repository_1.blogsRepository.getBlogById(req.params.id);
-    if (!foundedBlog) {
+    const blogToUpdate = blogs_repository_1.blogsRepository.getBlogById(req.params.id);
+    if (!blogToUpdate) {
         res.status(404).send("Blog not found");
         return;
     }
-    const { id } = req.params;
     const updates = req.body;
-    const updatedBlog = blogs_repository_1.blogsRepository.updateBlog(id, updates);
+    const updatedBlog = blogs_repository_1.blogsRepository.updateBlog(blogToUpdate, updates);
     if (updatedBlog) {
         res.sendStatus(204);
     }
@@ -45,11 +44,13 @@ exports.blogsRouter.put("/:id", auth_middleware_1.authMiddleware, (0, blog_valid
     }
 });
 exports.blogsRouter.delete("/:id", auth_middleware_1.authMiddleware, (req, res) => {
-    const isDeleted = blogs_repository_1.blogsRepository.deleteBlog(req.params.id);
-    if (isDeleted) {
-        res.send(204);
+    const blogToDelete = blogs_repository_1.blogsRepository.getBlogById(req.params.id);
+    if (!blogToDelete) {
+        res.sendStatus(404);
+        return;
     }
     else {
-        res.send(404);
+        blogs_repository_1.blogsRepository.deleteBlog(req.params.id);
+        res.send(204);
     }
 });

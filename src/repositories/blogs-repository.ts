@@ -17,12 +17,7 @@ export const blogsRepository = {
     db.blogsDb.push(createdBlog);
     return createdBlog;
   },
-  updateBlog(id: string, updates: BlogInputType) {
-    const blogToUpdate = db.blogsDb.find((b) => b.id === id);
-    if (!blogToUpdate) {
-      return null; // Return null instead of false for clarity
-    }
-
+  updateBlog(blogToUpdate: BlogType, updates: BlogInputType) {
     // Apply updates if provided
 
     blogToUpdate.name = updates.name;

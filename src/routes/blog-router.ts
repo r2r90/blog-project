@@ -46,16 +46,13 @@ blogsRouter.put(
   authMiddleware,
   blogValidation(),
   (req: RequestWithParamAndBody<ParamType, BlogUpdateType>, res: Response) => {
-    const foundedBlog = blogsRepository.getBlogById(req.params.id);
-    if (!foundedBlog) {
+    const blogToUpdate = blogsRepository.getBlogById(req.params.id);
+    if (!blogToUpdate) {
       res.status(404).send("Blog not found");
       return;
     }
-
-    const { id } = req.params;
     const updates = req.body;
-
-    const updatedBlog = blogsRepository.updateBlog(id, updates);
+    const updatedBlog = blogsRepository.updateBlog(blogToUpdate, updates);
 
     if (updatedBlog) {
       res.sendStatus(204);
@@ -65,11 +62,17 @@ blogsRouter.put(
   }
 );
 
-blogsRouter.delete("/:id", authMiddleware, (req: Request, res: Response) => {
-  const isDeleted = blogsRepository.deleteBlog(req.params.id);
-  if (isDeleted) {
-    res.send(204);
-  } else {
-    res.send(404);
+blogsRouter.delete(
+  "/:id",
+  authMiddleware,
+  (req: Request<ParamType>, res: Response) => {
+    const blogToDelete = blogsRepository.getBlogById(req.params.id);
+    if (!blogToDelete) {
+      res.sendStatus(404);
+      return;
+    } else {
+      blogsRepository.deleteBlog(req.params.id);
+      res.send(204);
+    }
   }
-});
+);
