@@ -9,7 +9,7 @@ export const inputValidationMiddleware = (
   const formattedError = validationResult(req).formatWith(
     (error: ValidationError) => ({
       message: error.msg,
-      field: error.type === "field" ? error.path : "unknown field",
+      field: error.type === "field" ? error.path : "unknown",
     })
   );
 
