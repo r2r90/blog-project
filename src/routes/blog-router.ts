@@ -38,7 +38,7 @@ blogsRouter.post(
       websiteUrl,
     };
     const createdBlog = blogsRepository.createBlog(newBlog);
-    res.sendStatus(201).send(createdBlog);
+    res.status(201).send(createdBlog);
   }
 );
 blogsRouter.put(

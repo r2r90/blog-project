@@ -26,7 +26,7 @@ exports.blogsRouter.post("/", auth_middleware_1.authMiddleware, (0, blog_validat
         websiteUrl,
     };
     const createdBlog = blogs_repository_1.blogsRepository.createBlog(newBlog);
-    res.send(createdBlog);
+    res.status(201).send(createdBlog);
 });
 exports.blogsRouter.put("/:id", auth_middleware_1.authMiddleware, (0, blog_validators_1.blogValidation)(), (req, res) => {
     const foundedBlog = blogs_repository_1.blogsRepository.getBlogById(req.params.id);
