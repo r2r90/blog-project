@@ -46,7 +46,7 @@ postsRouter.put(
 
     const updatedPost = postsRepository.updatePost(id, updates);
 
-    updatedPost ? res.send(updatedPost).status(204) : res.status(400);
+    updatedPost ? res.sendStatus(204) : res.sendStatus(400);
   }
 );
 
@@ -55,6 +55,6 @@ postsRouter.delete(
   authMiddleware,
   (req: Request<ParamType>, res: Response) => {
     const isDeleted = postsRepository.deletePost(req.params.id);
-    isDeleted ? res.status(204) : res.status(404);
+    isDeleted ? res.sendStatus(204) : res.status(404);
   }
 );
