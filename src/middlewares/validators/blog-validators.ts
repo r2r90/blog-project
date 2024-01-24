@@ -3,7 +3,6 @@ import { inputValidationMiddleware } from "../inputValidation/input-validation-m
 
 export const nameValidator = body("name")
   .isString()
-
   .withMessage("Incorrect Name - Name must be a string")
   .trim()
   .isLength({ min: 1, max: 15 })

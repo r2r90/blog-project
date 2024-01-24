@@ -14,8 +14,8 @@ export const inputValidationMiddleware = (
   );
 
   if (!formattedError.isEmpty()) {
-    const errorMessages = formattedError.array({ onlyFirstError: true });
-    res.status(400).send({ errorMessages: errorMessages });
+    const errorsMessages = formattedError.array({ onlyFirstError: true });
+    res.status(400).send({ errorsMessages: errorsMessages });
     return;
   }
 
