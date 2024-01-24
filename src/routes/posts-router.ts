@@ -27,7 +27,7 @@ postsRouter.post(
   postValidation(),
   (req: RequestWithBody<PostInputType>, res: Response) => {
     let newPost = postsRepository.createPost(req.body);
-    newPost ? res.status(201) : res.send(400);
+    newPost ? res.send(newPost).status(201) : res.send(400);
   }
 );
 
