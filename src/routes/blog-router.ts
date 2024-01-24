@@ -58,7 +58,7 @@ blogsRouter.put(
     const updatedBlog = blogsRepository.updateBlog(id, updates);
 
     if (updatedBlog) {
-      res.send(updatedBlog);
+      res.status(204).send(updatedBlog);
     } else {
       res.status(500).send("Internal Server Error");
     }
