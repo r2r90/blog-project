@@ -1,12 +1,18 @@
 import { configDotenv } from "dotenv";
 import { MongoClient } from "mongodb";
+import { BlogsDbType, PostsDbType } from "../models/db/db-model";
+import { BlogDbType } from "../models/blogs/db/blog-db";
 
 configDotenv();
 
-const uri = process.env.MONGO_URL ?? "mongodb://0.0.0.0:27017";
+const uri =
+  process.env.MONGO_URL ||
+  "mongodb+srv://aghartur:admin0000@cluster0.novrywl.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri);
+const database = client.db("blog-app");
 
-const db = client.db("blog-app");
+export const blogsCollection = database.collection<BlogDbType>("blogs");
+export const postsCollection = database.collection<PostsDbType>("posts");
 
 export const runDb = async () => {
   try {

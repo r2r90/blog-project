@@ -1,10 +1,5 @@
-import { BlogType } from "../blogs/output";
 import { PostType } from "../posts/output";
+import { BlogDbType } from "../blogs/db/blog-db";
 
-export type DBType = {
-  blogsDb: BlogsDbType;
-  postsDb: PostsDbType;
-};
-
-export type BlogsDbType = BlogType[];
+export type BlogsDbType = BlogDbType[];
 export type PostsDbType = PostType[];

@@ -8,15 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.runDb = void 0;
+exports.runDb = exports.postsCollection = exports.blogsCollection = void 0;
 const dotenv_1 = require("dotenv");
 const mongodb_1 = require("mongodb");
 (0, dotenv_1.configDotenv)();
-const uri = (_a = process.env.MONGO_URL) !== null && _a !== void 0 ? _a : "mongodb://0.0.0.0:27017";
+const uri = process.env.MONGO_URL ||
+    "mongodb+srv://aghartur:admin0000@cluster0.novrywl.mongodb.net/?retryWrites=true&w=majority";
 const client = new mongodb_1.MongoClient(uri);
-const db = client.db("blog-app");
+const database = client.db("blog-app");
+exports.blogsCollection = database.collection("blogs");
+exports.postsCollection = database.collection("posts");
 const runDb = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield client.connect();

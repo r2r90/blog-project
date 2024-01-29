@@ -1,10 +1,11 @@
 import { Request, Response, Router } from "express";
-import { db } from "../db/db";
+import { blogsCollection, postsCollection } from "../db/db";
 
 export const testingRouter = Router();
 
-testingRouter.delete("/all-data", (req: Request, res: Response) => {
-  db.blogsDb.length = 0;
-  db.postsDb.length = 0;
+testingRouter.delete("/all-data", async (req: Request, res: Response) => {
+  console.log("Hello");
+  await blogsCollection.deleteMany({});
+  await postsCollection.deleteMany({});
   res.sendStatus(204);
 });

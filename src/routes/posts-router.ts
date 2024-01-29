@@ -4,7 +4,7 @@ import {
   ParamType,
   RequestWithBody,
   RequestWithParamAndBody,
-} from "../models/common";
+} from "../models/common/common";
 import { PostInputType } from "../models/posts/input";
 import { authMiddleware } from "../middlewares/auth/auth-middleware";
 import { postValidation } from "../middlewares/validators/post-validators";
