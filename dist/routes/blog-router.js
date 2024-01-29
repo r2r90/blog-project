@@ -21,6 +21,8 @@ exports.blogsRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, fun
     res.send(blogs).sendStatus(200);
 }));
 exports.blogsRouter.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!mongodb_1.ObjectId.isValid(req.params.id)) {
+    }
     const id = req.params.id;
     const foundedBlog = yield blogs_repository_1.blogsRepository.getBlogById(req.params.id);
     if (!mongodb_1.ObjectId.isValid(id)) {
