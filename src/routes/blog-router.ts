@@ -21,6 +21,8 @@ blogsRouter.get("/", async (req: Request, res: Response) => {
 });
 
 blogsRouter.get("/:id", async (req: Request<{ id: string }>, res: Response) => {
+  if (!ObjectId.isValid(req.params.id)) {
+  }
   const id = req.params.id;
   const foundedBlog = await blogsRepository.getBlogById(req.params.id);
   if (!ObjectId.isValid(id)) {
@@ -40,7 +42,6 @@ blogsRouter.post(
   blogValidation(),
   async (req: RequestWithBody<BlogInputType>, res: Response) => {
     const { name, description, websiteUrl } = req.body;
-
     const newBlog = {
       name,
       description,
