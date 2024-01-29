@@ -4,4 +4,5 @@ export type BlogOutputType = {
   description: string;
   createdAt: string;
   websiteUrl: string;
+  isMembership: boolean;
 };

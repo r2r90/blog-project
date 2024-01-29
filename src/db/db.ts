@@ -1,12 +1,12 @@
 import { configDotenv } from "dotenv";
 import { MongoClient } from "mongodb";
-import { BlogsDbType, PostsDbType } from "../models/db/db-model";
+import { PostsDbType } from "../models/db/db-model";
 import { BlogDbType } from "../models/blogs/db/blog-db";
 
 configDotenv();
 
 const uri =
-  process.env.MONGO_URL ||
+  process.env.MONGO_URI ||
   "mongodb+srv://aghartur:admin0000@cluster0.novrywl.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri);
 const database = client.db("blog-app");

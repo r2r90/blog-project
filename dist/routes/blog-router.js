@@ -35,14 +35,12 @@ exports.blogsRouter.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, 
 exports.blogsRouter.post("/", auth_middleware_1.authMiddleware, (0, blog_validators_1.blogValidation)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, description, websiteUrl } = req.body;
     const newBlog = {
-        id: Date.now().toString(),
         name,
         description,
         websiteUrl,
     };
     const createdBlog = yield blogs_repository_1.blogsRepository.createBlog(newBlog);
-    console.log(createdBlog);
-    res.send(createdBlog).status(201);
+    res.status(201).send(createdBlog);
 }));
 exports.blogsRouter.put("/:id", auth_middleware_1.authMiddleware, (0, blog_validators_1.blogValidation)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, description, websiteUrl } = req.body;

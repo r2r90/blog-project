@@ -16,10 +16,16 @@ export const blogsRepository = {
     }
     return blogMapper(blog);
   },
-  async createBlog(createdBlog: BlogInputType): Promise<BlogOutputType> {
+  async createBlog(inputedData: BlogInputType): Promise<BlogOutputType> {
     const createdAt = new Date().toISOString();
-    const res = await blogsCollection.insertOne(createdBlog);
-    return { id: res.insertedId.toString(), ...createdBlog, createdAt };
+    const createdBlog = {
+      ...inputedData,
+      isMembership: false,
+      createdAt,
+    };
+    const res = await blogsCollection.insertOne({ ...createdBlog });
+
+    return { id: res.insertedId.toString(), ...createdBlog };
   },
   async updateBlog(id: string, updateData: BlogInputType): Promise<boolean> {
     const res = await blogsCollection.updateOne(

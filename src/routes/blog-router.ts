@@ -42,14 +42,12 @@ blogsRouter.post(
     const { name, description, websiteUrl } = req.body;
 
     const newBlog = {
-      id: Date.now().toString(),
       name,
       description,
       websiteUrl,
     };
     const createdBlog = await blogsRepository.createBlog(newBlog);
-    console.log(createdBlog);
-    res.send(createdBlog).status(201);
+    res.status(201).send(createdBlog);
   }
 );
 blogsRouter.put(

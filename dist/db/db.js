@@ -13,7 +13,7 @@ exports.runDb = exports.postsCollection = exports.blogsCollection = void 0;
 const dotenv_1 = require("dotenv");
 const mongodb_1 = require("mongodb");
 (0, dotenv_1.configDotenv)();
-const uri = process.env.MONGO_URL ||
+const uri = process.env.MONGO_URI ||
     "mongodb+srv://aghartur:admin0000@cluster0.novrywl.mongodb.net/?retryWrites=true&w=majority";
 const client = new mongodb_1.MongoClient(uri);
 const database = client.db("blog-app");
