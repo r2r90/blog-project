@@ -74,7 +74,7 @@ blogsRouter.delete(
       return;
     } else {
       await blogsRepository.deleteBlog(id);
-      res.send(204);
+      res.sendStatus(204);
     }
   }
 );
