@@ -21,19 +21,12 @@ blogsRouter.get("/", async (req: Request, res: Response) => {
 });
 
 blogsRouter.get("/:id", async (req: Request<{ id: string }>, res: Response) => {
-  if (!ObjectId.isValid(req.params.id)) {
-  }
   const id = req.params.id;
-  const foundedBlog = await blogsRepository.getBlogById(req.params.id);
   if (!ObjectId.isValid(id)) {
     res.sendStatus(404);
   }
+  const foundedBlog = await blogsRepository.getBlogById(req.params.id);
   res.send(foundedBlog).status(200);
-
-  if (!foundedBlog) {
-    res.sendStatus(404);
-    return;
-  }
 });
 
 blogsRouter.post(
@@ -59,23 +52,28 @@ blogsRouter.put(
     req: RequestWithParamAndBody<ParamType, BlogUpdateType>,
     res: Response
   ) => {
+    const id = req.params.id;
+    if (!ObjectId.isValid(id)) {
+      res.sendStatus(404);
+    }
     const { name, description, websiteUrl } = req.body;
     const updateData = { name, description, websiteUrl };
-    const id = req.params.id;
     const blog = await blogsRepository.updateBlog(id, updateData);
+
+    res.send(blog).status(204);
   }
 );
 
 blogsRouter.delete(
   "/:id",
   authMiddleware,
-  (req: Request<ParamType>, res: Response) => {
-    const blogToDelete = blogsRepository.getBlogById(req.params.id);
-    if (!blogToDelete) {
+  async (req: Request<ParamType>, res: Response) => {
+    const id = req.params.id;
+    if (!ObjectId.isValid(id)) {
       res.sendStatus(404);
       return;
     } else {
-      blogsRepository.deleteBlog(req.params.id);
+      await blogsRepository.deleteBlog(id);
       res.send(204);
     }
   }
