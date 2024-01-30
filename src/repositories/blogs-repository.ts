@@ -30,6 +30,7 @@ export const blogsRepository = {
   async updateBlog(id: string, updateData: BlogInputType): Promise<boolean> {
     const res = await blogsCollection.updateOne(
       { _id: new ObjectId(id) },
+
       {
         $set: {
           name: updateData.name,
