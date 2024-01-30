@@ -3,8 +3,8 @@ import { blogsRepository } from "../repositories/blogs-repository";
 import { authMiddleware } from "../middlewares/auth/auth-middleware";
 import { blogValidation } from "../middlewares/validators/blog-validators";
 import {
-  BlogInputType,
-  BlogUpdateType,
+  BlogCreateInputType,
+  BlogUpdateInputType,
 } from "../models/blogs/blog.input.model";
 import {
   ParamType,
@@ -27,6 +27,10 @@ blogsRouter.get("/:id", async (req: Request<{ id: string }>, res: Response) => {
     return;
   }
   const foundedBlog = await blogsRepository.getBlogById(req.params.id);
+  if (!foundedBlog) {
+    res.sendStatus(404);
+    return;
+  }
   res.send(foundedBlog).status(200);
 });
 
@@ -34,7 +38,7 @@ blogsRouter.post(
   "/",
   authMiddleware,
   blogValidation(),
-  async (req: RequestWithBody<BlogInputType>, res: Response) => {
+  async (req: RequestWithBody<BlogCreateInputType>, res: Response) => {
     const { name, description, websiteUrl } = req.body;
     const newBlog = {
       name,
@@ -50,7 +54,7 @@ blogsRouter.put(
   authMiddleware,
   blogValidation(),
   async (
-    req: RequestWithParamAndBody<ParamType, BlogUpdateType>,
+    req: RequestWithParamAndBody<ParamType, BlogUpdateInputType>,
     res: Response
   ) => {
     const id = req.params.id;

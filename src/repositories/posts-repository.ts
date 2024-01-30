@@ -7,7 +7,7 @@ const findPost = (id: string) => {
 };
 
 export const postsRepository = {
-  getAll(): Promise<PostType[]> {},
+  getAll(): Promise<[]> {},
 
   getPostById(id: string) {
     const post = findPost(id);

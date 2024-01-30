@@ -1,10 +1,10 @@
-export type BlogInputType = {
+export type BlogCreateInputType = {
   name: string;
   description: string;
   websiteUrl: string;
 };
 
-export type BlogUpdateType = {
+export type BlogUpdateInputType = {
   name: string;
   description: string;
   websiteUrl: string;

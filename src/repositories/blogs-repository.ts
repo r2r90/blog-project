@@ -1,12 +1,11 @@
-import { BlogInputType } from "../models/blogs/blog.input.model";
+import { BlogCreateInputType } from "../models/blogs/blog.input.model";
 import { blogsCollection } from "../db/db";
 import { BlogOutputType } from "../models/blogs/blog.output.model";
 import { blogMapper } from "../models/blogs/mappers/blog-mapper";
 import { ObjectId } from "mongodb";
-import { BlogDbType } from "../models/blogs/db/blog-db";
 
 export const blogsRepository = {
-  async getAll(): Promise<BlogDbType[]> {
+  async getAll(): Promise<BlogOutputType[]> {
     const blogs = await blogsCollection.find({}).toArray();
     return blogs.map(blogMapper);
   },
@@ -17,7 +16,7 @@ export const blogsRepository = {
     }
     return blogMapper(blog);
   },
-  async createBlog(inputedData: BlogInputType): Promise<BlogOutputType> {
+  async createBlog(inputedData: BlogCreateInputType): Promise<BlogOutputType> {
     const createdAt = new Date().toISOString();
     const createdBlog = {
       ...inputedData,
@@ -28,7 +27,10 @@ export const blogsRepository = {
 
     return { id: res.insertedId.toString(), ...createdBlog };
   },
-  async updateBlog(id: string, updateData: BlogInputType): Promise<boolean> {
+  async updateBlog(
+    id: string,
+    updateData: BlogCreateInputType
+  ): Promise<boolean> {
     const res = await blogsCollection.updateOne(
       { _id: new ObjectId(id) },
 
