@@ -24,6 +24,7 @@ blogsRouter.get("/:id", async (req: Request<{ id: string }>, res: Response) => {
   const id = req.params.id;
   if (!ObjectId.isValid(id)) {
     res.sendStatus(404);
+    return;
   }
   const foundedBlog = await blogsRepository.getBlogById(req.params.id);
   res.send(foundedBlog).status(200);
@@ -55,6 +56,7 @@ blogsRouter.put(
     const id = req.params.id;
     if (!ObjectId.isValid(id)) {
       res.sendStatus(404);
+      return;
     }
     const { name, description, websiteUrl } = req.body;
     const updateData = { name, description, websiteUrl };
@@ -72,9 +74,8 @@ blogsRouter.delete(
     if (!ObjectId.isValid(id)) {
       res.sendStatus(404);
       return;
-    } else {
-      await blogsRepository.deleteBlog(id);
-      res.sendStatus(204);
     }
+    await blogsRepository.deleteBlog(id);
+    res.sendStatus(204);
   }
 );
