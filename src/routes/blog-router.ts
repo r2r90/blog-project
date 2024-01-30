@@ -58,9 +58,9 @@ blogsRouter.put(
     }
     const { name, description, websiteUrl } = req.body;
     const updateData = { name, description, websiteUrl };
-    const blog = await blogsRepository.updateBlog(id, updateData);
+    await blogsRepository.updateBlog(id, updateData);
 
-    res.send(blog).status(204);
+    res.sendStatus(204);
   }
 );
 
