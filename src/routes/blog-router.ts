@@ -17,7 +17,7 @@ export const blogsRouter = Router();
 
 blogsRouter.get("/", async (req: Request, res: Response) => {
   const blogs = await blogsRepository.getAll();
-  res.send(blogs).sendStatus(200);
+  res.send(blogs).status(200);
 });
 
 blogsRouter.get("/:id", async (req: Request<{ id: string }>, res: Response) => {
@@ -28,7 +28,7 @@ blogsRouter.get("/:id", async (req: Request<{ id: string }>, res: Response) => {
   if (!ObjectId.isValid(id)) {
     res.sendStatus(404);
   }
-  res.send(foundedBlog).sendStatus(200);
+  res.send(foundedBlog).status(200);
 
   if (!foundedBlog) {
     res.sendStatus(404);
