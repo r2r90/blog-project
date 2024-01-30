@@ -72,11 +72,14 @@ blogsRouter.delete(
   async (req: Request<ParamType>, res: Response) => {
     const id = req.params.id;
     if (!ObjectId.isValid(id)) {
-      console.log("Hello");
       res.sendStatus(404);
       return;
     }
-    await blogsRepository.deleteBlog(id);
+    const isBlogDeleted = await blogsRepository.deleteBlog(id);
+    if (!isBlogDeleted) {
+      res.sendStatus(400);
+      return;
+    }
     res.sendStatus(204);
   }
 );
