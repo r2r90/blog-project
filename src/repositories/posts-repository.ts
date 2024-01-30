@@ -1,4 +1,3 @@
-import { db } from "../db/db";
 import { blogsRepository } from "./blogs-repository";
 import { PostInputType } from "../models/posts/input";
 import { PostType } from "../models/posts/output";
@@ -8,9 +7,7 @@ const findPost = (id: string) => {
 };
 
 export const postsRepository = {
-  getAll() {
-    return db.postsDb;
-  },
+  getAll(): Promise<PostType[]> {},
 
   getPostById(id: string) {
     const post = findPost(id);

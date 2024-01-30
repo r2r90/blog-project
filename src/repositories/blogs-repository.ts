@@ -3,9 +3,10 @@ import { blogsCollection } from "../db/db";
 import { BlogOutputType } from "../models/blogs/blog.output.model";
 import { blogMapper } from "../models/blogs/mappers/blog-mapper";
 import { ObjectId } from "mongodb";
+import { BlogDbType } from "../models/blogs/db/blog-db";
 
 export const blogsRepository = {
-  async getAll(): Promise<BlogOutputType[]> {
+  async getAll(): Promise<BlogDbType[]> {
     const blogs = await blogsCollection.find({}).toArray();
     return blogs.map(blogMapper);
   },
