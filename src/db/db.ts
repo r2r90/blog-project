@@ -4,10 +4,14 @@ import { PostsDbType } from "../models/db/db-model";
 import { BlogDbType } from "../models/blogs/db/blog-db";
 
 configDotenv();
+const url = process.env.MONGO_URL;
 
-const uri = process.env.MONGO_URI || "mongodb://localhost:27017";
+console.log(url);
 
-const client = new MongoClient(uri);
+if (!url) {
+  throw new Error(` ! Url doesn't found`);
+}
+const client = new MongoClient(url);
 const database = client.db("blog-app");
 
 export const blogsCollection = database.collection<BlogDbType>("blogs");
