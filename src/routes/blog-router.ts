@@ -75,9 +75,9 @@ blogsRouter.delete(
       res.sendStatus(404);
       return;
     }
-    const isBlogDeleted = await blogsRepository.deleteBlog(id);
-    if (!isBlogDeleted) {
-      res.sendStatus(400);
+    const isDeleted = await blogsRepository.deleteBlog(id);
+    if (!isDeleted) {
+      res.sendStatus(404);
       return;
     }
     res.sendStatus(204);
