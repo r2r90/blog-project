@@ -1,6 +1,7 @@
 import { configDotenv } from "dotenv";
 import { MongoClient } from "mongodb";
 import { BlogDbType } from "../models/blogs/blog-db";
+import { PostDbType } from "../models/posts/post-db";
 
 configDotenv();
 const url = process.env.MONGO_URL;
@@ -14,7 +15,7 @@ const client = new MongoClient(url);
 const database = client.db("blog-app");
 
 export const blogsCollection = database.collection<BlogDbType>("blogs");
-export const postsCollection = database.collection<PostsDbType>("posts");
+export const postsCollection = database.collection<PostDbType>("posts");
 
 export const runDb = async () => {
   try {

@@ -1,5 +1,5 @@
 import { PostDbType } from "../models/posts/post-db";
-import { postsCollection } from "../db/db";
+import { blogsCollection, postsCollection } from "../db/db";
 import { postMapper } from "../models/posts/mappers/post-mapper";
 import { ObjectId } from "mongodb";
 import {
@@ -22,9 +22,18 @@ export const postsRepository = {
     return postMapper(post);
   },
   async createPost(postCreateInputData: PostCreateInputType) {
+    const blog = await blogsCollection.findOne({
+      _id: new ObjectId(postCreateInputData.blogId),
+    });
+
+    if (!blog) {
+      return null;
+    }
+
     const createdAt = new Date().toISOString();
     const createdPost = {
       ...postCreateInputData,
+      blogName: blog.name,
       createdAt,
     };
 
