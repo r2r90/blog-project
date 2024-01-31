@@ -48,7 +48,7 @@ postsRouter.post(
     let createdPost = await postsRepository.createPost(newPost);
     createdPost
       ? res.status(HTTP_RESPONSE_CODES.CREATED).send(createdPost)
-      : res.send(HTTP_RESPONSE_CODES.BAD_REQUEST);
+      : res.send(HTTP_RESPONSE_CODES.NOT_FOUND);
   }
 );
 
@@ -70,7 +70,7 @@ postsRouter.put(
     const isPostUpdated = await postsRepository.updatePost(id, postUpdateData);
     isPostUpdated
       ? res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT)
-      : res.sendStatus(HTTP_RESPONSE_CODES.BAD_REQUEST);
+      : res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
   }
 );
 
@@ -89,6 +89,6 @@ postsRouter.delete(
       res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
       return;
     }
-    res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT);
+    res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
   }
 );
