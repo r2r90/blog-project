@@ -1,54 +1,54 @@
-import { blogsRepository } from "./blogs-repository";
-import { PostInputType } from "../models/posts/input";
-import { PostType } from "../models/posts/output";
-
-const findPost = (id: string) => {
-  return db.postsDb.find((p) => p.id === id);
-};
+import { PostDbType } from "../models/posts/post-db";
+import { postsCollection } from "../db/db";
+import { postMapper } from "../models/posts/mappers/post-mapper";
+import { ObjectId } from "mongodb";
+import {
+  PostCreateInputType,
+  PostUpdateInputType,
+} from "../models/posts/post.input.model";
 
 export const postsRepository = {
-  getAll(): Promise<[]> {},
+  async getAll(): Promise<PostDbType[]> {
+    const posts = await postsCollection.find({}).toArray();
+    return posts.map(postMapper);
+  },
 
-  getPostById(id: string) {
-    const post = findPost(id);
+  async getPostById(id: string) {
+    const post = await postsCollection.findOne({ _id: new ObjectId(id) });
+
     if (!post) {
-      return false;
+      return null;
     }
-    return post;
+    return postMapper(post);
   },
-  createPost(inputValues: PostInputType) {
-    const { title, shortDescription, content, blogId } = inputValues;
-    const blog = blogsRepository.getBlogById(blogId);
-    if (!blog) {
-      return;
-    } else {
-      let createdPost = {
-        id: Date.now().toString(),
-        title,
-        shortDescription,
-        content,
-        blogId,
-        blogName: blog.name,
-      };
+  async createPost(postCreateInputData: PostCreateInputType) {
+    const createdAt = new Date().toISOString();
+    const createdPost = {
+      ...postCreateInputData,
+      createdAt,
+    };
 
-      db.postsDb.push(createdPost);
-      return createdPost;
-    }
+    const res = await postsCollection.insertOne({ ...createdPost });
+    return { id: res.insertedId.toString(), ...createdPost };
   },
 
-  updatePost(postToUpdate: PostType, updates: PostInputType) {
-    postToUpdate.title = updates.title;
-    postToUpdate.shortDescription = updates.shortDescription;
-    postToUpdate.content = updates.content;
+  async updatePost(id: string, postUpdateData: PostUpdateInputType) {
+    const res = await postsCollection.updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          title: postUpdateData.title,
+          shortDescription: postUpdateData.shortDescription,
+          content: postUpdateData.content,
+          blogId: postUpdateData.blogId,
+        },
+      }
+    );
 
-    return postToUpdate;
+    return !!res.matchedCount;
   },
-  deletePost(id: string) {
-    const post = db.postsDb.find((p) => p.id === id);
-    if (post) {
-      db.postsDb = db.postsDb.filter((p) => p.id !== post.id);
-      return true;
-    }
-    return false;
+  async deletePost(id: string) {
+    const res = await postsCollection.deleteOne({ _id: new ObjectId(id) });
+    return !!res.deletedCount;
   },
 };

@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { HTTP_RESPONSE_CODES } from "../../models/common/common";
 
 const login1 = "admin";
 const password1 = "qwerty";
@@ -16,14 +17,14 @@ export const authMiddleware = (
   const auth = req.headers["authorization"];
 
   if (!auth) {
-    res.sendStatus(401);
+    res.sendStatus(HTTP_RESPONSE_CODES.UNAUTHORIZED);
     return;
   }
 
   const [basic, token] = auth?.split(" ");
 
   if (basic !== "Basic") {
-    res.sendStatus(401);
+    res.sendStatus(HTTP_RESPONSE_CODES.UNAUTHORIZED);
     return;
   }
 
@@ -33,7 +34,7 @@ export const authMiddleware = (
   const [login, password] = decodedToken.split(":");
 
   if (login !== login1 || password !== password1) {
-    res.sendStatus(401);
+    res.sendStatus(HTTP_RESPONSE_CODES.UNAUTHORIZED);
     return;
   }
 

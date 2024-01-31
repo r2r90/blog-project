@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ValidationError, validationResult } from "express-validator";
+import { ErrorMessageType } from "../../models/common/common";
 
 export const inputValidationMiddleware = (
   req: Request,
@@ -14,7 +15,9 @@ export const inputValidationMiddleware = (
   );
 
   if (!formattedError.isEmpty()) {
-    const errorsMessages = formattedError.array({ onlyFirstError: true });
+    const errorsMessages: ErrorMessageType[] = formattedError.array({
+      onlyFirstError: true,
+    });
     res.status(400).send({ errorsMessages: errorsMessages });
     return;
   }

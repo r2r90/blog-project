@@ -1,11 +1,11 @@
-export type PostInputType = {
+export type PostCreateInputType = {
   title: string;
   shortDescription: string;
   content: string;
   blogId: string;
 };
 
-export type PostUpdateType = {
+export type PostUpdateInputType = {
   title: string;
   shortDescription: string;
   content: string;

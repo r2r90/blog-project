@@ -1,4 +1,7 @@
-import { BlogCreateInputType } from "../models/blogs/blog.input.model";
+import {
+  BlogCreateInputType,
+  BlogUpdateInputType,
+} from "../models/blogs/blog.input.model";
 import { blogsCollection } from "../db/db";
 import { BlogOutputType } from "../models/blogs/blog.output.model";
 import { blogMapper } from "../models/blogs/mappers/blog-mapper";
@@ -16,10 +19,12 @@ export const blogsRepository = {
     }
     return blogMapper(blog);
   },
-  async createBlog(inputedData: BlogCreateInputType): Promise<BlogOutputType> {
+  async createBlog(
+    blogCreateInputData: BlogCreateInputType
+  ): Promise<BlogOutputType> {
     const createdAt = new Date().toISOString();
     const createdBlog = {
-      ...inputedData,
+      ...blogCreateInputData,
       isMembership: false,
       createdAt,
     };
@@ -29,16 +34,16 @@ export const blogsRepository = {
   },
   async updateBlog(
     id: string,
-    updateData: BlogCreateInputType
+    blogUpdateData: BlogUpdateInputType
   ): Promise<boolean> {
     const res = await blogsCollection.updateOne(
       { _id: new ObjectId(id) },
 
       {
         $set: {
-          name: updateData.name,
-          description: updateData.description,
-          websiteUrl: updateData.websiteUrl,
+          name: blogUpdateData.name,
+          description: blogUpdateData.description,
+          websiteUrl: blogUpdateData.websiteUrl,
         },
       }
     );

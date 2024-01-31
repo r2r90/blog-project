@@ -1,33 +1,54 @@
 import { Request, Response, Router } from "express";
 import { postsRepository } from "../repositories/posts-repository";
 import {
+  HTTP_RESPONSE_CODES,
   ParamType,
   RequestWithBody,
-  RequestWithParamAndBody,
+  RequestWithParamsAndBody,
 } from "../models/common/common";
-import { PostInputType } from "../models/posts/input";
+
 import { authMiddleware } from "../middlewares/auth/auth-middleware";
 import { postValidation } from "../middlewares/validators/post-validators";
+import { ObjectId } from "mongodb";
+import {
+  PostCreateInputType,
+  PostUpdateInputType,
+} from "../models/posts/post.input.model";
 
 export const postsRouter = Router();
 
-postsRouter.get("/", (req: Request, res: Response) => {
-  let posts = postsRepository.getAll();
-  res.send(posts).status(201);
+postsRouter.get("/", async (req: Request, res: Response) => {
+  let posts = await postsRepository.getAll();
+  res.send(posts).status(HTTP_RESPONSE_CODES.SUCCESS);
 });
 
-postsRouter.get("/:id", (req: Request<ParamType>, res: Response) => {
-  let post = postsRepository.getPostById(req.params.id);
-  post ? res.send(post) : res.sendStatus(404);
+postsRouter.get("/:id", async (req: Request<ParamType>, res: Response) => {
+  const id = req.params.id;
+  if (!ObjectId.isValid(id)) {
+    res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+    return;
+  }
+  let post = await postsRepository.getPostById(id);
+  post ? res.send(post) : res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
 });
 
 postsRouter.post(
   "/",
   authMiddleware,
   postValidation(),
-  (req: RequestWithBody<PostInputType>, res: Response) => {
-    let newPost = postsRepository.createPost(req.body);
-    newPost ? res.status(201).send(newPost) : res.send(400);
+  async (req: RequestWithBody<PostCreateInputType>, res: Response) => {
+    const { title, shortDescription, content, blogId }: PostCreateInputType =
+      req.body;
+    const newPost: PostCreateInputType = {
+      title,
+      shortDescription,
+      content,
+      blogId,
+    };
+    let createdPost = await postsRepository.createPost(newPost);
+    createdPost
+      ? res.status(HTTP_RESPONSE_CODES.CREATED).send(createdPost)
+      : res.send(HTTP_RESPONSE_CODES.BAD_REQUEST);
   }
 );
 
@@ -35,31 +56,39 @@ postsRouter.put(
   "/:id",
   authMiddleware,
   postValidation(),
-  (req: RequestWithParamAndBody<ParamType, PostInputType>, res: Response) => {
-    const postToUpdate = postsRepository.getPostById(req.params.id);
-    if (!postToUpdate) {
-      res.status(404).send("Post not found");
+  async (
+    req: RequestWithParamsAndBody<ParamType, PostUpdateInputType>,
+    res: Response
+  ) => {
+    const id = req.params.id;
+    if (!ObjectId.isValid(id)) {
+      res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
       return;
     }
-
-    const updates = req.body;
-
-    const updatedPost = postsRepository.updatePost(postToUpdate, updates);
-    updatedPost ? res.sendStatus(204) : res.sendStatus(400);
+    const { title, shortDescription, content, blogId } = req.body;
+    const postUpdateData = { title, shortDescription, content, blogId };
+    const isPostUpdated = await postsRepository.updatePost(id, postUpdateData);
+    isPostUpdated
+      ? res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT)
+      : res.sendStatus(HTTP_RESPONSE_CODES.BAD_REQUEST);
   }
 );
 
 postsRouter.delete(
   "/:id",
   authMiddleware,
-  (req: Request<ParamType>, res: Response) => {
-    const postToDelete = postsRepository.getPostById(req.params.id);
-    if (!postToDelete) {
-      res.sendStatus(404);
+  async (req: Request<ParamType>, res: Response) => {
+    const id = req.params.id;
+    if (!ObjectId.isValid(id)) {
+      res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
       return;
-    } else {
-      postsRepository.deletePost(req.params.id);
-      res.send(204);
     }
+
+    const isPostDeleted = await postsRepository.deletePost(id);
+    if (!isPostDeleted) {
+      res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+      return;
+    }
+    res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT);
   }
 );

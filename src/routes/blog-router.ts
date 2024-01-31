@@ -7,9 +7,10 @@ import {
   BlogUpdateInputType,
 } from "../models/blogs/blog.input.model";
 import {
+  HTTP_RESPONSE_CODES,
   ParamType,
   RequestWithBody,
-  RequestWithParamAndBody,
+  RequestWithParamsAndBody,
 } from "../models/common/common";
 import { ObjectId } from "mongodb";
 
@@ -17,21 +18,20 @@ export const blogsRouter = Router();
 
 blogsRouter.get("/", async (req: Request, res: Response) => {
   const blogs = await blogsRepository.getAll();
-  res.send(blogs).status(200);
+  res.send(blogs).status(HTTP_RESPONSE_CODES.SUCCESS);
 });
 
 blogsRouter.get("/:id", async (req: Request<{ id: string }>, res: Response) => {
   const id = req.params.id;
   if (!ObjectId.isValid(id)) {
-    res.sendStatus(404);
+    res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
     return;
   }
-  const foundedBlog = await blogsRepository.getBlogById(req.params.id);
+  const foundedBlog = await blogsRepository.getBlogById(id);
   if (!foundedBlog) {
-    res.sendStatus(404);
-    return;
+    return res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
   }
-  res.send(foundedBlog).status(200);
+  return res.send(foundedBlog).status(HTTP_RESPONSE_CODES.SUCCESS);
 });
 
 blogsRouter.post(
@@ -46,7 +46,7 @@ blogsRouter.post(
       websiteUrl,
     };
     const createdBlog = await blogsRepository.createBlog(newBlog);
-    res.status(201).send(createdBlog);
+    res.status(HTTP_RESPONSE_CODES.CREATED).send(createdBlog);
   }
 );
 blogsRouter.put(
@@ -54,25 +54,25 @@ blogsRouter.put(
   authMiddleware,
   blogValidation(),
   async (
-    req: RequestWithParamAndBody<ParamType, BlogUpdateInputType>,
+    req: RequestWithParamsAndBody<ParamType, BlogUpdateInputType>,
     res: Response
   ) => {
     const id = req.params.id;
     if (!ObjectId.isValid(id)) {
-      res.sendStatus(404);
+      res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
       return;
     }
 
     const { name, description, websiteUrl } = req.body;
-    const updateData = { name, description, websiteUrl };
-    const isUpdated = await blogsRepository.updateBlog(id, updateData);
+    const blogUpdateData = { name, description, websiteUrl };
+    const isUpdated = await blogsRepository.updateBlog(id, blogUpdateData);
 
     if (!isUpdated) {
-      res.sendStatus(404);
+      res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
       return;
     }
 
-    res.sendStatus(204);
+    res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT);
   }
 );
 
@@ -82,14 +82,14 @@ blogsRouter.delete(
   async (req: Request<ParamType>, res: Response) => {
     const id = req.params.id;
     if (!ObjectId.isValid(id)) {
-      res.sendStatus(404);
+      res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
       return;
     }
-    const isDeleted = await blogsRepository.deleteBlog(id);
-    if (!isDeleted) {
-      res.sendStatus(404);
+    const isBlogDeleted = await blogsRepository.deleteBlog(id);
+    if (!isBlogDeleted) {
+      res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
       return;
     }
-    res.sendStatus(204);
+    res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT);
   }
 );
