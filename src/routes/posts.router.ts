@@ -1,10 +1,10 @@
 import { Request, Response, Router } from "express";
-import { postsRepository } from "../repositories/posts-repository";
+import { postsRepository } from "../repositories/posts.repository";
 import {
   HTTP_RESPONSE_CODES,
   ParamType,
   RequestWithBody,
-  RequestWithParamsAndBody,
+  RequestWithParamAndBody,
 } from "../models/common/common";
 
 import { authMiddleware } from "../middlewares/auth/auth-middleware";
@@ -57,7 +57,7 @@ postsRouter.put(
   authMiddleware,
   postValidation(),
   async (
-    req: RequestWithParamsAndBody<ParamType, PostUpdateInputType>,
+    req: RequestWithParamAndBody<ParamType, PostUpdateInputType>,
     res: Response
   ) => {
     const id = req.params.id;
@@ -73,7 +73,6 @@ postsRouter.put(
       : res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
   }
 );
-
 postsRouter.delete(
   "/:id",
   authMiddleware,

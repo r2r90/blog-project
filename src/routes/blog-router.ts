@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { blogsRepository } from "../repositories/blogs-repository";
+import { blogsRepository } from "../repositories/blogs.repository";
 import { authMiddleware } from "../middlewares/auth/auth-middleware";
 import { blogValidation } from "../middlewares/validators/blog-validators";
 import {
@@ -10,29 +10,49 @@ import {
   HTTP_RESPONSE_CODES,
   ParamType,
   RequestWithBody,
-  RequestWithParamsAndBody,
+  RequestWithParamAndBody,
+  RequestWithParamAndQuery,
+  RequestWithQuery,
 } from "../models/common/common";
 import { ObjectId } from "mongodb";
+import { BlogQueryInputModel } from "../models/blogs/blog.query.input.model";
+import { blogsQueryRepository } from "../repositories/blogs.query.repository";
 
 export const blogsRouter = Router();
 
-blogsRouter.get("/", async (req: Request, res: Response) => {
-  const blogs = await blogsRepository.getAll();
-  res.send(blogs).status(HTTP_RESPONSE_CODES.SUCCESS);
-});
+blogsRouter.get(
+  "/",
+  async (req: RequestWithQuery<BlogQueryInputModel>, res: Response) => {
+    const sortData = {
+      searchNameTerm: req.query.searchNameTerm ?? null,
+      sortBy: req.query.sortBy ?? "createdAt",
+      sortDirection: req.query.sortDirection ?? "desc",
+      pageNumber: req.query.pageNumber ? +req.query.pageNumber : 1,
+      pageSize: req.query.pageSize ? +req.query.pageSize : 10,
+    };
+    const blogs = await blogsQueryRepository.getAllBlogs(sortData);
+    res.send(blogs).status(HTTP_RESPONSE_CODES.SUCCESS);
+  }
+);
 
-blogsRouter.get("/:id", async (req: Request<{ id: string }>, res: Response) => {
-  const id = req.params.id;
-  if (!ObjectId.isValid(id)) {
-    res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
-    return;
+blogsRouter.get(
+  "/:id",
+  async (
+    req: RequestWithParamAndQuery<ParamType, BlogQueryInputModel>,
+    res: Response
+  ) => {
+    const id = req.params.id;
+    if (!ObjectId.isValid(id)) {
+      res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+      return;
+    }
+    const foundedBlog = await blogsQueryRepository.getBlogById(id);
+    if (!foundedBlog) {
+      return res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+    }
+    return res.send(foundedBlog).status(HTTP_RESPONSE_CODES.SUCCESS);
   }
-  const foundedBlog = await blogsRepository.getBlogById(id);
-  if (!foundedBlog) {
-    return res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
-  }
-  return res.send(foundedBlog).status(HTTP_RESPONSE_CODES.SUCCESS);
-});
+);
 
 blogsRouter.post(
   "/",
@@ -54,7 +74,7 @@ blogsRouter.put(
   authMiddleware,
   blogValidation(),
   async (
-    req: RequestWithParamsAndBody<ParamType, BlogUpdateInputType>,
+    req: RequestWithParamAndBody<ParamType, BlogUpdateInputType>,
     res: Response
   ) => {
     const id = req.params.id;
