@@ -80,7 +80,7 @@ blogsRoute.get(
       return;
     }
 
-    const foundedBlog = await BlogQueryRepository.getBlogById(id);
+    const foundedBlog = await BlogQueryRepository.getBlogById(blogId);
     if (!foundedBlog) {
       return res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
     }
