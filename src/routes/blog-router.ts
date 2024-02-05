@@ -85,7 +85,7 @@ blogsRoute.post(
     const id = req.params.id;
 
     if (!ObjectId.isValid(id)) {
-      res.sendStatus(HTTP_RESPONSE_CODES.BAD_REQUEST);
+      res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
       return;
     }
 
