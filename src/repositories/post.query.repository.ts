@@ -6,7 +6,7 @@ import {
   PostPagination,
 } from "../models/posts/post.output.model";
 
-type SortData = {
+export type PostSortData = {
   sortBy: string;
   sortDirection: SortDirection;
   pageNumber: number;
@@ -15,7 +15,7 @@ type SortData = {
 
 export class PostQueryRepository {
   static async getAllPosts(
-    sortData: SortData
+    sortData: PostSortData
   ): Promise<PostPagination<PostOutputType>> {
     const { sortBy, sortDirection, pageNumber, pageSize } = sortData;
 

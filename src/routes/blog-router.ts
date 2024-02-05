@@ -22,6 +22,7 @@ import { createPostFromBlogValidation } from "../middlewares/validators/post-val
 import { CreatePostFromBlogInputModel } from "../models/blogs/blog-input-model/create.post.from.blog.input.model";
 import { PostOutputType } from "../models/posts/post.output.model";
 import { BlogService } from "../services/blog.service";
+import { PostQueryInputModel } from "../models/posts/post-input-model/post.query.input.model";
 
 export const blogsRoute = Router();
 
@@ -56,6 +57,33 @@ blogsRoute.get(
       return res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
     }
     return res.send(foundedBlog).status(HTTP_RESPONSE_CODES.SUCCESS);
+  }
+);
+
+blogsRoute.get(
+  "/:id/posts",
+  async (
+    req: RequestWithParamAndQuery<ParamType, PostQueryInputModel>,
+    res: Response
+  ) => {
+    const blogId = req.params.id;
+
+    const sortData = {
+      pageNumber: req.query.pageNumber ? +req.query.pageNumber : 1,
+      pageSize: req.query.pageSize ? +req.query.pageSize : 10,
+      sortBy: req.query.sortBy ?? "createdAt",
+      sortDirection: req.query.sortDirection ?? "desc",
+    };
+
+    if (!ObjectId.isValid(blogId)) {
+      res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+      return;
+    }
+
+    const posts = await BlogQueryRepository.getPostsByBlogId(blogId, sortData);
+    posts
+      ? res.status(HTTP_RESPONSE_CODES.SUCCESS).send(posts)
+      : res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
   }
 );
 
@@ -96,38 +124,6 @@ blogsRoute.post(
       : res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
   }
 );
-
-/*blogsRoute.post(
-  "/:id/posts",
-  authMiddleware,
-  createPostFromBlogValidation(),
-  async (
-    req: RequestWithParamAndBody<ParamType, CreatePostFromBlogInputModel>,
-    res: ResponseType<PostOutputType>
-  ) => {
-    const id = req.params.id;
-
-    if (!ObjectId.isValid(id)) {
-      res.sendStatus(HTTP_RESPONSE_CODES.BAD_REQUEST);
-      return;
-    }
-
-    const createPostFromBlogModel = {
-      title: req.body.title,
-      shortDescription: req.body.shortDescription,
-      content: req.body.content,
-    };
-
-    const post = await BlogService.createPostToBlog(
-      id,
-      createPostFromBlogModel
-    );
-
-    return post
-      ? res.status(HTTP_RESPONSE_CODES.CREATED).send(post)
-      : res.sendStatus(HTTP_RESPONSE_CODES.BAD_REQUEST);
-  }
-);*/
 
 blogsRoute.put(
   "/:id",
