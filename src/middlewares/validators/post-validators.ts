@@ -1,7 +1,6 @@
 import { body } from "express-validator";
-import { blogRepository } from "../../repositories/blog.repository";
 import { inputModelValidationMiddleware } from "../inputValidation/input-model-validation-middleware";
-import { blogQueryRepository } from "../../repositories/blog.query.repository";
+import { BlogQueryRepository } from "../../repositories/blog.query.repository";
 
 const titleValidator = body("title")
   .isString()
@@ -25,7 +24,7 @@ const contentValidator = body("content")
   .withMessage("Incorrect description - min 1 character & max 500 character");
 
 const blogIdValidator = body("blogId").custom(async (value) => {
-  const blog = await blogQueryRepository.getBlogById(value);
+  const blog = await BlogQueryRepository.getBlogById(value);
   if (!blog) {
     throw Error("Incorrect Blog ID");
   }

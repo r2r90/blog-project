@@ -14,8 +14,8 @@ type SortData = {
   pageSize: number;
 };
 
-export const blogQueryRepository = {
-  async getAllBlogs(
+export class BlogQueryRepository {
+  static async getAllBlogs(
     sortData: SortData
   ): Promise<BlogPagination<BlogOutputType>> {
     const { searchNameTerm, sortBy, sortDirection, pageNumber, pageSize } =
@@ -37,7 +37,6 @@ export const blogQueryRepository = {
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize)
       .toArray();
-
     const totalCount = await blogsCollection.countDocuments(filter);
     const pagesCount = Math.ceil(totalCount / pageSize);
     return {
@@ -47,12 +46,13 @@ export const blogQueryRepository = {
       totalCount,
       items: blogs.map(blogMapper),
     };
-  },
-  async getBlogById(id: string): Promise<BlogOutputType | null> {
+  }
+
+  static async getBlogById(id: string): Promise<BlogOutputType | null> {
     const blog = await blogsCollection.findOne({ _id: new ObjectId(id) });
     if (!blog) {
       return null;
     }
     return blogMapper(blog);
-  },
-};
+  }
+}

@@ -5,6 +5,7 @@ import {
   ParamType,
   RequestWithBody,
   RequestWithParamAndBody,
+  RequestWithQuery,
 } from "../models/common/common";
 
 import { authMiddleware } from "../middlewares/auth/auth-middleware";
@@ -13,14 +14,25 @@ import { ObjectId } from "mongodb";
 import {
   PostCreateInputType,
   PostUpdateInputType,
-} from "../models/posts/post.input.model";
+} from "../models/posts/post-input-model/post.input.model";
+import { PostQueryRepository } from "../repositories/post.query.repository";
+import { PostQueryInputModel } from "../models/posts/post-input-model/post.query.input.model";
 
 export const postRouter = Router();
 
-postRouter.get("/", async (req: Request, res: Response) => {
-  let posts = await postRepository.getAll();
-  res.send(posts).status(HTTP_RESPONSE_CODES.SUCCESS);
-});
+postRouter.get(
+  "/",
+  async (req: RequestWithQuery<PostQueryInputModel>, res: Response) => {
+    const sortData = {
+      pageNumber: req.query.pageNumber ? +req.query.pageNumber : 1,
+      pageSize: req.query.pageSize ? +req.query.pageSize : 10,
+      sortBy: req.query.sortBy ?? "createdAt",
+      sortDirection: req.query.sortDirection ?? "desc",
+    };
+    let posts = await PostQueryRepository.getAllPosts(sortData);
+    res.send(posts).status(HTTP_RESPONSE_CODES.SUCCESS);
+  }
+);
 
 postRouter.get("/:id", async (req: Request<ParamType>, res: Response) => {
   const id = req.params.id;
@@ -28,7 +40,7 @@ postRouter.get("/:id", async (req: Request<ParamType>, res: Response) => {
     res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
     return;
   }
-  let post = await postRepository.getPostById(id);
+  let post = await PostQueryRepository.getPostById(id);
   post ? res.send(post) : res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
 });
 

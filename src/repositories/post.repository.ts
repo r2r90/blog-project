@@ -5,7 +5,7 @@ import { ObjectId } from "mongodb";
 import {
   PostCreateInputType,
   PostUpdateInputType,
-} from "../models/posts/post.input.model";
+} from "../models/posts/post-input-model/post.input.model";
 
 export const postRepository = {
   async getAll(): Promise<PostDbType[]> {
