@@ -92,8 +92,8 @@ blogsRoute.post(
     const post = await BlogService.createPostToBlog(id, req.body);
 
     return post
-      ? res.status(HTTP_RESPONSE_CODES.CREATED).send(post)
-      : res.sendStatus(HTTP_RESPONSE_CODES.BAD_REQUEST);
+      ? res.status(HTTP_RESPONSE_CODES.SUCCESS).send(post)
+      : res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
   }
 );
 
