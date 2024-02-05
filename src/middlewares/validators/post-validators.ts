@@ -1,18 +1,7 @@
 import { body } from "express-validator";
-import { blogsRepository } from "../../repositories/blogs.repository";
-import { inputValidationMiddleware } from "../inputValidation/input-validation-middleware";
-
-/*
-  PostInputModel{
-  title*	string
-  maxLength: 30
-  shortDescription*	string
-  maxLength: 100
-  content*	string
-  maxLength: 1000
-  blogId*	string
-}
-*/
+import { blogRepository } from "../../repositories/blog.repository";
+import { inputModelValidationMiddleware } from "../inputValidation/input-model-validation-middleware";
+import { blogQueryRepository } from "../../repositories/blog.query.repository";
 
 const titleValidator = body("title")
   .isString()
@@ -36,17 +25,24 @@ const contentValidator = body("content")
   .withMessage("Incorrect description - min 1 character & max 500 character");
 
 const blogIdValidator = body("blogId").custom(async (value) => {
-  const blog = await blogsRepository.getBlogById(value);
+  const blog = await blogQueryRepository.getBlogById(value);
   if (!blog) {
     throw Error("Incorrect Blog ID");
   }
   return true;
 });
 
-export const postValidation = () => [
+export const createPostValidation = () => [
   titleValidator,
   shortDescriptionValidator,
   contentValidator,
   blogIdValidator,
-  inputValidationMiddleware,
+  inputModelValidationMiddleware,
+];
+
+export const createPostFromBlogValidation = () => [
+  titleValidator,
+  shortDescriptionValidator,
+  contentValidator,
+  inputModelValidationMiddleware,
 ];

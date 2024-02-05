@@ -2,7 +2,7 @@ import { blogsCollection } from "../db/db";
 import {
   BlogOutputType,
   BlogPagination,
-} from "../models/blogs/blog.output.model";
+} from "../models/blogs/output-model/blog.output.model";
 import { blogMapper } from "../models/blogs/mappers/blog-mapper";
 import { ObjectId, SortDirection } from "mongodb";
 
@@ -14,7 +14,7 @@ type SortData = {
   pageSize: number;
 };
 
-export const blogsQueryRepository = {
+export const blogQueryRepository = {
   async getAllBlogs(
     sortData: SortData
   ): Promise<BlogPagination<BlogOutputType>> {

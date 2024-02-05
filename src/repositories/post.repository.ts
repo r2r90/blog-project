@@ -7,7 +7,7 @@ import {
   PostUpdateInputType,
 } from "../models/posts/post.input.model";
 
-export const postsRepository = {
+export const postRepository = {
   async getAll(): Promise<PostDbType[]> {
     const posts = await postsCollection.find({}).toArray();
     return posts.map(postMapper);

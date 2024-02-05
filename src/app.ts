@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
-import { blogsRouter } from "./routes/blog-router";
-import { testingRouter } from "./routes/testing.router";
-import { postsRouter } from "./routes/posts.router";
+import { blogsRoute } from "./routes/blog-router";
+import { testingRouter } from "./routes/testing-router";
+import { postRouter } from "./routes/post-router";
 
 export const app = express();
 
@@ -11,6 +11,6 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Blogs App OK!");
 });
 
-app.use("/blogs", blogsRouter);
-app.use("/posts", postsRouter);
+app.use("/blogs", blogsRoute);
+app.use("/posts", postRouter);
 app.use("/testing", testingRouter);

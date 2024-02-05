@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { postsRepository } from "../repositories/posts.repository";
+import { postRepository } from "../repositories/post.repository";
 import {
   HTTP_RESPONSE_CODES,
   ParamType,
@@ -8,34 +8,34 @@ import {
 } from "../models/common/common";
 
 import { authMiddleware } from "../middlewares/auth/auth-middleware";
-import { postValidation } from "../middlewares/validators/post-validators";
+import { createPostValidation } from "../middlewares/validators/post-validators";
 import { ObjectId } from "mongodb";
 import {
   PostCreateInputType,
   PostUpdateInputType,
 } from "../models/posts/post.input.model";
 
-export const postsRouter = Router();
+export const postRouter = Router();
 
-postsRouter.get("/", async (req: Request, res: Response) => {
-  let posts = await postsRepository.getAll();
+postRouter.get("/", async (req: Request, res: Response) => {
+  let posts = await postRepository.getAll();
   res.send(posts).status(HTTP_RESPONSE_CODES.SUCCESS);
 });
 
-postsRouter.get("/:id", async (req: Request<ParamType>, res: Response) => {
+postRouter.get("/:id", async (req: Request<ParamType>, res: Response) => {
   const id = req.params.id;
   if (!ObjectId.isValid(id)) {
     res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
     return;
   }
-  let post = await postsRepository.getPostById(id);
+  let post = await postRepository.getPostById(id);
   post ? res.send(post) : res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
 });
 
-postsRouter.post(
+postRouter.post(
   "/",
   authMiddleware,
-  postValidation(),
+  createPostValidation(),
   async (req: RequestWithBody<PostCreateInputType>, res: Response) => {
     const { title, shortDescription, content, blogId }: PostCreateInputType =
       req.body;
@@ -45,17 +45,17 @@ postsRouter.post(
       content,
       blogId,
     };
-    let createdPost = await postsRepository.createPost(newPost);
+    let createdPost = await postRepository.createPost(newPost);
     createdPost
       ? res.status(HTTP_RESPONSE_CODES.CREATED).send(createdPost)
       : res.send(HTTP_RESPONSE_CODES.NOT_FOUND);
   }
 );
 
-postsRouter.put(
+postRouter.put(
   "/:id",
   authMiddleware,
-  postValidation(),
+  createPostValidation(),
   async (
     req: RequestWithParamAndBody<ParamType, PostUpdateInputType>,
     res: Response
@@ -67,13 +67,13 @@ postsRouter.put(
     }
     const { title, shortDescription, content, blogId } = req.body;
     const postUpdateData = { title, shortDescription, content, blogId };
-    const isPostUpdated = await postsRepository.updatePost(id, postUpdateData);
+    const isPostUpdated = await postRepository.updatePost(id, postUpdateData);
     isPostUpdated
       ? res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT)
       : res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
   }
 );
-postsRouter.delete(
+postRouter.delete(
   "/:id",
   authMiddleware,
   async (req: Request<ParamType>, res: Response) => {
@@ -83,7 +83,7 @@ postsRouter.delete(
       return;
     }
 
-    const isPostDeleted = await postsRepository.deletePost(id);
+    const isPostDeleted = await postRepository.deletePost(id);
     if (!isPostDeleted) {
       res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
       return;

@@ -1,5 +1,5 @@
 import { body } from "express-validator";
-import { inputValidationMiddleware } from "../inputValidation/input-validation-middleware";
+import { inputModelValidationMiddleware } from "../inputValidation/input-model-validation-middleware";
 
 export const nameValidator = body("name")
   .isString()
@@ -30,5 +30,5 @@ export const blogValidation = () => [
   nameValidator,
   descriptionValidator,
   webSiteUrlValidator,
-  inputValidationMiddleware,
+  inputModelValidationMiddleware,
 ];

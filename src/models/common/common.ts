@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { Request, Response } from "express";
 
 export type ParamType = {
   id: string;
@@ -14,6 +14,7 @@ export type RequestWithParamAndBody<P, B> = Request<P, {}, B>;
 
 export type RequestWithQuery<Q> = Request<{}, {}, {}, Q>;
 export type RequestWithParamAndQuery<P, Q> = Request<P, {}, {}, Q>;
+export type ResponseType<T> = Response<T, {}>;
 
 export const HTTP_RESPONSE_CODES = {
   SUCCESS: 200,

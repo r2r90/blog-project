@@ -1,12 +1,21 @@
 import {
   BlogCreateInputType,
   BlogUpdateInputType,
-} from "../models/blogs/blog.input.model";
+} from "../models/blogs/input-model/blog.input.model";
 import { blogsCollection } from "../db/db";
-import { BlogOutputType } from "../models/blogs/blog.output.model";
+import { BlogOutputType } from "../models/blogs/output-model/blog.output.model";
 import { ObjectId } from "mongodb";
+import { blogMapper } from "../models/blogs/mappers/blog-mapper";
+import { BlogDbType } from "../models/blogs/blog-db";
 
-export const blogsRepository = {
+export const blogRepository = {
+  async getBlogById(id: string): Promise<BlogDbType | null> {
+    const blog = await blogsCollection.findOne({ _id: new ObjectId(id) });
+    if (!blog) {
+      return null;
+    }
+    return blog;
+  },
   async createBlog(
     blogCreateInputData: BlogCreateInputType
   ): Promise<BlogOutputType> {

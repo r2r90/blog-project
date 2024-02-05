@@ -1,6 +1,6 @@
 import { WithId } from "mongodb";
 import { BlogDbType } from "../blog-db";
-import { BlogOutputType } from "../blog.output.model";
+import { BlogOutputType } from "../output-model/blog.output.model";
 
 export const blogMapper = (blog: WithId<BlogDbType>): BlogOutputType => {
   return {
