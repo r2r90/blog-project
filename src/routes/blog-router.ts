@@ -143,16 +143,13 @@ blogsRoute.put(
       res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
       return;
     }
-
     const { name, description, websiteUrl } = req.body;
     const blogUpdateData = { name, description, websiteUrl };
     const isUpdated = await BlogService.updateBlog({ id, ...blogUpdateData });
-
     if (!isUpdated) {
       res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
       return;
     }
-
     res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT);
   }
 );

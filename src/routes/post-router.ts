@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { postRepository } from "../repositories/post.repository";
+import { PostRepository } from "../repositories/post.repository";
 import {
   HTTP_RESPONSE_CODES,
   ParamType,
@@ -17,6 +17,7 @@ import {
 } from "../models/posts/post-input-model/post.input.model";
 import { PostQueryRepository } from "../repositories/post.query.repository";
 import { PostQueryInputModel } from "../models/posts/post-input-model/post.query.input.model";
+import { PostService } from "../services/post.service";
 
 export const postRouter = Router();
 
@@ -40,7 +41,7 @@ postRouter.get("/:id", async (req: Request<ParamType>, res: Response) => {
     res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
     return;
   }
-  let post = await PostQueryRepository.getPostById(id);
+  let post = await PostService.getPostById(id);
   post ? res.send(post) : res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
 });
 
@@ -51,13 +52,13 @@ postRouter.post(
   async (req: RequestWithBody<PostCreateInputType>, res: Response) => {
     const { title, shortDescription, content, blogId }: PostCreateInputType =
       req.body;
-    const newPost: PostCreateInputType = {
+    const newPostData: PostCreateInputType = {
       title,
       shortDescription,
       content,
       blogId,
     };
-    let createdPost = await postRepository.createPost(newPost);
+    let createdPost = await PostService.createPost(newPostData);
     createdPost
       ? res.status(HTTP_RESPONSE_CODES.CREATED).send(createdPost)
       : res.send(HTTP_RESPONSE_CODES.NOT_FOUND);
@@ -73,13 +74,13 @@ postRouter.put(
     res: Response
   ) => {
     const id = req.params.id;
+    const { title, shortDescription, content, blogId } = req.body;
+    const postUpdateData = { title, shortDescription, content, blogId };
     if (!ObjectId.isValid(id)) {
       res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
       return;
     }
-    const { title, shortDescription, content, blogId } = req.body;
-    const postUpdateData = { title, shortDescription, content, blogId };
-    const isPostUpdated = await postRepository.updatePost(id, postUpdateData);
+    const isPostUpdated = await PostService.updatePost(id, postUpdateData);
     isPostUpdated
       ? res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT)
       : res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
@@ -95,7 +96,7 @@ postRouter.delete(
       return;
     }
 
-    const isPostDeleted = await postRepository.deletePost(id);
+    const isPostDeleted = await PostRepository.deletePost(id);
     if (!isPostDeleted) {
       res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
       return;

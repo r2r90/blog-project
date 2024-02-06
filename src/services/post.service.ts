@@ -6,11 +6,28 @@ import { CreatePostFromBlogInputModel } from "../models/posts/post-input-model/c
 import { PostOutputType } from "../models/posts/post.output.model";
 import { BlogRepository } from "../repositories/blog.repository";
 import { PostDbType } from "../models/posts/post-db";
-import { postRepository } from "../repositories/post.repository";
+import { PostRepository } from "../repositories/post.repository";
+import {
+  PostCreateInputType,
+  PostUpdateInputType,
+} from "../models/posts/post-input-model/post.input.model";
+import { BlogService } from "./blog.service";
 
 export class PostService {
   static async getAllPostsByBlogId(blogId: string, sortData: PostSortData) {
     return await PostQueryRepository.getAllPostsByBlogId(blogId, sortData);
+  }
+
+  static async getPostById(id: string): Promise<PostOutputType | null> {
+    return await PostQueryRepository.getPostById(id);
+  }
+
+  static async createPost(newPostData: PostCreateInputType) {
+    const blog = await BlogService.getBlogById(newPostData.blogId);
+    const createdAt = new Date().toISOString();
+    const post = { ...newPostData, blogName: blog!.name, createdAt };
+
+    return await PostRepository.createPost(post);
   }
 
   static async createPostToBlog(
@@ -30,7 +47,7 @@ export class PostService {
       blogName: blog.name,
       createdAt: new Date().toISOString(),
     };
-    const createdPost = await postRepository.createPost(newPost);
+    const createdPost = await PostRepository.createPost(newPost);
     if (!createdPost) {
       return null;
     }
@@ -40,5 +57,16 @@ export class PostService {
       return null;
     }
     return post;
+  }
+
+  static async updatePost(
+    id: string,
+    postUpdateData: PostUpdateInputType
+  ): Promise<boolean | null> {
+    return await PostRepository.updatePost(id, postUpdateData);
+  }
+
+  static async deletePost(id: string): Promise<boolean | null> {
+    return await PostRepository.deletePost(id);
   }
 }

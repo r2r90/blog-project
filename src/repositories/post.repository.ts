@@ -1,4 +1,3 @@
-import { PostDbType } from "../models/posts/post-db";
 import { blogsCollection, postsCollection } from "../db/db";
 import { postMapper } from "../models/posts/mappers/post-mapper";
 import { ObjectId } from "mongodb";
@@ -7,21 +6,16 @@ import {
   PostUpdateInputType,
 } from "../models/posts/post-input-model/post.input.model";
 
-export const postRepository = {
-  async getAll(): Promise<PostDbType[]> {
-    const posts = await postsCollection.find({}).toArray();
-    return posts.map(postMapper);
-  },
-
-  async getPostById(id: string) {
+export class PostRepository {
+  static async getPostById(id: string) {
     const post = await postsCollection.findOne({ _id: new ObjectId(id) });
-
     if (!post) {
       return null;
     }
     return postMapper(post);
-  },
-  async createPost(postCreateInputData: PostCreateInputType) {
+  }
+
+  static async createPost(postCreateInputData: PostCreateInputType) {
     const blog = await blogsCollection.findOne({
       _id: new ObjectId(postCreateInputData.blogId),
     });
@@ -39,9 +33,9 @@ export const postRepository = {
 
     const res = await postsCollection.insertOne({ ...createdPost });
     return { id: res.insertedId.toString(), ...createdPost };
-  },
+  }
 
-  async updatePost(id: string, postUpdateData: PostUpdateInputType) {
+  static async updatePost(id: string, postUpdateData: PostUpdateInputType) {
     const res = await postsCollection.updateOne(
       { _id: new ObjectId(id) },
       {
@@ -55,9 +49,10 @@ export const postRepository = {
     );
 
     return !!res.matchedCount;
-  },
-  async deletePost(id: string) {
+  }
+
+  static async deletePost(id: string) {
     const res = await postsCollection.deleteOne({ _id: new ObjectId(id) });
     return !!res.deletedCount;
-  },
-};
+  }
+}
