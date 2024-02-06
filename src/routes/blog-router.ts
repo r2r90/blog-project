@@ -75,6 +75,12 @@ blogsRoute.get(
       sortDirection: req.query.sortDirection ?? "desc",
     };
 
+    const blog = await BlogQueryRepository.getBlogById(id);
+    if (!blog) {
+      res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+      return;
+    }
+
     if (!ObjectId.isValid(blogId)) {
       res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
       return;
