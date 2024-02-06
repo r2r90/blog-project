@@ -7,6 +7,10 @@ import { blogMapper } from "../models/blogs/mappers/blog-mapper";
 import { ObjectId, SortDirection } from "mongodb";
 import { postMapper } from "../models/posts/mappers/post-mapper";
 import { PostSortData } from "./post.query.repository";
+import {
+  PostOutputType,
+  PostPagination,
+} from "../models/posts/post.output.model";
 
 type BlogSortData = {
   searchNameTerm: string | null;
@@ -58,24 +62,24 @@ export class BlogQueryRepository {
     return blogMapper(blog);
   }
 
-  static async getPostsByBlogId(blogId: string, sortData: PostSortData) {
+  static async getPostsByBlogId(
+    blogId: string,
+    sortData: PostSortData
+  ): Promise<PostPagination<PostOutputType>> {
     const { sortBy, sortDirection, pageNumber, pageSize } = sortData;
-
+    const postsCount = await postsCollection.countDocuments({ blogId });
     const posts = await postsCollection
-      .find({ _id: new ObjectId(blogId) })
+      .find({ blogId })
       .sort(sortBy, sortDirection)
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize)
       .toArray();
-    const totalCount = await postsCollection.countDocuments({
-      _id: new ObjectId(blogId),
-    });
-    const pagesCount = Math.ceil(totalCount / pageSize);
+
     return {
-      pagesCount,
-      pageSize,
+      pagesCount: Math.ceil(postsCount / pageSize),
       page: pageNumber,
-      totalCount,
+      pageSize,
+      totalCount: postsCount,
       items: posts.map(postMapper),
     };
   }
