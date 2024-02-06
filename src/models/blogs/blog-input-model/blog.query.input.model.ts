@@ -7,3 +7,11 @@ export type BlogQueryInputModel = {
   pageNumber?: string;
   pageSize?: string;
 };
+
+export type BlogSortData = {
+  searchNameTerm: string | null;
+  sortBy: string;
+  sortDirection: SortDirection;
+  pageNumber: number;
+  pageSize: number;
+};

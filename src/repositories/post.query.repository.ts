@@ -43,4 +43,26 @@ export class PostQueryRepository {
     }
     return postMapper(post);
   }
+
+  static async getAllPostsByBlogId(
+    blogId: string,
+    sortData: PostSortData
+  ): Promise<PostPagination<PostOutputType>> {
+    const { sortBy, sortDirection, pageNumber, pageSize } = sortData;
+    const postsCount = await postsCollection.countDocuments({ blogId });
+    const posts = await postsCollection
+      .find({ blogId })
+      .sort(sortBy, sortDirection)
+      .skip((pageNumber - 1) * pageSize)
+      .limit(pageSize)
+      .toArray();
+
+    return {
+      pagesCount: Math.ceil(postsCount / pageSize),
+      page: pageNumber,
+      pageSize,
+      totalCount: postsCount,
+      items: posts.map(postMapper),
+    };
+  }
 }

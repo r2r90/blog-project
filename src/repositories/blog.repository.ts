@@ -1,7 +1,4 @@
-import {
-  BlogCreateInputType,
-  BlogUpdateInputType,
-} from "../models/blogs/blog-input-model/blog.input.model";
+import { BlogUpdateInputType } from "../models/blogs/blog-input-model/blog.input.model";
 import { blogsCollection } from "../db/db";
 import { BlogOutputType } from "../models/blogs/output-model/blog.output.model";
 import { ObjectId } from "mongodb";
@@ -16,26 +13,16 @@ export class BlogRepository {
     return blog;
   }
 
-  static async createBlog(
-    blogCreateInputData: BlogCreateInputType
-  ): Promise<BlogOutputType> {
-    const createdAt = new Date().toISOString();
-    const createdBlog = {
-      ...blogCreateInputData,
-      isMembership: false,
-      createdAt,
-    };
-    const res = await blogsCollection.insertOne({ ...createdBlog });
-
-    return { id: res.insertedId.toString(), ...createdBlog };
+  static async createBlog(blog: BlogDbType): Promise<BlogOutputType> {
+    const createdBlog = await blogsCollection.insertOne({ ...blog });
+    return { ...blog, id: createdBlog.insertedId.toString() };
   }
 
   static async updateBlog(
-    id: string,
-    blogUpdateData: BlogUpdateInputType
+    blogUpdateData: BlogUpdateInputType & { id: string }
   ): Promise<boolean> {
     const res = await blogsCollection.updateOne(
-      { _id: new ObjectId(id) },
+      { _id: new ObjectId(blogUpdateData.id) },
       {
         $set: {
           name: blogUpdateData.name,
