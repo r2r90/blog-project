@@ -5,13 +5,13 @@ import {
 import { CreatePostFromBlogInputModel } from "../models/posts/post-input-model/create.post.from.blog.input.model";
 import { PostOutputType } from "../models/posts/post.output.model";
 import { BlogRepository } from "../repositories/blog-repositories/blog.repository";
-import { PostDbType } from "../models/posts/post-db";
 import { PostRepository } from "../repositories/post-repositories/post.repository";
 import {
   PostCreateInputType,
   PostUpdateInputType,
 } from "../models/posts/post-input-model/post.input.model";
 import { BlogService } from "./blog.service";
+import { PostDbType } from "../models/db-types";
 
 export class PostService {
   static async getAllPostsByBlogId(blogId: string, sortData: PostSortData) {

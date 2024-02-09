@@ -1,6 +1,6 @@
 import { WithId } from "mongodb";
-import { UserDbType } from "../user-db";
 import { UserOutputType } from "../users-output/user.output.model";
+import { UserDbType } from "../../db-types";
 
 export const userMapper = (user: WithId<UserDbType>): UserOutputType => {
   return {

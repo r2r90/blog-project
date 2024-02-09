@@ -1,7 +1,14 @@
 import { Response, Router } from "express";
-import { HTTP_RESPONSE_CODES, RequestWithQuery } from "../models/common/common";
+import {
+  HTTP_RESPONSE_CODES,
+  RequestWithBody,
+  RequestWithQuery,
+} from "../models/common/common";
 import { UserQueryRepository } from "../repositories/user-repositories/user.query.repository";
 import { UserQueryInputModel } from "../models/users/users-input/user.query.input.model";
+import { UserCreateInputType } from "../models/users/users-input/user.input.model";
+import { UserService } from "../services/user.service";
+import { authMiddleware } from "../middlewares/auth/auth-middleware";
 
 export const userRouter = Router();
 
@@ -18,5 +25,24 @@ userRouter.get(
     };
     const users = await UserQueryRepository.getAllUsers(sortData);
     res.send(users).status(HTTP_RESPONSE_CODES.SUCCESS);
+  }
+);
+
+userRouter.post(
+  "/",
+  authMiddleware,
+  async (req: RequestWithBody<UserCreateInputType>, res: Response) => {
+    const { login, password, email }: UserCreateInputType = req.body;
+
+    const newUserCreateData = {
+      login,
+      password,
+      email,
+    };
+
+    let createdUser = await UserService.createUser(newUserCreateData);
+    createdUser
+      ? res.status(HTTP_RESPONSE_CODES.CREATED).send(createdUser)
+      : res.send(HTTP_RESPONSE_CODES.NOT_FOUND);
   }
 );

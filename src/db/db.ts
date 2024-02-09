@@ -1,8 +1,6 @@
 import { configDotenv } from "dotenv";
 import { MongoClient } from "mongodb";
-import { BlogDbType } from "../models/blogs/blog-db";
-import { PostDbType } from "../models/posts/post-db";
-import { UserDbType } from "../models/users/user-db";
+import { BlogDbType, PostDbType, UserDbType } from "../models/db-types";
 
 configDotenv();
 const url = process.env.MONGO_URL;
