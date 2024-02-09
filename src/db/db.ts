@@ -2,11 +2,10 @@ import { configDotenv } from "dotenv";
 import { MongoClient } from "mongodb";
 import { BlogDbType } from "../models/blogs/blog-db";
 import { PostDbType } from "../models/posts/post-db";
+import { UserDbType } from "../models/users/user-db";
 
 configDotenv();
 const url = process.env.MONGO_URL;
-
-console.log(url);
 
 if (!url) {
   throw new Error(` ! Url doesn't found`);
@@ -16,6 +15,7 @@ const database = client.db("blog-app");
 
 export const blogsCollection = database.collection<BlogDbType>("blogs");
 export const postsCollection = database.collection<PostDbType>("posts");
+export const usersCollection = database.collection<UserDbType>("users");
 
 export const runDb = async () => {
   try {

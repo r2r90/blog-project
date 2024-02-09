@@ -1,16 +1,16 @@
-import { blogsCollection } from "../db/db";
+import { blogsCollection } from "../../db/db";
 import {
   BlogOutputType,
-  BlogPagination,
-} from "../models/blogs/output-model/blog.output.model";
-import { blogMapper } from "../models/blogs/mappers/blog-mapper";
+  BlogPaginationType,
+} from "../../models/blogs/output-model/blog.output.model";
+import { blogMapper } from "../../models/blogs/mappers/blog-mapper";
 import { ObjectId } from "mongodb";
-import { BlogSortData } from "../models/blogs/blog-input-model/blog.query.input.model";
+import { BlogSortData } from "../../models/blogs/blog-input-model/blog.query.input.model";
 
 export class BlogQueryRepository {
   static async getAllBlogs(
     sortData: BlogSortData
-  ): Promise<BlogPagination<BlogOutputType>> {
+  ): Promise<BlogPaginationType<BlogOutputType>> {
     const { searchNameTerm, sortBy, sortDirection, pageNumber, pageSize } =
       sortData;
     let filter = {};

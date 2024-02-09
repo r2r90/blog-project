@@ -1,12 +1,12 @@
 import {
   PostQueryRepository,
   PostSortData,
-} from "../repositories/post.query.repository";
+} from "../repositories/post-repositories/post.query.repository";
 import { CreatePostFromBlogInputModel } from "../models/posts/post-input-model/create.post.from.blog.input.model";
 import { PostOutputType } from "../models/posts/post.output.model";
-import { BlogRepository } from "../repositories/blog.repository";
+import { BlogRepository } from "../repositories/blog-repositories/blog.repository";
 import { PostDbType } from "../models/posts/post-db";
-import { PostRepository } from "../repositories/post.repository";
+import { PostRepository } from "../repositories/post-repositories/post.repository";
 import {
   PostCreateInputType,
   PostUpdateInputType,

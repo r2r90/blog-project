@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { PostRepository } from "../repositories/post.repository";
+import { PostRepository } from "../repositories/post-repositories/post.repository";
 import {
   HTTP_RESPONSE_CODES,
   ParamType,
@@ -15,7 +15,7 @@ import {
   PostCreateInputType,
   PostUpdateInputType,
 } from "../models/posts/post-input-model/post.input.model";
-import { PostQueryRepository } from "../repositories/post.query.repository";
+import { PostQueryRepository } from "../repositories/post-repositories/post.query.repository";
 import { PostQueryInputModel } from "../models/posts/post-input-model/post.query.input.model";
 import { PostService } from "../services/post.service";
 

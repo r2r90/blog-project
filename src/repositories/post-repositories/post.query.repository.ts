@@ -1,10 +1,10 @@
-import { postsCollection } from "../db/db";
-import { postMapper } from "../models/posts/mappers/post-mapper";
+import { postMapper } from "../../models/posts/mappers/post-mapper";
 import { ObjectId, SortDirection } from "mongodb";
 import {
   PostOutputType,
   PostPagination,
-} from "../models/posts/post.output.model";
+} from "../../models/posts/post.output.model";
+import { postsCollection } from "../../db/db";
 
 export type PostSortData = {
   sortBy: string;

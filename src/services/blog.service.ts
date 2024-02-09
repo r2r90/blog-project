@@ -1,9 +1,9 @@
-import { BlogRepository } from "../repositories/blog.repository";
-import { BlogQueryRepository } from "../repositories/blog.query.repository";
+import { BlogRepository } from "../repositories/blog-repositories/blog.repository";
+import { BlogQueryRepository } from "../repositories/blog-repositories/blog.query.repository";
 import { BlogSortData } from "../models/blogs/blog-input-model/blog.query.input.model";
 import {
   BlogOutputType,
-  BlogPagination,
+  BlogPaginationType,
 } from "../models/blogs/output-model/blog.output.model";
 import {
   BlogCreateInputType,
@@ -13,7 +13,7 @@ import {
 export class BlogService {
   static async getAllBlogs(
     sortData: BlogSortData
-  ): Promise<BlogPagination<BlogOutputType>> {
+  ): Promise<BlogPaginationType<BlogOutputType>> {
     return await BlogQueryRepository.getAllBlogs(sortData);
   }
 
