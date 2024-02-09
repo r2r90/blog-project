@@ -9,6 +9,7 @@ import { UserQueryInputModel } from "../models/users/users-input/user.query.inpu
 import { UserCreateInputType } from "../models/users/users-input/user.input.model";
 import { UserService } from "../services/user.service";
 import { authMiddleware } from "../middlewares/auth/auth-middleware";
+import { userValidator } from "../middlewares/validators/user-validator";
 
 export const userRouter = Router();
 
@@ -31,6 +32,7 @@ userRouter.get(
 userRouter.post(
   "/",
   authMiddleware,
+  userValidator,
   async (req: RequestWithBody<UserCreateInputType>, res: Response) => {
     const { login, password, email }: UserCreateInputType = req.body;
 
