@@ -32,7 +32,7 @@ userRouter.get(
 userRouter.post(
   "/",
   authMiddleware,
-  userValidator,
+  userValidator(),
   async (req: RequestWithBody<UserCreateInputType>, res: Response) => {
     const { login, password, email }: UserCreateInputType = req.body;
 
