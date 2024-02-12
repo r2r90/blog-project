@@ -5,6 +5,7 @@ import {
 } from "../../models/users/users-output/user.output.model";
 import { usersCollection } from "../../db/db";
 import { userMapper } from "../../models/users/mappers/users-mapper";
+import { UserDbType } from "../../models/db-types";
 
 export class UserQueryRepository {
   static async getAllUsers(
@@ -53,5 +54,15 @@ export class UserQueryRepository {
       totalCount,
       items: users.map(userMapper),
     };
+  }
+
+  static async getUserByLoginOrEmail(
+    loginOrEmail: string
+  ): Promise<UserDbType | null> {
+    const foundUser = await usersCollection.findOne({
+      $or: [{ login: loginOrEmail }, { email: loginOrEmail }],
+    });
+
+    return foundUser ? foundUser : null;
   }
 }

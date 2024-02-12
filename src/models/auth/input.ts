@@ -1,4 +1,4 @@
-export type LoginModel = {
+export type LoginInputType = {
   loginOrEmail: string;
   password: string;
 };
