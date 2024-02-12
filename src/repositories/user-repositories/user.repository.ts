@@ -1,5 +1,6 @@
 import { usersCollection } from "../../db/db";
 import { UserDbType } from "../../models/db-types";
+import { ObjectId } from "mongodb";
 
 export class UserRepository {
   static async createUser(user: UserDbType) {
@@ -20,5 +21,10 @@ export class UserRepository {
     });
 
     return createdUser.insertedId.toString();
+  }
+
+  static async deleteUser(id: string) {
+    const res = await usersCollection.deleteOne({ id: new ObjectId(id) });
+    return !!res.deletedCount;
   }
 }

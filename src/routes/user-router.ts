@@ -1,7 +1,9 @@
 import { Response, Router } from "express";
 import {
   HTTP_RESPONSE_CODES,
+  ParamType,
   RequestWithBody,
+  RequestWithParam,
   RequestWithQuery,
 } from "../models/common/common";
 import { UserQueryRepository } from "../repositories/user-repositories/user.query.repository";
@@ -46,5 +48,21 @@ userRouter.post(
     createdUser
       ? res.status(HTTP_RESPONSE_CODES.CREATED).send(createdUser)
       : res.send(HTTP_RESPONSE_CODES.NOT_FOUND);
+  }
+);
+
+userRouter.delete(
+  "/:id",
+  authMiddleware,
+  async (req: RequestWithParam<ParamType>, res: Response) => {
+    const id = req.params.id;
+
+    const isUserDeleted = await UserService.deleteUser(id);
+
+    isUserDeleted
+      ? res
+          .status(HTTP_RESPONSE_CODES.NO_CONTENT)
+          .send("User successfully deleted")
+      : res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
   }
 );
