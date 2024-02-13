@@ -24,7 +24,7 @@ export class UserRepository {
   }
 
   static async deleteUser(id: string) {
-    const res = await usersCollection.deleteOne({ id: new ObjectId(id) });
+    const res = await usersCollection.deleteOne({ _id: new ObjectId(id) });
     return !!res.deletedCount;
   }
 }
