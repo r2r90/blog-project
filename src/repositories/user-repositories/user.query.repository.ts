@@ -21,24 +21,27 @@ export class UserQueryRepository {
     } = sortData;
 
     let filter = {};
+
+    let filterOptions = [];
+
     if (searchLoginTerm) {
-      filter = {
+      filterOptions.push({
         login: {
           $regex: searchLoginTerm,
           $options: "i",
         },
-      };
+      });
     }
 
     if (searchEmailTerm) {
-      filter = {
-        name: {
+      filterOptions.push({
+        email: {
           $regex: searchEmailTerm,
           $options: "i",
         },
-      };
+      });
     }
-
+    filter = { $or: filterOptions };
     const users = await usersCollection
       .find(filter)
       .sort(sortBy, sortDirection)
