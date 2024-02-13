@@ -41,7 +41,11 @@ export class UserQueryRepository {
         },
       });
     }
-    filter = { $or: filterOptions };
+
+    if (filterOptions.length) {
+      filter = { $or: filterOptions };
+    }
+
     const users = await usersCollection
       .find(filter)
       .sort(sortBy, sortDirection)
