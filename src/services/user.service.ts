@@ -29,8 +29,8 @@ export class UserService {
 
     return {
       createdAt: user.createdAt,
-      login: user.createdAt,
-      email: user.createdAt,
+      login: user.login,
+      email: user.email,
       id: createdUserId,
     };
   }
