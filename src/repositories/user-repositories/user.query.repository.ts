@@ -6,6 +6,7 @@ import {
 import { usersCollection } from "../../db/db";
 import { userMapper } from "../../models/users/mappers/users-mapper";
 import { UserDbType } from "../../models/db-types";
+import { WithId } from "mongodb";
 
 export class UserQueryRepository {
   static async getAllUsers(
@@ -65,7 +66,7 @@ export class UserQueryRepository {
 
   static async getUserByLoginOrEmail(
     loginOrEmail: string
-  ): Promise<UserDbType | null> {
+  ): Promise<WithId<UserDbType> | null> {
     const foundUser = await usersCollection.findOne({
       $or: [{ login: loginOrEmail }, { email: loginOrEmail }],
     });

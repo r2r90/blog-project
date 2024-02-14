@@ -1,6 +1,7 @@
 import { UserQueryRepository } from "../repositories/user-repositories/user.query.repository";
 import { LoginInputType } from "../models/auth/input";
 import bcrypt from "bcrypt";
+import { jwtService } from "./jwt.service";
 
 export class AuthService {
   static async login(credentials: LoginInputType) {
@@ -8,13 +9,11 @@ export class AuthService {
       credentials.loginOrEmail
     );
 
-    if (!user) return null;
-
-    return await this._validatePassword(
-      credentials.password,
-      user.passwordSalt,
-      user.passwordHash
-    );
+    if (user) {
+      return await jwtService.createJWT(user._id.toString());
+    } else {
+      return null;
+    }
   }
 
   static async _validatePassword(password: string, salt: string, hash: string) {
