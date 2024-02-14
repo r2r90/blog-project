@@ -9,8 +9,13 @@ export class AuthService {
       credentials.loginOrEmail
     );
 
+    const token = {
+      accessToken: "",
+    };
+
     if (user) {
-      return await jwtService.createJWT(user._id.toString());
+      token.accessToken = await jwtService.createJWT(user._id.toString());
+      return token;
     } else {
       return null;
     }
