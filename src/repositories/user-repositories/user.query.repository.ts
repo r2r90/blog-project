@@ -1,12 +1,12 @@
-import { UserSortData } from "../../models/users/users-input/user.query.input.model";
+import { UserSortData } from "../../types/users/users-input/user.query.input.model";
 import {
   UserOutputType,
   UserPaginationType,
-} from "../../models/users/users-output/user.output.model";
+} from "../../types/users/users-output/user.output.model";
 import { usersCollection } from "../../db/db";
-import { userMapper } from "../../models/users/mappers/users-mapper";
-import { UserDbType } from "../../models/db-types";
-import { WithId } from "mongodb";
+import { userMapper } from "../../types/users/mappers/users-mapper";
+import { UserDbType } from "../../types/db-types";
+import { ObjectId, WithId } from "mongodb";
 
 export class UserQueryRepository {
   static async getAllUsers(
@@ -72,5 +72,9 @@ export class UserQueryRepository {
     });
 
     return foundUser ? foundUser : null;
+  }
+
+  static async getUserById(id: string) {
+    return await usersCollection.findOne({ _id: new ObjectId(id) });
   }
 }

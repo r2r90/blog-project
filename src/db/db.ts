@@ -1,13 +1,13 @@
 import { configDotenv } from "dotenv";
 import { MongoClient } from "mongodb";
-import { BlogDbType, PostDbType, UserDbType } from "../models/db-types";
+import { BlogDbType, PostDbType, UserDbType } from "../types/db-types";
 import { appConfig } from "../config/config";
 
 configDotenv();
 const url = appConfig.MONGO_URL;
 
 if (!url) {
-  throw new Error(` ! Url doesn't found`);
+  throw new Error(`! Url doesn't found`);
 }
 const client = new MongoClient(url);
 const database = client.db("blog-app");

@@ -1,14 +1,14 @@
 import { BlogRepository } from "../repositories/blog-repositories/blog.repository";
 import { BlogQueryRepository } from "../repositories/blog-repositories/blog.query.repository";
-import { BlogSortData } from "../models/blogs/blog-input-model/blog.query.input.model";
+import { BlogSortData } from "../types/blogs/blog-input-model/blog.query.input.model";
 import {
   BlogOutputType,
   BlogPaginationType,
-} from "../models/blogs/output-model/blog.output.model";
+} from "../types/blogs/output-model/blog.output.model";
 import {
   BlogCreateInputType,
   BlogUpdateInputType,
-} from "../models/blogs/blog-input-model/blog.input.model";
+} from "../types/blogs/blog-input-model/blog.input.model";
 
 export class BlogService {
   static async getAllBlogs(

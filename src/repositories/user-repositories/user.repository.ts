@@ -1,5 +1,5 @@
 import { usersCollection } from "../../db/db";
-import { UserDbType } from "../../models/db-types";
+import { UserDbType } from "../../types/db-types";
 import { ObjectId } from "mongodb";
 
 export class UserRepository {

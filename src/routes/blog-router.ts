@@ -1,10 +1,10 @@
 import { Request, Response, Router } from "express";
-import { authMiddleware } from "../middlewares/auth/auth-middleware";
+import { basicAuthMiddleware } from "../middlewares/auth/basic-auth-middleware";
 import { blogValidation } from "../middlewares/validators/blog-validators";
 import {
   BlogCreateInputType,
   BlogUpdateInputType,
-} from "../models/blogs/blog-input-model/blog.input.model";
+} from "../types/blogs/blog-input-model/blog.input.model";
 import {
   HTTP_RESPONSE_CODES,
   ParamType,
@@ -13,14 +13,14 @@ import {
   RequestWithParamAndQuery,
   RequestWithQuery,
   ResponseType,
-} from "../models/common/common";
+} from "../types/common/common";
 import { ObjectId } from "mongodb";
-import { BlogQueryInputModel } from "../models/blogs/blog-input-model/blog.query.input.model";
+import { BlogQueryInputModel } from "../types/blogs/blog-input-model/blog.query.input.model";
 import { createPostFromBlogValidation } from "../middlewares/validators/post-validators";
-import { PostOutputType } from "../models/posts/post.output.model";
+import { PostOutputType } from "../types/posts/post.output.model";
 import { BlogService } from "../services/blog.service";
-import { PostQueryInputModel } from "../models/posts/post-input-model/post.query.input.model";
-import { CreatePostFromBlogInputModel } from "../models/posts/post-input-model/create.post.from.blog.input.model";
+import { PostQueryInputModel } from "../types/posts/post-input-model/post.query.input.model";
+import { CreatePostFromBlogInputModel } from "../types/posts/post-input-model/create.post.from.blog.input.model";
 import { PostService } from "../services/post.service";
 
 export const blogsRoute = Router();
@@ -94,7 +94,7 @@ blogsRoute.get(
 
 blogsRoute.post(
   "/",
-  authMiddleware,
+  basicAuthMiddleware,
   blogValidation(),
   async (req: RequestWithBody<BlogCreateInputType>, res: Response) => {
     const { name, websiteUrl, description } = req.body;
@@ -109,7 +109,7 @@ blogsRoute.post(
 
 blogsRoute.post(
   "/:id/posts",
-  authMiddleware,
+  basicAuthMiddleware,
   createPostFromBlogValidation(),
   async (
     req: RequestWithParamAndBody<ParamType, CreatePostFromBlogInputModel>,
@@ -132,7 +132,7 @@ blogsRoute.post(
 
 blogsRoute.put(
   "/:id",
-  authMiddleware,
+  basicAuthMiddleware,
   blogValidation(),
   async (
     req: RequestWithParamAndBody<ParamType, BlogUpdateInputType>,
@@ -156,7 +156,7 @@ blogsRoute.put(
 
 blogsRoute.delete(
   "/:id",
-  authMiddleware,
+  basicAuthMiddleware,
   async (req: Request<ParamType>, res: Response) => {
     const id = req.params.id;
     if (!ObjectId.isValid(id)) {

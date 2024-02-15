@@ -5,12 +5,12 @@ import {
   RequestWithBody,
   RequestWithParam,
   RequestWithQuery,
-} from "../models/common/common";
+} from "../types/common/common";
 import { UserQueryRepository } from "../repositories/user-repositories/user.query.repository";
-import { UserQueryInputModel } from "../models/users/users-input/user.query.input.model";
-import { UserCreateInputType } from "../models/users/users-input/user.input.model";
+import { UserQueryInputModel } from "../types/users/users-input/user.query.input.model";
+import { UserCreateInputType } from "../types/users/users-input/user.input.model";
 import { UserService } from "../services/user.service";
-import { authMiddleware } from "../middlewares/auth/auth-middleware";
+import { basicAuthMiddleware } from "../middlewares/auth/basic-auth-middleware";
 import { userValidator } from "../middlewares/validators/user-validator";
 
 export const userRouter = Router();
@@ -33,7 +33,7 @@ userRouter.get(
 
 userRouter.post(
   "/",
-  authMiddleware,
+  basicAuthMiddleware,
   userValidator(),
   async (req: RequestWithBody<UserCreateInputType>, res: Response) => {
     const { login, password, email }: UserCreateInputType = req.body;
@@ -53,7 +53,7 @@ userRouter.post(
 
 userRouter.delete(
   "/:id",
-  authMiddleware,
+  basicAuthMiddleware,
   async (req: RequestWithParam<ParamType>, res: Response) => {
     const id = req.params.id;
 

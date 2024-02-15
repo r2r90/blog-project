@@ -4,16 +4,37 @@ export type ParamType = {
   id: string;
 };
 
+export type IdType = {
+  id: string;
+};
+
+export type JwtTokenType = {
+  accessToken: string;
+};
+
 export type RequestType = Request<{}, {}, {}, {}>;
 
 export type RequestWithParam<P> = Request<P, {}, {}, {}>;
 
 export type RequestWithBody<B> = Request<{}, {}, B>;
-
 export type RequestWithParamAndBody<P, B> = Request<P, {}, B>;
-
 export type RequestWithQuery<Q> = Request<{}, {}, {}, Q>;
 export type RequestWithParamAndQuery<P, Q> = Request<P, {}, {}, Q>;
+export type RequestWithBodyAndUserId<B, U extends IdType> = Request<
+  {},
+  {},
+  B,
+  {},
+  U
+>;
+export type RequestWithParamsAndBodyAndUserId<P, B, U extends IdType> = Request<
+  P,
+  {},
+  B,
+  {},
+  U
+>;
+
 export type ResponseType<T> = Response<T, {}>;
 
 export const HTTP_RESPONSE_CODES = {

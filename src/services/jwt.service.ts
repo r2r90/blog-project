@@ -9,7 +9,7 @@ export class jwtService {
     });
   }
 
-  static async verifyUserIdByToken(token: string) {
+  static async getUserIdByToken(token: string) {
     try {
       const result = jwt.verify(token, appConfig.JWT_SECRET);
       return new ObjectId(result.userId);

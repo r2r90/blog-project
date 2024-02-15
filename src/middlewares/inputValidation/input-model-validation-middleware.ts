@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ValidationError, validationResult } from "express-validator";
-import { ErrorMessageType } from "../../models/common/common";
+import { ErrorMessageType } from "../../types/common/common";
 
 export const inputModelValidationMiddleware = (
   req: Request,

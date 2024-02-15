@@ -1,7 +1,7 @@
-import { UserCreateInputType } from "../models/users/users-input/user.input.model";
-import { UserOutputType } from "../models/users/users-output/user.output.model";
+import { UserCreateInputType } from "../types/users/users-input/user.input.model";
+import { UserOutputType } from "../types/users/users-output/user.output.model";
 import bcrypt from "bcrypt";
-import { UserDbType } from "../models/db-types";
+import { UserDbType } from "../types/db-types";
 import { UserRepository } from "../repositories/user-repositories/user.repository";
 
 export class UserService {

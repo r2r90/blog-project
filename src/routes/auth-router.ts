@@ -1,8 +1,10 @@
-import { Response, Router } from "express";
-import { HTTP_RESPONSE_CODES, RequestWithBody } from "../models/common/common";
-import { LoginInputType } from "../models/auth/input";
+import { Request, Response, Router } from "express";
+import { HTTP_RESPONSE_CODES, RequestWithBody } from "../types/common/common";
+import { LoginInputType } from "../types/auth/login.input";
 import { AuthService } from "../services/auth.service";
 import { loginOrEmailValidation } from "../middlewares/validators/auth-login-validator";
+import { jwtAccessGuard } from "../middlewares/auth/jwt-access-guard";
+import { ObjectId } from "mongodb";
 
 export const authRouter = Router();
 
@@ -19,3 +21,14 @@ authRouter.post(
     res.send(loginResult).status(HTTP_RESPONSE_CODES.SUCCESS);
   }
 );
+
+authRouter.get("/me", jwtAccessGuard, async (req: Request, res: Response) => {
+  const { email, login, userId } = req.user;
+
+  const clientInfo = {
+    email,
+    login,
+    userId: new ObjectId(userId),
+  };
+  res.send(clientInfo);
+});

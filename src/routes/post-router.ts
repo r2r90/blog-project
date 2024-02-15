@@ -6,17 +6,17 @@ import {
   RequestWithBody,
   RequestWithParamAndBody,
   RequestWithQuery,
-} from "../models/common/common";
+} from "../types/common/common";
 
-import { authMiddleware } from "../middlewares/auth/auth-middleware";
+import { basicAuthMiddleware } from "../middlewares/auth/basic-auth-middleware";
 import { createPostValidation } from "../middlewares/validators/post-validators";
 import { ObjectId } from "mongodb";
 import {
   PostCreateInputType,
   PostUpdateInputType,
-} from "../models/posts/post-input-model/post.input.model";
+} from "../types/posts/post-input-model/post.input.model";
 import { PostQueryRepository } from "../repositories/post-repositories/post.query.repository";
-import { PostQueryInputModel } from "../models/posts/post-input-model/post.query.input.model";
+import { PostQueryInputModel } from "../types/posts/post-input-model/post.query.input.model";
 import { PostService } from "../services/post.service";
 
 export const postRouter = Router();
@@ -47,7 +47,7 @@ postRouter.get("/:id", async (req: Request<ParamType>, res: Response) => {
 
 postRouter.post(
   "/",
-  authMiddleware,
+  basicAuthMiddleware,
   createPostValidation(),
   async (req: RequestWithBody<PostCreateInputType>, res: Response) => {
     const { title, shortDescription, content, blogId }: PostCreateInputType =
@@ -67,7 +67,7 @@ postRouter.post(
 
 postRouter.put(
   "/:id",
-  authMiddleware,
+  basicAuthMiddleware,
   createPostValidation(),
   async (
     req: RequestWithParamAndBody<ParamType, PostUpdateInputType>,
@@ -88,7 +88,7 @@ postRouter.put(
 );
 postRouter.delete(
   "/:id",
-  authMiddleware,
+  basicAuthMiddleware,
   async (req: Request<ParamType>, res: Response) => {
     const id = req.params.id;
     if (!ObjectId.isValid(id)) {
@@ -104,3 +104,5 @@ postRouter.delete(
     res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT);
   }
 );
+
+postRouter.post("/:id/comments", async (req, res) => {});

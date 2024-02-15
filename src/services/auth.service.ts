@@ -1,5 +1,5 @@
 import { UserQueryRepository } from "../repositories/user-repositories/user.query.repository";
-import { LoginInputType } from "../models/auth/input";
+import { LoginInputType } from "../types/auth/login.input";
 import bcrypt from "bcrypt";
 import { jwtService } from "./jwt.service";
 

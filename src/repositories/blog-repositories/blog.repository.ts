@@ -1,8 +1,8 @@
-import { BlogUpdateInputType } from "../../models/blogs/blog-input-model/blog.input.model";
+import { BlogUpdateInputType } from "../../types/blogs/blog-input-model/blog.input.model";
 import { blogsCollection } from "../../db/db";
-import { BlogOutputType } from "../../models/blogs/output-model/blog.output.model";
+import { BlogOutputType } from "../../types/blogs/output-model/blog.output.model";
 import { ObjectId } from "mongodb";
-import { BlogDbType } from "../../models/db-types";
+import { BlogDbType } from "../../types/db-types";
 
 export class BlogRepository {
   static async getBlogById(id: string): Promise<BlogDbType | null> {
