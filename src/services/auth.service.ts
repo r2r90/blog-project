@@ -9,16 +9,22 @@ export class AuthService {
       credentials.loginOrEmail
     );
 
+    if (!user) return null;
+
+    const passwordValidation = await this._validatePassword(
+      credentials.password,
+      user.passwordSalt,
+      user.passwordHash
+    );
+
+    if (!passwordValidation) return null;
+
     const token = {
       accessToken: "",
     };
 
-    if (user) {
-      token.accessToken = await jwtService.createJWT(user._id.toString());
-      return token;
-    } else {
-      return null;
-    }
+    token.accessToken = await jwtService.createJWT(user._id.toString());
+    return token;
   }
 
   static async _validatePassword(password: string, salt: string, hash: string) {
