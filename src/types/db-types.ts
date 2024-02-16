@@ -22,3 +22,13 @@ export type BlogDbType = {
   createdAt: string;
   isMembership: boolean;
 };
+
+export type CommentDbType = {
+  content: string;
+  createdAt: string;
+  postId: string;
+  commentatorInfo: {
+    userId: string;
+    userLogin: string;
+  };
+};

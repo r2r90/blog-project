@@ -12,6 +12,12 @@ export type JwtTokenType = {
   accessToken: string;
 };
 
+export type JwtVerifyType = {
+  userId: string;
+  iat: number;
+  exp: number;
+};
+
 export type RequestType = Request<{}, {}, {}, {}>;
 
 export type RequestWithParam<P> = Request<P, {}, {}, {}>;

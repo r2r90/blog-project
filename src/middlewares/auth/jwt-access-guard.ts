@@ -1,6 +1,6 @@
 import { jwtService } from "../../services/jwt.service";
 import { UserQueryRepository } from "../../repositories/user-repositories/user.query.repository";
-import { NextFunction, Response, Request } from "express";
+import { NextFunction, Request, Response } from "express";
 
 export const jwtAccessGuard = async (
   req: Request,
@@ -15,11 +15,14 @@ export const jwtAccessGuard = async (
   const token = req.headers.authorization.split(" ")[1];
 
   const userId = await jwtService.getUserIdByToken(token);
+  const user = await UserQueryRepository.getUserById(userId!);
 
-  if (!userId) {
+  if (!user) {
     res.sendStatus(401);
     next();
+    return;
   }
-  req.user = await UserQueryRepository.getUserById(userId!.toString());
+
+  req.userId = user._id.toHexString();
   next();
 };

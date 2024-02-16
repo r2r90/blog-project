@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { appConfig } from "../config/config";
 import { ObjectId } from "mongodb";
+import { JwtVerifyType } from "../types/common/common";
 
 export class jwtService {
   static async createJWT(userId: string): Promise<string> {
@@ -11,8 +12,9 @@ export class jwtService {
 
   static async getUserIdByToken(token: string) {
     try {
-      const result = jwt.verify(token, appConfig.JWT_SECRET);
-      return new ObjectId(result.userId);
+      const payload = jwt.verify(token, appConfig.JWT_SECRET);
+      let { userId, iat, exp } = payload as JwtVerifyType;
+      return userId;
     } catch (e) {
       return null;
     }

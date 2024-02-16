@@ -1,11 +1,17 @@
-export type CommentsOutputModel = {
+export type CommentViewModel = {
   id: string;
   content: string;
-  commentatorInfo: CommentatorInfoModel;
   createdAt: string;
+  commentatorInfo: {
+    userId: string;
+    userLogin: string;
+  };
 };
 
-export type CommentatorInfoModel = {
-  userId: string;
-  userLogin: string;
+export type CommentsGetResponse = {
+  pageCount: number;
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  items: CommentViewModel;
 };

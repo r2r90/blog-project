@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express";
 import { PostRepository } from "../repositories/post-repositories/post.repository";
 import {
   HTTP_RESPONSE_CODES,
+  IdType,
   ParamType,
   RequestWithBody,
   RequestWithParamAndBody,
@@ -18,6 +19,9 @@ import {
 import { PostQueryRepository } from "../repositories/post-repositories/post.query.repository";
 import { PostQueryInputModel } from "../types/posts/post-input-model/post.query.input.model";
 import { PostService } from "../services/post.service";
+import { jwtAccessGuard } from "../middlewares/auth/jwt-access-guard";
+import { commentValidator } from "../middlewares/validators/comment-validator";
+import { CommentCreateInputModel } from "../types/comments/comment.input.model";
 
 export const postRouter = Router();
 
@@ -105,4 +109,28 @@ postRouter.delete(
   }
 );
 
-postRouter.post("/:id/comments", async (req, res) => {});
+postRouter.post(
+  "/:id/comments",
+  jwtAccessGuard,
+  commentValidator(),
+  async (
+    req: RequestWithParamAndBody<{ id: string }, CommentCreateInputModel>,
+    res: Response
+  ) => {
+    const postId = req.params.id;
+    const content = req.body.content;
+
+    const comment = await PostService.addCommentToPost(
+      postId,
+      content,
+      req.userId!
+    );
+
+    if (!comment) {
+      res.sendStatus(404);
+      return;
+    }
+
+    res.status(201).send(comment);
+  }
+);

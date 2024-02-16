@@ -12,6 +12,9 @@ import {
 } from "../types/posts/post-input-model/post.input.model";
 import { BlogService } from "./blog.service";
 import { PostDbType } from "../types/db-types";
+import { CommentViewModel } from "../types/comments/comments.output.model";
+import { UserQueryRepository } from "../repositories/user-repositories/user.query.repository";
+import { CommentRepository } from "../repositories/comment-repositories/comment.repository";
 
 export class PostService {
   static async getAllPostsByBlogId(blogId: string, sortData: PostSortData) {
@@ -68,5 +71,25 @@ export class PostService {
 
   static async deletePost(id: string): Promise<boolean | null> {
     return await PostRepository.deletePost(id);
+  }
+
+  static async addCommentToPost(
+    postId: string,
+    content: string,
+    userId: string
+  ): Promise<CommentViewModel | null> {
+    const post = await PostRepository.getPostById(postId);
+    const user = await UserQueryRepository.getUserById(userId);
+    if (!post || !user) return null;
+
+    return CommentRepository.createComment({
+      postId,
+      content,
+      createdAt: new Date().toISOString(),
+      commentatorInfo: {
+        userId,
+        userLogin: user.login,
+      },
+    });
   }
 }

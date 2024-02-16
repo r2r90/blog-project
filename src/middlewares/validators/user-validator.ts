@@ -18,7 +18,7 @@ const passwordValidator = body("password")
   .isString()
   .isLength({ min: 6, max: 20 })
   .matches(/^[a-zA-Z0-9_-]*$/)
-  .withMessage("Incorrect login");
+  .withMessage("Incorrect password");
 
 export const userValidator = () => {
   return [

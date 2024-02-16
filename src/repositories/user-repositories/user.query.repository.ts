@@ -74,7 +74,9 @@ export class UserQueryRepository {
     return foundUser ? foundUser : null;
   }
 
-  static async getUserById(id: string) {
-    return await usersCollection.findOne({ _id: new ObjectId(id) });
+  static async getUserById(id: string): Promise<WithId<UserDbType> | null> {
+    return await usersCollection.findOne({
+      _id: new ObjectId(id),
+    });
   }
 }

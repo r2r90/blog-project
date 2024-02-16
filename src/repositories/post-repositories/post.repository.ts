@@ -12,6 +12,7 @@ export class PostRepository {
     if (!post) {
       return null;
     }
+
     return postMapper(post);
   }
 
