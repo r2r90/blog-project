@@ -1,3 +1,49 @@
-import { Router } from "express";
+import { Response, Router } from "express";
+import {
+  HTTP_RESPONSE_CODES,
+  RequestWithParam,
+  RequestWithParamAndBody,
+} from "../types/common/common";
+import { CommentQueryRepository } from "../repositories/comment-repositories/comment.query.repository";
+import { CommentCreateInputModel } from "../types/comments/comment.input.model";
+import { jwtAccessGuard } from "../middlewares/auth/jwt-access-guard";
+import { commentValidator } from "../middlewares/validators/comment-validator";
+import { CommentService } from "../services/comment.service";
 
 export const commentsRouter = Router();
+
+commentsRouter.get(
+  "/:id",
+  async (req: RequestWithParam<{ id: string }>, res: Response) => {
+    const foundedComment = await CommentQueryRepository.getCommentById(
+      req.params.id
+    );
+    if (!foundedComment) {
+      res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+      return;
+    }
+    return res.send(foundedComment).status(HTTP_RESPONSE_CODES.SUCCESS);
+  }
+);
+
+commentsRouter.put(
+  "/:id",
+  jwtAccessGuard,
+  commentValidator(),
+  async (
+    req: RequestWithParamAndBody<{ id: string }, CommentCreateInputModel>,
+    res: Response
+  ) => {
+    const commentId = req.params.id;
+    const { content } = req.body;
+
+    const isCommentUpdated = await CommentService.UpdateComment(
+      commentId,
+      content
+    );
+
+    isCommentUpdated
+      ? res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT)
+      : res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+  }
+);

@@ -1,6 +1,7 @@
 import { CommentViewModel } from "../../types/comments/comments.output.model";
 import { commentsCollection } from "../../db/db";
 import { CommentDbType } from "../../types/db-types";
+import { ObjectId } from "mongodb";
 
 export class CommentRepository {
   static async createComment(
@@ -19,5 +20,18 @@ export class CommentRepository {
         userLogin: commentToCreate.commentatorInfo.userLogin,
       },
     };
+  }
+
+  static async UpdateComment(
+    commentId: string,
+    updatedContent: string
+  ): Promise<boolean | null> {
+    const res = await commentsCollection.updateOne(
+      { _id: new ObjectId(commentId) },
+      {
+        $set: { content: updatedContent },
+      }
+    );
+    return !!res.matchedCount;
   }
 }
