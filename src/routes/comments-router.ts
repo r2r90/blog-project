@@ -8,7 +8,7 @@ import { CommentQueryRepository } from "../repositories/comment-repositories/com
 import { CommentCreateInputModel } from "../types/comments/comment.input.model";
 import { jwtAccessGuard } from "../middlewares/auth/jwt-access-guard";
 import { commentValidator } from "../middlewares/validators/comment-validator";
-import { CommentService } from "../services/comment.service";
+import { CommentRepository } from "../repositories/comment-repositories/comment.repository";
 
 export const commentsRouter = Router();
 
@@ -37,7 +37,7 @@ commentsRouter.put(
     const commentId = req.params.id;
     const { content } = req.body;
 
-    const isCommentUpdated = await CommentService.UpdateComment(
+    const isCommentUpdated = await CommentRepository.UpdateComment(
       commentId,
       content
     );
