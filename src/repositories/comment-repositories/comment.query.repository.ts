@@ -31,8 +31,10 @@ export class CommentQueryRepository {
   }
 
   static async getCommentById(commentId: string) {
-    return await commentsCollection.findOne({
+    const comment = await commentsCollection.findOne({
       _id: new ObjectId(commentId),
     });
+
+    return comment ? commentMapper(comment) : null;
   }
 }
