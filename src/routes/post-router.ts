@@ -65,6 +65,12 @@ postRouter.get(
       sortDirection: req.query.sortDirection ?? "desc",
     };
 
+    const post = await PostQueryRepository.getPostById(postId);
+    if (!post) {
+      res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+      return;
+    }
+
     const comments = await CommentQueryRepository.getAllCommentsByPostId(
       postId,
       sortData
