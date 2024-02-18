@@ -9,7 +9,7 @@ export type CommentViewModel = {
 };
 
 export type CommentsGetResponse = {
-  pageCount: number;
+  pagesCount: number;
   page: number;
   pageSize: number;
   totalCount: number;

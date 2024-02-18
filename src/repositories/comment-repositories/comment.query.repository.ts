@@ -22,7 +22,7 @@ export class CommentQueryRepository {
     });
 
     return {
-      pageCount: Math.ceil(commentsCount / pageSize),
+      pagesCount: Math.ceil(commentsCount / pageSize),
       page: pageNumber,
       pageSize,
       totalCount: commentsCount,
