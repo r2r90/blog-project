@@ -13,5 +13,5 @@ export type CommentsGetResponse = {
   page: number;
   pageSize: number;
   totalCount: number;
-  items: CommentViewModel;
+  items: CommentViewModel[];
 };

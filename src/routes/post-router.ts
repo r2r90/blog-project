@@ -2,10 +2,11 @@ import { Request, Response, Router } from "express";
 import { PostRepository } from "../repositories/post-repositories/post.repository";
 import {
   HTTP_RESPONSE_CODES,
-  IdType,
   ParamType,
+  QueryInputModel,
   RequestWithBody,
   RequestWithParamAndBody,
+  RequestWithParamAndQuery,
   RequestWithQuery,
 } from "../types/common/common";
 
@@ -17,17 +18,18 @@ import {
   PostUpdateInputType,
 } from "../types/posts/post-input-model/post.input.model";
 import { PostQueryRepository } from "../repositories/post-repositories/post.query.repository";
-import { PostQueryInputModel } from "../types/posts/post-input-model/post.query.input.model";
 import { PostService } from "../services/post.service";
 import { jwtAccessGuard } from "../middlewares/auth/jwt-access-guard";
 import { commentValidator } from "../middlewares/validators/comment-validator";
 import { CommentCreateInputModel } from "../types/comments/comment.input.model";
+import { CommentQueryRepository } from "../repositories/comment-repositories/comment.query.repository";
+import { CommentQueryInputModel } from "../types/comments/comment.query.input";
 
 export const postRouter = Router();
 
 postRouter.get(
   "/",
-  async (req: RequestWithQuery<PostQueryInputModel>, res: Response) => {
+  async (req: RequestWithQuery<QueryInputModel>, res: Response) => {
     const sortData = {
       pageNumber: req.query.pageNumber ? +req.query.pageNumber : 1,
       pageSize: req.query.pageSize ? +req.query.pageSize : 10,
@@ -48,6 +50,31 @@ postRouter.get("/:id", async (req: Request<ParamType>, res: Response) => {
   let post = await PostService.getPostById(id);
   post ? res.send(post) : res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
 });
+
+postRouter.get(
+  "/:id/comments",
+  async (
+    req: RequestWithParamAndQuery<ParamType, CommentQueryInputModel>,
+    res: Response
+  ) => {
+    const postId = req.params.id;
+    const sortData = {
+      pageNumber: req.query.pageNumber ? +req.query.pageNumber : 1,
+      pageSize: req.query.pageSize ? +req.query.pageSize : 10,
+      sortBy: req.query.sortBy ?? "createdAt",
+      sortDirection: req.query.sortDirection ?? "desc",
+    };
+
+    const comments = await CommentQueryRepository.getAllCommentsByPostId(
+      postId,
+      sortData
+    );
+
+    comments
+      ? res.status(HTTP_RESPONSE_CODES.SUCCESS).send(comments)
+      : res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+  }
+);
 
 postRouter.post(
   "/",

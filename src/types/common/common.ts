@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { SortDirection } from "mongodb";
 
 export type ParamType = {
   id: string;
@@ -59,4 +60,11 @@ export type ErrorType = {
 export type ErrorMessageType = {
   message: string;
   field: string;
+};
+
+export type QueryInputModel = {
+  sortBy?: string;
+  sortDirection?: SortDirection;
+  pageNumber?: string;
+  pageSize?: string;
 };
