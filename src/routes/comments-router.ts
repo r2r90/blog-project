@@ -9,12 +9,17 @@ import { CommentCreateInputModel } from "../types/comments/comment.input.model";
 import { jwtAccessGuard } from "../middlewares/auth/jwt-access-guard";
 import { commentValidator } from "../middlewares/validators/comment-validator";
 import { CommentRepository } from "../repositories/comment-repositories/comment.repository";
+import { ObjectId } from "mongodb";
 
 export const commentsRouter = Router();
 
 commentsRouter.get(
   "/:id",
   async (req: RequestWithParam<{ id: string }>, res: Response) => {
+    if (!ObjectId.isValid(req.params.id)) {
+      res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+      return;
+    }
     const foundedComment = await CommentQueryRepository.getCommentById(
       req.params.id
     );
@@ -37,6 +42,11 @@ commentsRouter.put(
     const commentId = req.params.id;
     const { content } = req.body;
 
+    if (!ObjectId.isValid(commentId)) {
+      res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+      return;
+    }
+
     const isCommentUpdated = await CommentRepository.UpdateComment(
       commentId,
       content
@@ -53,6 +63,11 @@ commentsRouter.put(
     async (req: RequestWithParam<{ id: string }>, res: Response) => {
       const id = req.params.id;
       const isCommentDeleted = CommentRepository.deleteComment(id);
+
+      if (!ObjectId.isValid(id)) {
+        res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+        return;
+      }
       if (!isCommentDeleted) {
         res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
         return;
