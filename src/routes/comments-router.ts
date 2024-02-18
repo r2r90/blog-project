@@ -47,6 +47,16 @@ commentsRouter.put(
       return;
     }
 
+    const commentToDelete = await CommentQueryRepository.getCommentById(
+      commentId
+    );
+    const authorId = commentToDelete?.commentatorInfo.userId;
+    const isAuthor = authorId === req.userId;
+
+    if (!isAuthor) {
+      res.sendStatus(HTTP_RESPONSE_CODES.FORBIDDEN);
+    }
+
     const isCommentUpdated = await CommentRepository.UpdateComment(
       commentId,
       content
@@ -61,17 +71,30 @@ commentsRouter.put(
     "/:id",
     jwtAccessGuard,
     async (req: RequestWithParam<{ id: string }>, res: Response) => {
-      const id = req.params.id;
-      const isCommentDeleted = CommentRepository.deleteComment(id);
+      const commentId = req.params.id;
 
-      if (!ObjectId.isValid(id)) {
+      const commentToDelete = await CommentQueryRepository.getCommentById(
+        commentId
+      );
+      const authorId = commentToDelete?.commentatorInfo.userId;
+      const isAuthor = authorId === req.userId;
+
+      if (!isAuthor) {
+        res.sendStatus(HTTP_RESPONSE_CODES.FORBIDDEN);
+      }
+
+      const isCommentDeleted = CommentRepository.deleteComment(commentId);
+
+      if (!ObjectId.isValid(commentId)) {
         res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
         return;
       }
+
       if (!isCommentDeleted) {
         res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
         return;
       }
+
       res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT);
     }
   )
