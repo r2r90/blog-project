@@ -1,5 +1,5 @@
 import { CommentViewModel } from "../../types/comments/comments.output.model";
-import { commentsCollection } from "../../db/db";
+import { commentsCollection, postsCollection } from "../../db/db";
 import { CommentDbType } from "../../types/db-types";
 import { ObjectId } from "mongodb";
 
@@ -33,5 +33,12 @@ export class CommentRepository {
       }
     );
     return !!res.matchedCount;
+  }
+
+  static async deleteComment(commentId: string): Promise<boolean> {
+    const res = await postsCollection.deleteOne({
+      _id: new ObjectId(commentId),
+    });
+    return !!res.deletedCount;
   }
 }

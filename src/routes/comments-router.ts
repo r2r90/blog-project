@@ -45,5 +45,19 @@ commentsRouter.put(
     isCommentUpdated
       ? res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT)
       : res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
-  }
+  },
+
+  commentsRouter.delete(
+    "/:id",
+    jwtAccessGuard,
+    async (req: RequestWithParam<{ id: string }>, res: Response) => {
+      const id = req.params.id;
+      const isCommentDeleted = CommentRepository.deleteComment(id);
+      if (!isCommentDeleted) {
+        res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+        return;
+      }
+      res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT);
+    }
+  )
 );
