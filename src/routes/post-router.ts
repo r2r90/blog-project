@@ -65,6 +65,11 @@ postRouter.get(
       sortDirection: req.query.sortDirection ?? "desc",
     };
 
+    if (!ObjectId.isValid(postId)) {
+      res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+      return;
+    }
+
     const post = await PostQueryRepository.getPostById(postId);
     if (!post) {
       res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
