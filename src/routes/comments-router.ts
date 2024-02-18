@@ -46,11 +46,15 @@ commentsRouter.put(
       res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
       return;
     }
-
-    const commentToDelete = await CommentQueryRepository.getCommentById(
+    const commentToUpdate = await CommentQueryRepository.getCommentById(
       commentId
     );
-    const authorId = commentToDelete?.commentatorInfo.userId;
+
+    if (!commentToUpdate) {
+      res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+      return;
+    }
+    const authorId = commentToUpdate.commentatorInfo.userId;
     const isAuthor = authorId === req.userId;
 
     if (!isAuthor) {
@@ -77,7 +81,12 @@ commentsRouter.put(
       const commentToDelete = await CommentQueryRepository.getCommentById(
         commentId
       );
-      const authorId = commentToDelete?.commentatorInfo.userId;
+
+      if (!commentToDelete) {
+        res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+        return;
+      }
+      const authorId = commentToDelete.commentatorInfo.userId;
       const isAuthor = authorId === req.userId;
 
       if (!isAuthor) {
