@@ -55,6 +55,7 @@ commentsRouter.put(
 
     if (!isAuthor) {
       res.sendStatus(HTTP_RESPONSE_CODES.FORBIDDEN);
+      return;
     }
 
     const isCommentUpdated = await CommentRepository.UpdateComment(
@@ -81,6 +82,7 @@ commentsRouter.put(
 
       if (!isAuthor) {
         res.sendStatus(HTTP_RESPONSE_CODES.FORBIDDEN);
+        return;
       }
 
       const isCommentDeleted = CommentRepository.deleteComment(commentId);
