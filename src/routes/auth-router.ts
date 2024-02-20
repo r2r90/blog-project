@@ -20,7 +20,7 @@ authRouter.post(
       res.sendStatus(HTTP_RESPONSE_CODES.BAD_REQUEST);
       return;
     }
-    res.sendStatus(HTTP_RESPONSE_CODES.CREATED);
+    res.status(HTTP_RESPONSE_CODES.NO_CONTENT).send("OK!");
   }
 );
 
