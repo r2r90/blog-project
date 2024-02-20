@@ -26,6 +26,7 @@ authRouter.post(
 
 authRouter.post("/registration-confirmation", async (req, res) => {
   console.log(req);
+  res.sendStatus(400);
 });
 
 authRouter.post(
