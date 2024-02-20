@@ -4,6 +4,8 @@ export type UserDbType = {
   createdAt: string;
   passwordHash: string;
   passwordSalt: string;
+  registerCode?: string | null;
+  isConfirmed: boolean;
 };
 
 export type PostDbType = {

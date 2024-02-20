@@ -1,19 +1,23 @@
 import { UserCreateInputType } from "../types/users/users-input/user.input.model";
-import { UserOutputType } from "../types/users/users-output/user.output.model";
+import { UserViewModel } from "../types/users/users-output/user.output.model";
 import bcrypt from "bcrypt";
 import { UserDbType } from "../types/db-types";
 import { UserRepository } from "../repositories/user-repositories/user.repository";
+import { BcryptService } from "./bcrypt-service";
 
 export class UserService {
   static async createUser(
     newUserCreateData: UserCreateInputType
-  ): Promise<UserOutputType | null> {
+  ): Promise<UserViewModel | null> {
     const { login, email, password } = newUserCreateData;
 
     if (!login || !password || !email) return null;
 
-    const passwordSalt = await bcrypt.genSalt(10);
-    const passwordHash = await bcrypt.hash(password, passwordSalt);
+    const passwordSalt = await BcryptService.generateSalt();
+    const passwordHash = await BcryptService.generateHash(
+      passwordSalt,
+      password
+    );
 
     const user: UserDbType = {
       createdAt: new Date().toISOString(),
@@ -21,6 +25,7 @@ export class UserService {
       email,
       passwordHash,
       passwordSalt,
+      isConfirmed: true,
     };
 
     const createdUserId = await UserRepository.createUser(user);

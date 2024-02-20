@@ -1,6 +1,6 @@
 import { UserSortData } from "../../types/users/users-input/user.query.input.model";
 import {
-  UserOutputType,
+  UserViewModel,
   UserPaginationType,
 } from "../../types/users/users-output/user.output.model";
 import { usersCollection } from "../../db/db";
@@ -11,7 +11,7 @@ import { ObjectId, WithId } from "mongodb";
 export class UserQueryRepository {
   static async getAllUsers(
     sortData: UserSortData
-  ): Promise<UserPaginationType<UserOutputType>> {
+  ): Promise<UserPaginationType<UserViewModel>> {
     const {
       searchEmailTerm,
       searchLoginTerm,
