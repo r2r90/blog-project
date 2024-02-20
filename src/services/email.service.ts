@@ -1,7 +1,7 @@
 import { EmailAdapter } from "../adapters/email-adapter";
 
 export class EmailService {
-  static confirmEmail(userEmail: string, confirmCode: string) {
+  static confirmEmailSend(userEmail: string, confirmCode: string) {
     return EmailAdapter.sendEmail({
       to: userEmail,
       subject: "Confirm your mail",

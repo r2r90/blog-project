@@ -1,7 +1,7 @@
 import { UserSortData } from "../../types/users/users-input/user.query.input.model";
 import {
-  UserViewModel,
   UserPaginationType,
+  UserViewModel,
 } from "../../types/users/users-output/user.output.model";
 import { usersCollection } from "../../db/db";
 import { userMapper } from "../../types/users/mappers/users-mapper";
@@ -71,6 +71,15 @@ export class UserQueryRepository {
       $or: [{ login: loginOrEmail }, { email: loginOrEmail }],
     });
 
+    return foundUser ? foundUser : null;
+  }
+
+  static async getUserByConfirmationCode(
+    emailConfirmationCode: string
+  ): Promise<WithId<UserDbType> | null> {
+    const foundUser = await usersCollection.findOne({
+      "emailConfirmation.confirmationCode": emailConfirmationCode,
+    });
     return foundUser ? foundUser : null;
   }
 

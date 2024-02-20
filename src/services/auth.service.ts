@@ -68,13 +68,23 @@ export class AuthService {
 
     if (!createdUserId) return null;
 
-    await EmailService.confirmEmail(email, registerCode);
+    await EmailService.confirmEmailSend(email, registerCode);
     return {
       createdAt: user.createdAt,
       login: user.login,
       email: user.email,
       id: createdUserId,
     };
+  }
+
+  static async confirmEmail(code: string): Promise<boolean> {
+    let user = await UserQueryRepository.getUserByConfirmationCode(code);
+    if (!user) return false;
+
+    if (user.emailConfirmation?.confirmationCode !== code) return false;
+    if (user.emailConfirmation?.expirationDate < new Date()) return false;
+
+    return await UserRepository.updateUserConfirmation(user._id);
   }
 
   static async _validatePassword(password: string, salt: string, hash: string) {

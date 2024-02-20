@@ -28,12 +28,21 @@ export class UserRepository {
     return createdUser.insertedId.toString();
   }
 
+  static async updateUserConfirmation(id: ObjectId): Promise<boolean> {
+    let result = await usersCollection.updateOne(
+      { id },
+      { $set: { "emailConfirmation.isConfirmed": true } }
+    );
+
+    return !!result.modifiedCount;
+  }
+
   static async deleteUser(id: string) {
     const res = await usersCollection.deleteOne({ _id: new ObjectId(id) });
     return !!res.deletedCount;
   }
 
-  static async doesExistByLoginOrEmail(login: string, email: string) {
+  static async doesExistByLoginOrEmail(login?: string, email?: string) {
     // Check if User already is existing in DB
     return await usersCollection.findOne({
       $or: [{ login }, { email }],

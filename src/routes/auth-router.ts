@@ -25,8 +25,14 @@ authRouter.post(
 );
 
 authRouter.post("/registration-confirmation", async (req, res) => {
-  console.log(req);
-  res.sendStatus(400);
+  const result = await AuthService.confirmEmail(req.body.code);
+
+  if (!result) {
+    res.sendStatus(400);
+    return;
+  }
+
+  res.status(204).send("OK!");
 });
 
 authRouter.post(
