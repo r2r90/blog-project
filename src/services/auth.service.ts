@@ -9,6 +9,7 @@ import { randomUUID } from "crypto";
 import { UserDbType } from "../types/db-types";
 import { UserRepository } from "../repositories/user-repositories/user.repository";
 import { EmailService } from "./email.service";
+import { add } from "date-fns";
 
 export class AuthService {
   static async login(credentials: LoginInputType) {
@@ -53,8 +54,14 @@ export class AuthService {
       email,
       passwordHash,
       passwordSalt,
-      registerCode,
-      isConfirmed: false,
+      emailConfirmation: {
+        confirmationCode: randomUUID(),
+        expirationDate: add(new Date(), {
+          hours: 1,
+          minutes: 3,
+        }),
+        isConfirmed: false,
+      },
     };
 
     const createdUserId = await UserRepository.createUser(user);

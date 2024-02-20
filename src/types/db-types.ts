@@ -4,8 +4,11 @@ export type UserDbType = {
   createdAt: string;
   passwordHash: string;
   passwordSalt: string;
-  registerCode?: string | null;
-  isConfirmed: boolean;
+  emailConfirmation?: {
+    confirmationCode: string;
+    expirationDate: Date;
+    isConfirmed: boolean;
+  };
 };
 
 export type PostDbType = {

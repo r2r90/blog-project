@@ -1,19 +1,10 @@
 import { usersCollection } from "../../db/db";
 import { UserDbType } from "../../types/db-types";
 import { ObjectId } from "mongodb";
-import e from "express";
 
 export class UserRepository {
   static async createUser(user: UserDbType) {
-    const {
-      createdAt,
-      login,
-      email,
-      passwordSalt,
-      passwordHash,
-      registerCode,
-      isConfirmed,
-    } = user;
+    const { createdAt, login, email, passwordSalt, passwordHash } = user;
 
     const isUserExist = await this.doesExistByLoginOrEmail(login, email);
 
@@ -25,8 +16,13 @@ export class UserRepository {
       email,
       passwordHash,
       passwordSalt,
-      isConfirmed,
-      registerCode,
+      emailConfirmation: user.emailConfirmation
+        ? {
+            confirmationCode: user.emailConfirmation?.confirmationCode,
+            expirationDate: user.emailConfirmation?.expirationDate,
+            isConfirmed: user.emailConfirmation?.isConfirmed,
+          }
+        : undefined,
     });
 
     return createdUser.insertedId.toString();
