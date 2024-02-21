@@ -28,10 +28,10 @@ export class UserRepository {
 
   static async updateUserConfirmation(id: ObjectId): Promise<boolean> {
     let result = await usersCollection.updateOne(
-      { id },
+      { _id: new ObjectId(id) },
       { $set: { "emailConfirmation.isConfirmed": true } }
     );
-
+    console.log(result);
     return !!result.modifiedCount;
   }
 

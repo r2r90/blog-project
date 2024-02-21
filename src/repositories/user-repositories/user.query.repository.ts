@@ -81,7 +81,6 @@ export class UserQueryRepository {
       "emailConfirmation.confirmationCode": emailConfirmationCode,
     });
 
-    console.log(foundUser);
     return foundUser ? foundUser : null;
   }
 

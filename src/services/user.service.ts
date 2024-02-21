@@ -3,6 +3,8 @@ import { UserViewModel } from "../types/users/users-output/user.output.model";
 import { UserDbType } from "../types/db-types";
 import { UserRepository } from "../repositories/user-repositories/user.repository";
 import { BcryptService } from "./bcrypt-service";
+import { add } from "date-fns";
+import { randomUUID } from "crypto";
 
 export class UserService {
   static async createUser(
@@ -18,12 +20,22 @@ export class UserService {
       password
     );
 
+    const registerUUIDCode = randomUUID();
+
     const user: UserDbType = {
       createdAt: new Date().toISOString(),
       login,
       email,
       passwordHash,
       passwordSalt,
+      emailConfirmation: {
+        confirmationCode: registerUUIDCode,
+        expirationDate: add(new Date(), {
+          hours: 1,
+          minutes: 3,
+        }),
+        isConfirmed: true,
+      },
     };
 
     const createdUserId = await UserRepository.createUser(user);

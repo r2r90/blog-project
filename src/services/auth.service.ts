@@ -87,6 +87,7 @@ export class AuthService {
 
   static async confirmEmail(code: string): Promise<boolean> {
     let user = await UserQueryRepository.getUserByConfirmationCode(code);
+
     if (!user) return false;
     return await UserRepository.updateUserConfirmation(user._id);
   }
