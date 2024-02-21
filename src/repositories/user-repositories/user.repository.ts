@@ -1,6 +1,7 @@
 import { usersCollection } from "../../db/db";
 import { UserDbType } from "../../types/db-types";
 import { ObjectId } from "mongodb";
+import { add } from "date-fns";
 
 export class UserRepository {
   static async createUser(user: UserDbType) {
@@ -24,6 +25,32 @@ export class UserRepository {
     });
 
     return createdUser.insertedId.toString();
+  }
+
+  /*  confirmationCode: registerUUIDCode,
+  expirationDate: add(new Date(), {
+  hours: 1,
+  minutes: 3,
+}),*/
+
+  static async updateUserConfirmCodeAndExpDate(
+    id: ObjectId,
+    newConfirmCode: string
+  ): Promise<boolean> {
+    let result = await usersCollection.updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          "emailConfirmation.expirationDate": add(new Date(), {
+            hours: 1,
+            minutes: 3,
+          }),
+          "emailConfirmation.confirmationCode": newConfirmCode,
+        },
+      }
+    );
+    console.log(result);
+    return !!result.modifiedCount;
   }
 
   static async updateUserConfirmation(id: ObjectId): Promise<boolean> {

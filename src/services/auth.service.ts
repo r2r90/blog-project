@@ -81,6 +81,10 @@ export class AuthService {
     const user = await UserQueryRepository.getUserByLoginOrEmail(email);
     if (!user || user.emailConfirmation?.isConfirmed) return false;
     const newConfirmCode = randomUUID();
+    await UserRepository.updateUserConfirmCodeAndExpDate(
+      user._id,
+      newConfirmCode
+    );
     await EmailService.confirmEmailSend(email, newConfirmCode);
     return true;
   }
