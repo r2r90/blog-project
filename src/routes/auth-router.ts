@@ -6,12 +6,15 @@ import { loginOrEmailValidation } from "../middlewares/validators/auth-login-val
 import { jwtAccessGuard } from "../middlewares/auth/jwt-access-guard";
 import { UserCreateInputType } from "../types/users/users-input/user.input.model";
 import { userValidator } from "../middlewares/validators/user-validator";
+import { registerValidator } from "../middlewares/validators/register-validator";
 
 export const authRouter = Router();
 
 authRouter.post(
   "/registration",
+
   userValidator(),
+  registerValidator(),
   async (req: RequestWithBody<UserCreateInputType>, res: Response) => {
     const { login, email, password } = req.body;
     const newUser = await AuthService.registerUser({ login, email, password });

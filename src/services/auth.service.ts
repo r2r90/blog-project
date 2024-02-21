@@ -40,14 +40,6 @@ export class AuthService {
     email,
     password,
   }: UserCreateInputType): Promise<UserViewModel | null> {
-    const isLoginExistCheck = await UserQueryRepository.getUserByLoginOrEmail(
-      login
-    );
-    const isEmailExistCheck = await UserQueryRepository.getUserByLoginOrEmail(
-      email
-    );
-
-    if (isEmailExistCheck || isLoginExistCheck) return null;
     const passwordSalt = await BcryptService.generateSalt();
     const passwordHash = await BcryptService.generateHash(
       passwordSalt,
