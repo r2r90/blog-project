@@ -80,6 +80,8 @@ export class UserQueryRepository {
     const foundUser = await usersCollection.findOne({
       "emailConfirmation.confirmationCode": emailConfirmationCode,
     });
+
+    console.log(foundUser);
     return foundUser ? foundUser : null;
   }
 

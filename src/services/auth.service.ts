@@ -46,7 +46,7 @@ export class AuthService {
       password
     );
 
-    const registerCode = randomUUID();
+    const registerUUIDCode = randomUUID();
 
     const user: UserDbType = {
       createdAt: new Date().toISOString(),
@@ -55,7 +55,7 @@ export class AuthService {
       passwordHash,
       passwordSalt,
       emailConfirmation: {
-        confirmationCode: randomUUID(),
+        confirmationCode: registerUUIDCode,
         expirationDate: add(new Date(), {
           hours: 1,
           minutes: 3,
@@ -68,7 +68,7 @@ export class AuthService {
 
     if (!createdUserId) return null;
 
-    await EmailService.confirmEmailSend(email, registerCode);
+    await EmailService.confirmEmailSend(email, registerUUIDCode);
     return {
       createdAt: user.createdAt,
       login: user.login,
