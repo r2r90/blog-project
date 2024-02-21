@@ -8,12 +8,13 @@ import { UserCreateInputType } from "../types/users/users-input/user.input.model
 import { userValidator } from "../middlewares/validators/user-validator";
 import { registerValidator } from "../middlewares/validators/register-validator";
 import { registerCodeConfirmation } from "../middlewares/validators/register-code-confirmation";
+import { EmailConfirmationCode } from "../types/auth/email.confirmation";
+import { resendEmailValidator } from "../middlewares/validators/resend-email-validator";
 
 export const authRouter = Router();
 
 authRouter.post(
   "/registration",
-
   userValidator(),
   registerValidator(),
   async (req: RequestWithBody<UserCreateInputType>, res: Response) => {
@@ -31,7 +32,7 @@ authRouter.post(
 authRouter.post(
   "/registration-confirmation",
   registerCodeConfirmation(),
-  async (req, res) => {
+  async (req: RequestWithBody<EmailConfirmationCode>, res: Response) => {
     const result = await AuthService.confirmEmail(req.body.code);
 
     if (!result) {
@@ -40,6 +41,22 @@ authRouter.post(
     }
 
     res.status(204).send("OK!");
+  }
+);
+
+authRouter.post(
+  "/registration-email-resending",
+  resendEmailValidator(),
+  async (req: RequestWithBody<{ email: string }>, res: Response) => {
+    const confirmEmailResult = await AuthService.resendConfirmEmail(
+      req.body.email
+    );
+
+    if (!confirmEmailResult) {
+      res.sendStatus(400);
+      return;
+    }
+    res.sendStatus(204);
   }
 );
 

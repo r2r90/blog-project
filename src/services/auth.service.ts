@@ -77,6 +77,14 @@ export class AuthService {
     };
   }
 
+  static async resendConfirmEmail(email: string): Promise<boolean> {
+    const user = await UserQueryRepository.getUserByLoginOrEmail(email);
+    if (!user || user.emailConfirmation?.isConfirmed) return false;
+    const newConfirmCode = randomUUID();
+    await EmailService.confirmEmailSend(email, newConfirmCode);
+    return true;
+  }
+
   static async confirmEmail(code: string): Promise<boolean> {
     let user = await UserQueryRepository.getUserByConfirmationCode(code);
     if (!user) return false;
