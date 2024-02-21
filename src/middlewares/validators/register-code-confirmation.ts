@@ -11,15 +11,15 @@ const codeValidator = body("code")
       throw Error("Confirmation code is wrong");
     }
 
-    if (user.emailConfirmation?.isConfirmed) {
+    if (user.emailConfirmation.isConfirmed) {
       throw Error("User already confirmed");
     }
+
     if (user.emailConfirmation?.expirationDate < new Date()) {
       throw Error("Confirmation code is expired");
     }
     return true;
-  })
-  .withMessage("Incorrect code!");
+  });
 
 export const registerCodeConfirmation = () => [
   codeValidator,
