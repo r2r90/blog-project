@@ -12,6 +12,7 @@ import { UserCreateInputType } from "../types/users/users-input/user.input.model
 import { UserService } from "../services/user.service";
 import { basicAuthMiddleware } from "../middlewares/auth/basic-auth-middleware";
 import { userValidator } from "../middlewares/validators/user-validator";
+import { add } from "date-fns";
 
 export const userRouter = Router();
 
@@ -42,6 +43,13 @@ userRouter.post(
       login,
       password,
       email,
+      emailConfirmation: {
+        confirmationCode: "",
+        expirationDate: add(new Date(), {
+          seconds: 1,
+        }),
+        isConfirmed: true,
+      },
     };
 
     let createdUser = await UserService.createUser(newUserCreateData);

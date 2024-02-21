@@ -16,13 +16,11 @@ export class UserRepository {
       email,
       passwordHash,
       passwordSalt,
-      emailConfirmation: user.emailConfirmation
-        ? {
-            confirmationCode: user.emailConfirmation?.confirmationCode,
-            expirationDate: user.emailConfirmation?.expirationDate,
-            isConfirmed: user.emailConfirmation?.isConfirmed,
-          }
-        : undefined,
+      emailConfirmation: {
+        confirmationCode: user.emailConfirmation.confirmationCode,
+        expirationDate: user.emailConfirmation?.expirationDate,
+        isConfirmed: user.emailConfirmation.isConfirmed,
+      },
     });
 
     return createdUser.insertedId.toString();

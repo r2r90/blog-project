@@ -9,12 +9,14 @@ const codeValidator = body("code")
     if (!user) {
       throw Error("Confirmation code is wrong");
     }
-    if (user.emailConfirmation?.confirmationCode !== code) {
-      throw Error("Confirmation code is wrong");
+    if (user.emailConfirmation?.isConfirmed) {
+      throw Error("User already confirmed");
     }
     if (user.emailConfirmation?.expirationDate < new Date()) {
       throw Error("Confirmation code is expired");
     }
+
+    return true;
   })
   .withMessage("Incorrect code!");
 
