@@ -2,7 +2,7 @@ import { body } from "express-validator";
 import { UserQueryRepository } from "../../repositories/user-repositories/user.query.repository";
 import { inputModelValidationMiddleware } from "../inputValidation/input-model-validation-middleware";
 
-export const registerLoginValidator = body("login")
+const registerLoginValidator = body("login")
   .trim()
   .isLength({ min: 3, max: 10 })
   .matches(/^[a-zA-Z0-9_-]*$/)
@@ -15,7 +15,7 @@ export const registerLoginValidator = body("login")
   })
   .withMessage("Incorrect login");
 
-export const registerEmailValidator = body("email")
+const registerEmailValidator = body("email")
   .trim()
   .isEmail()
   .custom(async (email: string) => {
@@ -27,7 +27,7 @@ export const registerEmailValidator = body("email")
   })
   .withMessage("Incorrect email");
 
-export const registerPasswordValidator = body("password")
+const registerPasswordValidator = body("password")
   .trim()
   .isLength({ min: 6, max: 20 })
   .withMessage("Incorrect password");

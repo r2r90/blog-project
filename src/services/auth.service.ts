@@ -80,10 +80,6 @@ export class AuthService {
   static async confirmEmail(code: string): Promise<boolean> {
     let user = await UserQueryRepository.getUserByConfirmationCode(code);
     if (!user) return false;
-
-    if (user.emailConfirmation?.confirmationCode !== code) return false;
-    if (user.emailConfirmation?.expirationDate < new Date()) return false;
-
     return await UserRepository.updateUserConfirmation(user._id);
   }
 

@@ -7,6 +7,7 @@ import { jwtAccessGuard } from "../middlewares/auth/jwt-access-guard";
 import { UserCreateInputType } from "../types/users/users-input/user.input.model";
 import { userValidator } from "../middlewares/validators/user-validator";
 import { registerValidator } from "../middlewares/validators/register-validator";
+import { registerCodeConfirmation } from "../middlewares/validators/register-code-confirmation";
 
 export const authRouter = Router();
 
@@ -27,16 +28,20 @@ authRouter.post(
   }
 );
 
-authRouter.post("/registration-confirmation", async (req, res) => {
-  const result = await AuthService.confirmEmail(req.body.code);
+authRouter.post(
+  "/registration-confirmation",
+  registerCodeConfirmation(),
+  async (req, res) => {
+    const result = await AuthService.confirmEmail(req.body.code);
 
-  if (!result) {
-    res.sendStatus(400);
-    return;
+    if (!result) {
+      res.sendStatus(400);
+      return;
+    }
+
+    res.status(204).send("OK!");
   }
-
-  res.status(204).send("OK!");
-});
+);
 
 authRouter.post(
   "/login",
