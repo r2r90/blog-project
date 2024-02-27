@@ -28,10 +28,10 @@ export class UserRepository {
   }
 
   /*  confirmationCode: registerUUIDCode,
-  expirationDate: add(new Date(), {
-  hours: 1,
-  minutes: 3,
-}),*/
+    expirationDate: add(new Date(), {
+    hours: 1,
+    minutes: 3,
+  }),*/
 
   static async updateUserConfirmCodeAndExpDate(
     id: ObjectId,
@@ -49,7 +49,6 @@ export class UserRepository {
         },
       }
     );
-    console.log(result);
     return !!result.modifiedCount;
   }
 

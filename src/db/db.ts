@@ -4,6 +4,7 @@ import {
   BlogDbType,
   CommentDbType,
   PostDbType,
+  RefreshTokenBdType,
   UserDbType,
 } from "../types/db-types";
 import { appConfig } from "../config/config";
@@ -22,6 +23,8 @@ export const postsCollection = database.collection<PostDbType>("posts");
 export const usersCollection = database.collection<UserDbType>("users");
 export const commentsCollection =
   database.collection<CommentDbType>("comments");
+export const blackListCollection =
+  database.collection<RefreshTokenBdType>("refresh-tokens");
 
 export const runDb = async () => {
   try {

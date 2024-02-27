@@ -37,3 +37,7 @@ export type CommentDbType = {
     userLogin: string;
   };
 };
+
+export type RefreshTokenBdType = {
+  refreshToken: string;
+};

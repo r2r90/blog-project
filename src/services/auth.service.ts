@@ -10,6 +10,8 @@ import { UserDbType } from "../types/db-types";
 import { UserRepository } from "../repositories/user-repositories/user.repository";
 import { EmailService } from "./email.service";
 import { add } from "date-fns";
+import { appConfig } from "../config/config";
+import { AuthRepository } from "../repositories/auth/auth.repository";
 
 export class AuthService {
   static async login(credentials: LoginInputType) {
@@ -27,12 +29,24 @@ export class AuthService {
 
     if (!passwordValidation) return null;
 
-    const token = {
-      accessToken: "",
-    };
+    const accessToken = await jwtService.createJWT(
+      user._id.toString(),
+      appConfig.JWT_ACCESS_EXPIRES_TIME,
+      appConfig.JWT_ACCESS_SECRET
+    );
 
-    token.accessToken = await jwtService.createJWT(user._id.toString());
-    return token;
+    const refreshToken = await jwtService.createJWT(
+      user._id.toString(),
+      appConfig.JWT_REFRESH_SECRET_EXPIRES_TIME,
+      appConfig.JWT_REFRESH_SECRET
+    );
+
+    await AuthRepository.AddRefreshToken(refreshToken);
+
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 
   static async registerUser({

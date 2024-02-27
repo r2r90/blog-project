@@ -70,9 +70,15 @@ authRouter.post(
       res.sendStatus(HTTP_RESPONSE_CODES.UNAUTHORIZED);
       return;
     }
-    res.send(loginResult).status(HTTP_RESPONSE_CODES.SUCCESS);
+
+    const { refreshToken, accessToken } = loginResult;
+
+    res.cookie("refresh-token", refreshToken, { httpOnly: true, secure: true });
+    res.send(accessToken).status(HTTP_RESPONSE_CODES.SUCCESS);
   }
 );
+
+authRouter.post("/refresh-token", async (req: Request, res: Response) => {});
 
 authRouter.get("/me", jwtAccessGuard, async (req: Request, res: Response) => {
   // res.status(200).send(userInfo);
