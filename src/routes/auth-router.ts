@@ -13,6 +13,7 @@ import { resendEmailValidator } from "../middlewares/validators/resend-email-val
 import { jwtRefreshTokenGuard } from "../middlewares/auth/jwt-refresh-token-guard";
 import { jwtService } from "../services/jwt.service";
 import { appConfig } from "../config/config";
+import { UserQueryRepository } from "../repositories/user-repositories/user.query.repository";
 
 export const authRouter = Router();
 
@@ -110,5 +111,11 @@ authRouter.post(
 );
 
 authRouter.get("/me", jwtAccessGuard, async (req: Request, res: Response) => {
-  // res.status(200).send(userInfo);
+  const userId = req.userId;
+  if (!userId) return null;
+  const user = await UserQueryRepository.getUserById(userId);
+  if (!user) return null;
+  const { email, login } = user;
+  res.status(HTTP_RESPONSE_CODES.SUCCESS).send({ email, login, userId });
+  return;
 });
