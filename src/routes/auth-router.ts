@@ -14,6 +14,7 @@ import { jwtRefreshTokenGuard } from "../middlewares/auth/jwt-refresh-token-guar
 import { jwtService } from "../services/jwt.service";
 import { appConfig } from "../config/config";
 import { UserQueryRepository } from "../repositories/user-repositories/user.query.repository";
+import { AuthRepository } from "../repositories/auth-repositories/auth.repository";
 
 export const authRouter = Router();
 
@@ -119,3 +120,26 @@ authRouter.get("/me", jwtAccessGuard, async (req: Request, res: Response) => {
   res.status(HTTP_RESPONSE_CODES.SUCCESS).send({ email, login, userId });
   return;
 });
+
+authRouter.post(
+  "/logout",
+  jwtRefreshTokenGuard,
+
+  async (req: Request, res: Response) => {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+      res.sendStatus(HTTP_RESPONSE_CODES.UNAUTHORIZED);
+      return;
+    }
+    const logoutResult = await AuthRepository.addRefreshTokenToBlackList(
+      refreshToken
+    );
+
+    if (!logoutResult) {
+      res.sendStatus(HTTP_RESPONSE_CODES.UNAUTHORIZED);
+      return;
+    }
+
+    res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT);
+  }
+);

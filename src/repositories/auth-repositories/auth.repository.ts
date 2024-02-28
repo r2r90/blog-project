@@ -1,7 +1,7 @@
 import { blackListCollection } from "../../db/db";
 
 export class AuthRepository {
-  static async addRefreshToken(refreshToken: string) {
+  static async addRefreshTokenToBlackList(refreshToken: string) {
     return await blackListCollection.insertOne({ refreshToken });
   }
 

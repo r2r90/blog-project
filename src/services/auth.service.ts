@@ -11,7 +11,7 @@ import { UserRepository } from "../repositories/user-repositories/user.repositor
 import { EmailService } from "./email.service";
 import { add } from "date-fns";
 import { appConfig } from "../config/config";
-import { AuthRepository } from "../repositories/auth/auth.repository";
+import { AuthRepository } from "../repositories/auth-repositories/auth.repository";
 
 export class AuthService {
   static async login(credentials: LoginInputType) {
@@ -41,7 +41,7 @@ export class AuthService {
       appConfig.JWT_REFRESH_SECRET
     );
 
-    await AuthRepository.addRefreshToken(refreshToken);
+    await AuthRepository.addRefreshTokenToBlackList(refreshToken);
 
     return {
       accessToken,
