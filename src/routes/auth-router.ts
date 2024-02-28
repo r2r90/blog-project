@@ -138,6 +138,8 @@ authRouter.post(
       refreshToken
     );
 
+    console.log(logoutResult);
+
     if (!logoutResult) {
       res.sendStatus(HTTP_RESPONSE_CODES.UNAUTHORIZED);
       return;

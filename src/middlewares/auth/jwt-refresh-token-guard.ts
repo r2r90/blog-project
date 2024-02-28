@@ -29,7 +29,8 @@ export const jwtRefreshTokenGuard = async (
   }
 
   const isTokenBlacklisted = await AuthRepository.findTokenInBlackList(token);
-  if (!isTokenBlacklisted) {
+
+  if (isTokenBlacklisted) {
     return res
       .status(HTTP_RESPONSE_CODES.UNAUTHORIZED)
       .send("Token already is used.");
