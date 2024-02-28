@@ -101,7 +101,7 @@ authRouter.post(
     );
 
     res
-      .cookie("refresh-token", refreshToken, {
+      .cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
       })
