@@ -99,8 +99,13 @@ authRouter.post(
       appConfig.JWT_REFRESH_SECRET
     );
 
-    res.cookie("refresh-token", refreshToken, { httpOnly: true, secure: true });
-    res.send(accessToken).status(HTTP_RESPONSE_CODES.NO_CONTENT);
+    res
+      .cookie("refresh-token", refreshToken, {
+        httpOnly: true,
+        secure: true,
+      })
+      .send({ accessToken })
+      .status(HTTP_RESPONSE_CODES.NO_CONTENT);
   }
 );
 

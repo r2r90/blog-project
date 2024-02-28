@@ -110,7 +110,7 @@ export class AuthService {
     return await UserRepository.updateUserConfirmation(user._id);
   }
 
-  static async refreshToken(refreshToken: string) {
+  /*static async refreshToken(refreshToken: string) {
     try {
       const isExistInBlackList = await AuthRepository.findTokenInBlackList(
         refreshToken
@@ -118,11 +118,13 @@ export class AuthService {
 
       if (isExistInBlackList) return null;
 
+
+
       const accessToken = await jwtService.createJWT();
     } catch (e) {
       console.log(e);
     }
-  }
+  }*/
 
   static async _validatePassword(password: string, salt: string, hash: string) {
     const passwordHash = await bcrypt.hash(password, salt);
