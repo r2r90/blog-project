@@ -15,7 +15,6 @@ import { jwtService } from "../services/jwt.service";
 import { appConfig } from "../config/config";
 import { UserQueryRepository } from "../repositories/user-repositories/user.query.repository";
 import { AuthRepository } from "../repositories/auth-repositories/auth.repository";
-import { UserService } from "../services/user.service";
 
 export const authRouter = Router();
 
@@ -89,6 +88,14 @@ authRouter.post(
   jwtRefreshTokenGuard,
   async (req: Request, res: Response) => {
     const userId = req.userId;
+    const token = req.cookies.refreshToken;
+
+    const logoutResult = await AuthRepository.addRefreshTokenToBlackList(token);
+
+    if (!logoutResult) {
+      res.sendStatus(HTTP_RESPONSE_CODES.UNAUTHORIZED);
+      return;
+    }
 
     const accessToken = await jwtService.createJWT(
       userId!,
@@ -135,12 +142,6 @@ authRouter.post(
     const logoutResult = await AuthRepository.addRefreshTokenToBlackList(
       refreshToken
     );
-
-    const user = await jwtService.getUserIdByRefreshToken(refreshToken);
-    if (!user) {
-      res.sendStatus(401);
-      return;
-    }
 
     if (!logoutResult) {
       res.sendStatus(HTTP_RESPONSE_CODES.UNAUTHORIZED);
