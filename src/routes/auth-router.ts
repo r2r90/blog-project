@@ -121,7 +121,7 @@ authRouter.get("/me", jwtAccessGuard, async (req: Request, res: Response) => {
   return;
 });
 
-authRouter.post(
+/*authRouter.post(
   "/logout",
   jwtRefreshTokenGuard,
   async (req: Request, res: Response) => {
@@ -140,4 +140,4 @@ authRouter.post(
     }
     res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT);
   }
-);
+);*/
