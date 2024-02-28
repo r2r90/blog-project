@@ -112,12 +112,15 @@ export class AuthService {
 
   static async refreshToken(refreshToken: string) {
     try {
-      const isExistInBlackList = await AuthRepository.findTokenInBlackList(refreshToken)
+      const isExistInBlackList = await AuthRepository.findTokenInBlackList(
+        refreshToken
+      );
 
-      if (isExistInBlackList) return null
+      if (isExistInBlackList) return null;
 
-      const accessToken = await jwtService.createJWT()
-
+      const accessToken = await jwtService.createJWT();
+    } catch (e) {
+      console.log(e);
     }
   }
 

@@ -73,8 +73,10 @@ authRouter.post(
       return;
     }
     const { refreshToken, accessToken } = loginResult;
-    res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true });
-    res.send(accessToken).status(HTTP_RESPONSE_CODES.SUCCESS);
+    res
+      .cookie("refreshToken", refreshToken, { httpOnly: true, secure: true })
+      .status(HTTP_RESPONSE_CODES.SUCCESS)
+      .send({ accessToken });
   }
 );
 
