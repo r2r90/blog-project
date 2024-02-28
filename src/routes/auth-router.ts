@@ -90,8 +90,6 @@ authRouter.post(
     const userId = req.userId;
     const token = req.cookies.refreshToken;
 
-    await AuthRepository.addRefreshTokenToBlackList(token);
-
     const accessToken = await jwtService.createJWT(
       userId!,
       appConfig.JWT_ACCESS_EXPIRES_TIME,
