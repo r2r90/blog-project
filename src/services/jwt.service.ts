@@ -22,4 +22,14 @@ export class jwtService {
       return null;
     }
   }
+
+  static async checkTokenValidation(token: string, secret: string) {
+    try {
+      const payload = jwt.verify(token, secret);
+      let { userId, iat, exp } = payload as JwtVerifyType;
+      return { userId, iat, exp };
+    } catch (e) {
+      return null;
+    }
+  }
 }

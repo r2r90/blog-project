@@ -41,7 +41,7 @@ export class AuthService {
       appConfig.JWT_REFRESH_SECRET
     );
 
-    await AuthRepository.AddRefreshToken(refreshToken);
+    await AuthRepository.addRefreshToken(refreshToken);
 
     return {
       accessToken,
@@ -108,6 +108,17 @@ export class AuthService {
 
     if (!user) return false;
     return await UserRepository.updateUserConfirmation(user._id);
+  }
+
+  static async refreshToken(refreshToken: string) {
+    try {
+      const isExistInBlackList = await AuthRepository.findTokenInBlackList(refreshToken)
+
+      if (isExistInBlackList) return null
+
+      const accessToken = await jwtService.createJWT()
+
+    }
   }
 
   static async _validatePassword(password: string, salt: string, hash: string) {

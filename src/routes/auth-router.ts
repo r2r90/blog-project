@@ -10,6 +10,9 @@ import { registerValidator } from "../middlewares/validators/register-validator"
 import { registerCodeConfirmation } from "../middlewares/validators/register-code-confirmation";
 import { EmailConfirmationCode } from "../types/auth/email.confirmation";
 import { resendEmailValidator } from "../middlewares/validators/resend-email-validator";
+import { jwtRefreshTokenGuard } from "../middlewares/auth/jwt-refresh-token-guard";
+import { jwtService } from "../services/jwt.service";
+import { appConfig } from "../config/config";
 
 export const authRouter = Router();
 
@@ -39,7 +42,6 @@ authRouter.post(
       res.sendStatus(400);
       return;
     }
-
     res.status(204).send("OK!");
   }
 );
@@ -73,12 +75,34 @@ authRouter.post(
 
     const { refreshToken, accessToken } = loginResult;
 
-    res.cookie("refresh-token", refreshToken, { httpOnly: true, secure: true });
+    res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true });
     res.send(accessToken).status(HTTP_RESPONSE_CODES.SUCCESS);
   }
 );
 
-authRouter.post("/refresh-token", async (req: Request, res: Response) => {});
+authRouter.post(
+  "/refresh-token",
+  jwtRefreshTokenGuard,
+
+  async (req: Request, res: Response) => {
+    const userId = req.userId;
+
+    const accessToken = await jwtService.createJWT(
+      userId!,
+      appConfig.JWT_ACCESS_EXPIRES_TIME,
+      appConfig.JWT_ACCESS_SECRET
+    );
+
+    const refreshToken = await jwtService.createJWT(
+      userId!,
+      appConfig.JWT_REFRESH_SECRET_EXPIRES_TIME,
+      appConfig.JWT_REFRESH_SECRET
+    );
+
+    res.cookie("refresh-token", refreshToken, { httpOnly: true, secure: true });
+    res.send(accessToken).status(HTTP_RESPONSE_CODES.NO_CONTENT);
+  }
+);
 
 authRouter.get("/me", jwtAccessGuard, async (req: Request, res: Response) => {
   // res.status(200).send(userInfo);
