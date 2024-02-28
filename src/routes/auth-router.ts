@@ -90,12 +90,7 @@ authRouter.post(
     const userId = req.userId;
     const token = req.cookies.refreshToken;
 
-    const logoutResult = await AuthRepository.addRefreshTokenToBlackList(token);
-
-    if (!logoutResult) {
-      res.sendStatus(HTTP_RESPONSE_CODES.UNAUTHORIZED);
-      return;
-    }
+    await AuthRepository.addRefreshTokenToBlackList(token);
 
     const accessToken = await jwtService.createJWT(
       userId!,
