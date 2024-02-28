@@ -124,7 +124,6 @@ authRouter.get("/me", jwtAccessGuard, async (req: Request, res: Response) => {
 authRouter.post(
   "/logout",
   jwtRefreshTokenGuard,
-
   async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
@@ -139,7 +138,6 @@ authRouter.post(
       res.sendStatus(HTTP_RESPONSE_CODES.UNAUTHORIZED);
       return;
     }
-
     res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT);
   }
 );
