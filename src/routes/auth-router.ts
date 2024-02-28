@@ -72,9 +72,7 @@ authRouter.post(
       res.sendStatus(HTTP_RESPONSE_CODES.UNAUTHORIZED);
       return;
     }
-
     const { refreshToken, accessToken } = loginResult;
-
     res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true });
     res.send(accessToken).status(HTTP_RESPONSE_CODES.SUCCESS);
   }
