@@ -41,8 +41,6 @@ export class AuthService {
       appConfig.JWT_REFRESH_SECRET
     );
 
-    await AuthRepository.addRefreshTokenToBlackList(refreshToken);
-
     return {
       accessToken,
       refreshToken,
