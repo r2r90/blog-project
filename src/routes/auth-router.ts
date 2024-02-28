@@ -74,6 +74,8 @@ authRouter.post(
       res.sendStatus(HTTP_RESPONSE_CODES.UNAUTHORIZED);
       return;
     }
+
+    console.log("hello");
     const { refreshToken, accessToken } = loginResult;
     res
       .cookie("refreshToken", refreshToken, { httpOnly: true, secure: true })
@@ -85,7 +87,6 @@ authRouter.post(
 authRouter.post(
   "/refresh-token",
   jwtRefreshTokenGuard,
-
   async (req: Request, res: Response) => {
     const userId = req.userId;
 
@@ -121,7 +122,7 @@ authRouter.get("/me", jwtAccessGuard, async (req: Request, res: Response) => {
   return;
 });
 
-/*authRouter.post(
+authRouter.post(
   "/logout",
   jwtRefreshTokenGuard,
   async (req: Request, res: Response) => {
@@ -140,4 +141,4 @@ authRouter.get("/me", jwtAccessGuard, async (req: Request, res: Response) => {
     }
     res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT);
   }
-);*/
+);
