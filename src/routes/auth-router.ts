@@ -15,6 +15,7 @@ import { jwtService } from "../services/jwt.service";
 import { appConfig } from "../config/config";
 import { UserQueryRepository } from "../repositories/user-repositories/user.query.repository";
 import { AuthRepository } from "../repositories/auth-repositories/auth.repository";
+import { UserService } from "../services/user.service";
 
 export const authRouter = Router();
 
@@ -75,7 +76,6 @@ authRouter.post(
       return;
     }
 
-    console.log("hello");
     const { refreshToken, accessToken } = loginResult;
     res
       .cookie("refreshToken", refreshToken, { httpOnly: true, secure: true })
@@ -131,14 +131,22 @@ authRouter.post(
       res.sendStatus(HTTP_RESPONSE_CODES.UNAUTHORIZED);
       return;
     }
+
     const logoutResult = await AuthRepository.addRefreshTokenToBlackList(
       refreshToken
     );
+
+    const user = await jwtService.getUserIdByRefreshToken(refreshToken);
+    if (!user) {
+      res.sendStatus(401);
+      return;
+    }
 
     if (!logoutResult) {
       res.sendStatus(HTTP_RESPONSE_CODES.UNAUTHORIZED);
       return;
     }
+
     res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT);
   }
 );

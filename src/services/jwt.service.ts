@@ -23,6 +23,16 @@ export class jwtService {
     }
   }
 
+  static async getUserIdByRefreshToken(token: string) {
+    try {
+      const payload = jwt.verify(token, appConfig.JWT_REFRESH_SECRET);
+      let { userId } = payload as JwtVerifyType;
+      return userId;
+    } catch (e) {
+      return null;
+    }
+  }
+
   static async checkTokenValidation(token: string, secret: string) {
     try {
       const payload = jwt.verify(token, secret);
