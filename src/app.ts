@@ -6,6 +6,7 @@ import { userRouter } from "./routes/user-router";
 import { authRouter } from "./routes/auth-router";
 import { commentsRouter } from "./routes/comments-router";
 import cookieParser from "cookie-parser";
+import { securityDeviceRouter } from "./routes/security-device-router";
 
 export const app = express();
 
@@ -21,4 +22,5 @@ app.use("/posts", postRouter);
 app.use("/comments", commentsRouter);
 app.use("/users", userRouter);
 app.use("/auth", authRouter);
+app.use("/security/devices", securityDeviceRouter);
 app.use("/testing", testingRouter);

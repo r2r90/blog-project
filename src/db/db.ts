@@ -3,6 +3,7 @@ import { MongoClient } from "mongodb";
 import {
   BlogDbType,
   CommentDbType,
+  ConnectionDeviceType,
   PostDbType,
   RefreshTokenBdType,
   UserDbType,
@@ -25,6 +26,9 @@ export const commentsCollection =
   database.collection<CommentDbType>("comments");
 export const blackListCollection =
   database.collection<RefreshTokenBdType>("refresh-tokens");
+
+export const deviceSecurityCollection =
+  database.collection<ConnectionDeviceType>("device-security");
 
 export const runDb = async () => {
   try {

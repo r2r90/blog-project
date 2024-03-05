@@ -41,3 +41,9 @@ export type CommentDbType = {
 export type RefreshTokenBdType = {
   refreshToken: string;
 };
+
+export type ConnectionDeviceType = {
+  IP: string;
+  URL: string;
+  date: Date;
+};
