@@ -107,7 +107,6 @@ authRouter.post(
       appConfig.JWT_REFRESH_SECRET_EXPIRES_TIME,
       appConfig.JWT_REFRESH_SECRET
     );
-
     res
       .cookie("refreshToken", refreshToken, {
         httpOnly: true,
@@ -117,7 +116,6 @@ authRouter.post(
       .status(HTTP_RESPONSE_CODES.NO_CONTENT);
   }
 );
-
 authRouter.get("/me", jwtAccessGuard, async (req: Request, res: Response) => {
   const userId = req.userId;
   if (!userId) return null;
