@@ -15,11 +15,13 @@ import { jwtService } from "../services/jwt.service";
 import { appConfig } from "../config/config";
 import { UserQueryRepository } from "../repositories/user-repositories/user.query.repository";
 import { AuthRepository } from "../repositories/auth-repositories/auth.repository";
+import { requestQuantityFixer } from "../middlewares/device-secure/requestQuantityFixer";
 
 export const authRouter = Router();
 
 authRouter.post(
   "/registration",
+  requestQuantityFixer,
   userValidator(),
   registerValidator(),
   async (req: RequestWithBody<UserCreateInputType>, res: Response) => {
@@ -37,6 +39,7 @@ authRouter.post(
 authRouter.post(
   "/registration-confirmation",
   registerCodeConfirmation(),
+  requestQuantityFixer,
   async (req: RequestWithBody<EmailConfirmationCode>, res: Response) => {
     const result = await AuthService.confirmEmail(req.body.code);
 
@@ -50,6 +53,7 @@ authRouter.post(
 
 authRouter.post(
   "/registration-email-resending",
+  requestQuantityFixer,
   resendEmailValidator(),
   async (req: RequestWithBody<{ email: string }>, res: Response) => {
     const confirmEmailResult = await AuthService.resendConfirmEmail(
@@ -66,6 +70,7 @@ authRouter.post(
 
 authRouter.post(
   "/login",
+  requestQuantityFixer,
   loginOrEmailValidation(),
   async (req: RequestWithBody<LoginInputType>, res: Response) => {
     const loginResult = await AuthService.login(req.body);
@@ -91,7 +96,6 @@ authRouter.post(
     const token = req.cookies.refreshToken;
 
     await AuthRepository.addRefreshTokenToBlackList(token);
-
     const accessToken = await jwtService.createJWT(
       userId!,
       appConfig.JWT_ACCESS_EXPIRES_TIME,
