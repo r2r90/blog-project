@@ -31,20 +31,8 @@ export class DeviceRepository {
     return true;
   }
 
-  static async updateDeviceSession(sessionData: DeviceConnectDbType) {
-    const res = await deviceConnectCollection.updateOne(
-      { deviceId: sessionData.deviceId },
-      {
-        $set: {},
-      }
-    );
-
-    return !!res.matchedCount;
-  }
-
   static async getAllDevices() {
     const devices = await deviceConnectCollection.find({}).toArray();
-    const outputModel = devices.map(deviceMapper);
-    return outputModel;
+    return devices.map(deviceMapper);
   }
 }
