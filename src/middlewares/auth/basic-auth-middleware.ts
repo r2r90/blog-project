@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { HTTP_RESPONSE_CODES } from "../../types/common/common";
+import { HTTP_RESPONSE_CODES } from "../../models/common";
 
 const login1 = "admin";
 const password1 = "qwerty";

@@ -1,10 +1,10 @@
 import { blogsCollection, postsCollection } from "../../db/db";
-import { postMapper } from "../../types/posts/mappers/post-mapper";
+import { postMapper } from "../../models/posts/mappers/post-mapper";
 import { ObjectId } from "mongodb";
 import {
   PostCreateInputType,
   PostUpdateInputType,
-} from "../../types/posts/post-input-model/post.input.model";
+} from "../../models/posts/post-input-model/post.input.model";
 
 export class PostRepository {
   static async getPostById(id: string) {

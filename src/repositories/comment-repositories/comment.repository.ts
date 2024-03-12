@@ -1,6 +1,6 @@
-import { CommentViewModel } from "../../types/comments/comments.output.model";
+import { CommentViewModel } from "../../models/comments/comments.output.model";
 import { commentsCollection } from "../../db/db";
-import { CommentDbType } from "../../types/db-types";
+import { CommentDbType } from "../../models/db-types";
 import { ObjectId } from "mongodb";
 
 export class CommentRepository {

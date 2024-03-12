@@ -2,17 +2,17 @@ import {
   PostQueryRepository,
   PostSortData,
 } from "../repositories/post-repositories/post.query.repository";
-import { CreatePostFromBlogInputModel } from "../types/posts/post-input-model/create.post.from.blog.input.model";
-import { PostOutputType } from "../types/posts/post.output.model";
+import { CreatePostFromBlogInputModel } from "../models/posts/post-input-model/create.post.from.blog.input.model";
+import { PostOutputType } from "../models/posts/post.output.model";
 import { BlogRepository } from "../repositories/blog-repositories/blog.repository";
 import { PostRepository } from "../repositories/post-repositories/post.repository";
 import {
   PostCreateInputType,
   PostUpdateInputType,
-} from "../types/posts/post-input-model/post.input.model";
-import { BlogService } from "./blog.service";
-import { PostDbType } from "../types/db-types";
-import { CommentViewModel } from "../types/comments/comments.output.model";
+} from "../models/posts/post-input-model/post.input.model";
+import { BlogService } from "./blog-service";
+import { PostDbType } from "../models/db-types";
+import { CommentViewModel } from "../models/comments/comments.output.model";
 import { UserQueryRepository } from "../repositories/user-repositories/user.query.repository";
 import { CommentRepository } from "../repositories/comment-repositories/comment.repository";
 

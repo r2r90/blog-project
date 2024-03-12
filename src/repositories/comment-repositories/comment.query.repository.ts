@@ -1,8 +1,8 @@
 import { commentsCollection } from "../../db/db";
 import { ObjectId } from "mongodb";
-import { CommentSortData } from "../../types/comments/comment.query.input";
-import { commentMapper } from "../../types/comments/commentMapper";
-import { CommentsGetResponse } from "../../types/comments/comments.output.model";
+import { CommentSortData } from "../../models/comments/comment.query.input";
+import { commentMapper } from "../../models/comments/commentMapper";
+import { CommentsGetResponse } from "../../models/comments/comments.output.model";
 
 export class CommentQueryRepository {
   static async getAllCommentsByPostId(

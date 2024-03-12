@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { DeviceConnectionRepository } from "../../repositories/device-secure-repository/device.connection.repository";
+import { DeviceRepository } from "../../repositories/device-repository/device.repository";
+import { HTTP_RESPONSE_CODES } from "../../models/common";
 
 export async function requestQuantityFixer(
   req: Request,
@@ -7,18 +8,16 @@ export async function requestQuantityFixer(
   next: NextFunction
 ) {
   try {
-    await DeviceConnectionRepository.deviceConnectionFixing(req.ip!, req.url);
-    const requestCount =
-      await DeviceConnectionRepository.deviceConnectionCounter(
-        req.ip!,
-        req.url
-      );
+    await DeviceRepository.requestFromDeviceFixing(req.ip!, req.url);
+    const requestCount = await DeviceRepository.deviceRequestCounter(
+      req.ip!,
+      req.url
+    );
 
     if (requestCount > 5) {
-      res.sendStatus(429);
+      res.sendStatus(HTTP_RESPONSE_CODES.TOO_MANY_REQUESTS);
       return;
     }
-
     next();
   } catch (error) {
     next(error);

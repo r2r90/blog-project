@@ -1,11 +1,11 @@
-import { UserSortData } from "../../types/users/users-input/user.query.input.model";
+import { UserSortData } from "../../models/users/users-input/user.query.input.model";
 import {
   UserPaginationType,
   UserViewModel,
-} from "../../types/users/users-output/user.output.model";
+} from "../../models/users/users-output/user.output.model";
 import { usersCollection } from "../../db/db";
-import { userMapper } from "../../types/users/mappers/users-mapper";
-import { UserDbType } from "../../types/db-types";
+import { userMapper } from "../../models/users/mappers/users-mapper";
+import { UserDbType } from "../../models/db-types";
 import { ObjectId, WithId } from "mongodb";
 
 export class UserQueryRepository {

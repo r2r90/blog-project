@@ -4,7 +4,7 @@ import { blogValidation } from "../middlewares/validators/blog-validators";
 import {
   BlogCreateInputType,
   BlogUpdateInputType,
-} from "../types/blogs/blog-input-model/blog.input.model";
+} from "../models/blogs/blog-input-model/blog.input.model";
 import {
   HTTP_RESPONSE_CODES,
   ParamType,
@@ -13,15 +13,15 @@ import {
   RequestWithParamAndQuery,
   RequestWithQuery,
   ResponseType,
-} from "../types/common/common";
+} from "../models/common";
 import { ObjectId } from "mongodb";
-import { BlogQueryInputModel } from "../types/blogs/blog-input-model/blog.query.input.model";
+import { BlogQueryInputModel } from "../models/blogs/blog-input-model/blog.query.input.model";
 import { createPostFromBlogValidation } from "../middlewares/validators/post-validators";
-import { PostOutputType } from "../types/posts/post.output.model";
-import { BlogService } from "../services/blog.service";
-import { PostQueryInputModel } from "../types/posts/post-input-model/post.query.input.model";
-import { CreatePostFromBlogInputModel } from "../types/posts/post-input-model/create.post.from.blog.input.model";
-import { PostService } from "../services/post.service";
+import { PostOutputType } from "../models/posts/post.output.model";
+import { BlogService } from "../services/blog-service";
+import { PostQueryInputModel } from "../models/posts/post-input-model/post.query.input.model";
+import { CreatePostFromBlogInputModel } from "../models/posts/post-input-model/create.post.from.blog.input.model";
+import { PostService } from "../services/post-service";
 
 export const blogsRoute = Router();
 

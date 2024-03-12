@@ -1,5 +1,5 @@
 import { usersCollection } from "../../db/db";
-import { UserDbType } from "../../types/db-types";
+import { UserDbType } from "../../models/db-types";
 import { ObjectId } from "mongodb";
 import { add } from "date-fns";
 

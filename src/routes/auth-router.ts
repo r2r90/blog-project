@@ -1,21 +1,22 @@
 import { Request, Response, Router } from "express";
-import { HTTP_RESPONSE_CODES, RequestWithBody } from "../types/common/common";
-import { LoginInputType } from "../types/auth/login.input";
-import { AuthService } from "../services/auth.service";
+import { HTTP_RESPONSE_CODES, RequestWithBody } from "../models/common";
+import { DeviceInfoType, LoginInputType } from "../models/auth/login.input";
+import { AuthService } from "../services/auth-service";
 import { loginOrEmailValidation } from "../middlewares/validators/auth-login-validator";
 import { jwtAccessGuard } from "../middlewares/auth/jwt-access-guard";
-import { UserCreateInputType } from "../types/users/users-input/user.input.model";
+import { UserCreateInputType } from "../models/users/users-input/user.input.model";
 import { userValidator } from "../middlewares/validators/user-validator";
 import { registerValidator } from "../middlewares/validators/register-validator";
 import { registerCodeConfirmation } from "../middlewares/validators/register-code-confirmation";
-import { EmailConfirmationCode } from "../types/auth/email.confirmation";
+import { EmailConfirmationCode } from "../models/auth/email.confirmation";
 import { resendEmailValidator } from "../middlewares/validators/resend-email-validator";
 import { jwtRefreshTokenGuard } from "../middlewares/auth/jwt-refresh-token-guard";
-import { jwtService } from "../services/jwt.service";
+import { JwtService } from "../services/jwt-service";
 import { appConfig } from "../config/config";
 import { UserQueryRepository } from "../repositories/user-repositories/user.query.repository";
 import { AuthRepository } from "../repositories/auth-repositories/auth.repository";
 import { requestQuantityFixer } from "../middlewares/device-secure/requestQuantityFixer";
+import { DeviceService } from "../services/device-service";
 
 export const authRouter = Router();
 
@@ -81,6 +82,18 @@ authRouter.post(
     }
 
     const { refreshToken, accessToken } = loginResult;
+    const userId = await JwtService.getUserIdByAccessToken(accessToken);
+    if (!userId) {
+      res.sendStatus(HTTP_RESPONSE_CODES.UNAUTHORIZED);
+      return;
+    }
+    const clientDeviceData: DeviceInfoType = {
+      ip: req.ip!,
+      title: req.headers["user-agent"] || "Unknown Device",
+      userId,
+    };
+    await DeviceService.addDeviceToList(clientDeviceData, refreshToken);
+
     res
       .cookie("refreshToken", refreshToken, { httpOnly: true, secure: true })
       .status(HTTP_RESPONSE_CODES.SUCCESS)
@@ -96,17 +109,18 @@ authRouter.post(
     const token = req.cookies.refreshToken;
 
     await AuthRepository.addRefreshTokenToBlackList(token);
-    const accessToken = await jwtService.createJWT(
+    const accessToken = await JwtService.createJWT(
       userId!,
       appConfig.JWT_ACCESS_EXPIRES_TIME,
       appConfig.JWT_ACCESS_SECRET
     );
 
-    const refreshToken = await jwtService.createJWT(
+    const refreshToken = await JwtService.createJWT(
       userId!,
       appConfig.JWT_REFRESH_SECRET_EXPIRES_TIME,
       appConfig.JWT_REFRESH_SECRET
     );
+
     res
       .cookie("refreshToken", refreshToken, {
         httpOnly: true,

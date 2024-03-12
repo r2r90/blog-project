@@ -2,10 +2,10 @@ import { blogsCollection } from "../../db/db";
 import {
   BlogOutputType,
   BlogPaginationType,
-} from "../../types/blogs/output-model/blog.output.model";
-import { blogMapper } from "../../types/blogs/mappers/blog-mapper";
+} from "../../models/blogs/output-model/blog.output.model";
+import { blogMapper } from "../../models/blogs/mappers/blog-mapper";
 import { ObjectId } from "mongodb";
-import { BlogSortData } from "../../types/blogs/blog-input-model/blog.query.input.model";
+import { BlogSortData } from "../../models/blogs/blog-input-model/blog.query.input.model";
 
 export class BlogQueryRepository {
   static async getAllBlogs(

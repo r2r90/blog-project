@@ -52,6 +52,7 @@ export const HTTP_RESPONSE_CODES = {
   UNAUTHORIZED: 401,
   FORBIDDEN: 403,
   NOT_FOUND: 404,
+  TOO_MANY_REQUESTS: 429,
 };
 
 export type ErrorType = {

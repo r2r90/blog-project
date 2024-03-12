@@ -38,12 +38,20 @@ export type CommentDbType = {
   };
 };
 
-export type RefreshTokenBdType = {
+export type RefreshTokenDbType = {
   refreshToken: string;
 };
 
-export type ConnectionDeviceType = {
+export type DeviceRequestDBType = {
   IP: string;
   URL: string;
   date: Date;
+};
+
+export type DeviceConnectDbType = {
+  userId: string;
+  lastActiveDate: string;
+  ip: string;
+  deviceId: string;
+  deviceName: string;
 };

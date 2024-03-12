@@ -1,17 +1,16 @@
 import { UserQueryRepository } from "../repositories/user-repositories/user.query.repository";
-import { LoginInputType } from "../types/auth/login.input";
+import { LoginInputType } from "../models/auth/login.input";
 import bcrypt from "bcrypt";
-import { jwtService } from "./jwt.service";
-import { UserCreateInputType } from "../types/users/users-input/user.input.model";
-import { UserViewModel } from "../types/users/users-output/user.output.model";
+import { JwtService } from "./jwt-service";
+import { UserCreateInputType } from "../models/users/users-input/user.input.model";
+import { UserViewModel } from "../models/users/users-output/user.output.model";
 import { BcryptService } from "./bcrypt-service";
 import { randomUUID } from "crypto";
-import { UserDbType } from "../types/db-types";
+import { UserDbType } from "../models/db-types";
 import { UserRepository } from "../repositories/user-repositories/user.repository";
-import { EmailService } from "./email.service";
+import { EmailService } from "./email-service";
 import { add } from "date-fns";
 import { appConfig } from "../config/config";
-import { AuthRepository } from "../repositories/auth-repositories/auth.repository";
 
 export class AuthService {
   static async login(credentials: LoginInputType) {
@@ -29,13 +28,13 @@ export class AuthService {
 
     if (!passwordValidation) return null;
 
-    const accessToken = await jwtService.createJWT(
+    const accessToken = await JwtService.createJWT(
       user._id.toString(),
       appConfig.JWT_ACCESS_EXPIRES_TIME,
       appConfig.JWT_ACCESS_SECRET
     );
 
-    const refreshToken = await jwtService.createJWT(
+    const refreshToken = await JwtService.createJWT(
       user._id.toString(),
       appConfig.JWT_REFRESH_SECRET_EXPIRES_TIME,
       appConfig.JWT_REFRESH_SECRET
@@ -107,22 +106,6 @@ export class AuthService {
     if (!user) return false;
     return await UserRepository.updateUserConfirmation(user._id);
   }
-
-  /*static async refreshToken(refreshToken: string) {
-    try {
-      const isExistInBlackList = await AuthRepository.findTokenInBlackList(
-        refreshToken
-      );
-
-      if (isExistInBlackList) return null;
-
-
-
-      const accessToken = await jwtService.createJWT();
-    } catch (e) {
-      console.log(e);
-    }
-  }*/
 
   static async _validatePassword(password: string, salt: string, hash: string) {
     const passwordHash = await bcrypt.hash(password, salt);

@@ -3,11 +3,12 @@ import { MongoClient } from "mongodb";
 import {
   BlogDbType,
   CommentDbType,
-  ConnectionDeviceType,
+  DeviceConnectDbType,
+  DeviceRequestDBType,
   PostDbType,
-  RefreshTokenBdType,
+  RefreshTokenDbType,
   UserDbType,
-} from "../types/db-types";
+} from "../models/db-types";
 import { appConfig } from "../config/config";
 
 configDotenv();
@@ -25,10 +26,13 @@ export const usersCollection = database.collection<UserDbType>("users");
 export const commentsCollection =
   database.collection<CommentDbType>("comments");
 export const blackListCollection =
-  database.collection<RefreshTokenBdType>("refresh-tokens");
+  database.collection<RefreshTokenDbType>("refresh-tokens");
 
-export const deviceSecurityCollection =
-  database.collection<ConnectionDeviceType>("device-security");
+export const deviceRequestsCollection =
+  database.collection<DeviceRequestDBType>("device-requests");
+
+export const deviceConnectCollection =
+  database.collection<DeviceConnectDbType>("device-connects");
 
 export const runDb = async () => {
   try {

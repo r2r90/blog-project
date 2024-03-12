@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
 import { appConfig } from "../config/config";
-import { JwtVerifyType } from "../types/common/common";
+import { JwtVerifyType } from "../models/common";
 
-export class jwtService {
+export class JwtService {
   static async createJWT(
     userId: string,
     expiresTime: string,

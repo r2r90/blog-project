@@ -5,11 +5,11 @@ import {
   RequestWithBody,
   RequestWithParam,
   RequestWithQuery,
-} from "../types/common/common";
+} from "../models/common";
 import { UserQueryRepository } from "../repositories/user-repositories/user.query.repository";
-import { UserQueryInputModel } from "../types/users/users-input/user.query.input.model";
-import { UserCreateInputType } from "../types/users/users-input/user.input.model";
-import { UserService } from "../services/user.service";
+import { UserQueryInputModel } from "../models/users/users-input/user.query.input.model";
+import { UserCreateInputType } from "../models/users/users-input/user.input.model";
+import { UserService } from "../services/user-service";
 import { basicAuthMiddleware } from "../middlewares/auth/basic-auth-middleware";
 import { userValidator } from "../middlewares/validators/user-validator";
 import { add } from "date-fns";
