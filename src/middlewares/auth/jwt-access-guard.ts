@@ -12,7 +12,6 @@ export const jwtAccessGuard = async (
     return;
   }
   const token = req.headers.authorization.split(" ")[1];
-
   const userId = await JwtService.getUserIdByAccessToken(token);
   const user = await UserQueryRepository.getUserById(userId!);
 
