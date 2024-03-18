@@ -50,8 +50,8 @@ export type DeviceRequestDBType = {
 
 export type DeviceConnectDbType = {
   userId: string;
-  lastActiveDate: string;
-  ip: string;
   deviceId: string;
-  deviceName: string;
+  title: string;
+  ip: string;
+  lastActiveDate: string;
 };

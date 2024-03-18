@@ -7,6 +7,6 @@ import { DeviceRepository } from "../repositories/device-repository/device.repos
 
 export class DeviceService {
   static async addDeviceToList(clientDeviceData: DeviceInfoType) {
-    console.log(clientDeviceData);
+    return;
   }
 }

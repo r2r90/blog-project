@@ -6,12 +6,13 @@ import { UserCreateInputType } from "../models/users/users-input/user.input.mode
 import { UserViewModel } from "../models/users/users-output/user.output.model";
 import { BcryptService } from "./bcrypt-service";
 import { randomUUID } from "crypto";
-import { UserDbType } from "../models/db-types";
+import { DeviceConnectDbType, UserDbType } from "../models/db-types";
 import { UserRepository } from "../repositories/user-repositories/user.repository";
 import { EmailService } from "./email-service";
 import { add } from "date-fns";
 import { appConfig } from "../config/config";
 import { DeviceService } from "./device-service";
+import { DeviceRepository } from "../repositories/device-repository/device.repository";
 
 export class AuthService {
   static async login(
@@ -40,7 +41,9 @@ export class AuthService {
 
     const userId = await JwtService.getUserIdByAccessToken(accessToken);
 
-    const sessionData = {
+    if (!userId) return null;
+
+    const sessionData: DeviceConnectDbType = {
       userId,
       deviceId: randomUUID(),
       title: clientDeviceData.title,
@@ -48,7 +51,7 @@ export class AuthService {
       lastActiveDate: new Date().toISOString(),
     };
 
-    await DeviceService.addDeviceToList(sessionData);
+    await DeviceRepository.saveDeviceSession(sessionData);
 
     const refreshToken = await JwtService.createRefreshToken(
       user._id.toString(),
