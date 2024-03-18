@@ -74,7 +74,11 @@ authRouter.post(
   requestQuantityFixer,
   loginOrEmailValidation(),
   async (req: RequestWithBody<LoginInputType>, res: Response) => {
-    const loginResult = await AuthService.login(req.body);
+    const clientDeviceData: DeviceInfoType = {
+      ip: req.ip!,
+      title: req.headers["user-agent"] || "Unknown Device",
+    };
+    const loginResult = await AuthService.login(req.body, clientDeviceData);
 
     if (!loginResult) {
       res.sendStatus(HTTP_RESPONSE_CODES.UNAUTHORIZED);
@@ -82,17 +86,11 @@ authRouter.post(
     }
 
     const { refreshToken, accessToken } = loginResult;
-    const userId = await JwtService.getUserIdByAccessToken(accessToken);
-    if (!userId) {
+
+    if (!loginResult) {
       res.sendStatus(HTTP_RESPONSE_CODES.UNAUTHORIZED);
       return;
     }
-    const clientDeviceData: DeviceInfoType = {
-      ip: req.ip!,
-      title: req.headers["user-agent"] || "Unknown Device",
-      userId,
-    };
-    await DeviceService.addDeviceToList(clientDeviceData, refreshToken);
 
     res
       .cookie("refreshToken", refreshToken, { httpOnly: true, secure: true })
@@ -109,13 +107,13 @@ authRouter.post(
     const token = req.cookies.refreshToken;
 
     await AuthRepository.addRefreshTokenToBlackList(token);
-    const accessToken = await JwtService.createJWT(
+    const accessToken = await JwtService.createAccessToken(
       userId!,
       appConfig.JWT_ACCESS_EXPIRES_TIME,
       appConfig.JWT_ACCESS_SECRET
     );
 
-    const refreshToken = await JwtService.createJWT(
+    const refreshToken = await JwtService.createAccessToken(
       userId!,
       appConfig.JWT_REFRESH_SECRET_EXPIRES_TIME,
       appConfig.JWT_REFRESH_SECRET

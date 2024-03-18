@@ -11,7 +11,7 @@ devicesRouter.get(
   async (req: Request, res: Response) => {
     const devicesList = await DeviceRepository.getAllDevices();
     devicesList
-      ? res.send(devicesList).status(200)
+      ? res.send(devicesList).status(HTTP_RESPONSE_CODES.SUCCESS)
       : res.sendStatus(HTTP_RESPONSE_CODES.BAD_REQUEST);
   }
 );

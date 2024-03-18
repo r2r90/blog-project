@@ -1,5 +1,5 @@
 import { UserQueryRepository } from "../repositories/user-repositories/user.query.repository";
-import { LoginInputType } from "../models/auth/login.input";
+import { DeviceInfoType, LoginInputType } from "../models/auth/login.input";
 import bcrypt from "bcrypt";
 import { JwtService } from "./jwt-service";
 import { UserCreateInputType } from "../models/users/users-input/user.input.model";
@@ -11,9 +11,13 @@ import { UserRepository } from "../repositories/user-repositories/user.repositor
 import { EmailService } from "./email-service";
 import { add } from "date-fns";
 import { appConfig } from "../config/config";
+import { DeviceService } from "./device-service";
 
 export class AuthService {
-  static async login(credentials: LoginInputType) {
+  static async login(
+    credentials: LoginInputType,
+    clientDeviceData: DeviceInfoType
+  ) {
     const user = await UserQueryRepository.getUserByLoginOrEmail(
       credentials.loginOrEmail
     );
@@ -28,16 +32,29 @@ export class AuthService {
 
     if (!passwordValidation) return null;
 
-    const accessToken = await JwtService.createJWT(
+    const accessToken = await JwtService.createAccessToken(
       user._id.toString(),
       appConfig.JWT_ACCESS_EXPIRES_TIME,
       appConfig.JWT_ACCESS_SECRET
     );
 
-    const refreshToken = await JwtService.createJWT(
+    const userId = await JwtService.getUserIdByAccessToken(accessToken);
+
+    const sessionData = {
+      userId,
+      deviceId: randomUUID(),
+      title: clientDeviceData.title,
+      ip: clientDeviceData.ip,
+      lastActiveDate: new Date().toISOString(),
+    };
+
+    await DeviceService.addDeviceToList(sessionData);
+
+    const refreshToken = await JwtService.createRefreshToken(
       user._id.toString(),
       appConfig.JWT_REFRESH_SECRET_EXPIRES_TIME,
-      appConfig.JWT_REFRESH_SECRET
+      appConfig.JWT_REFRESH_SECRET,
+      sessionData
     );
 
     return {

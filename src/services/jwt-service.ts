@@ -2,13 +2,36 @@ import jwt from "jsonwebtoken";
 import { appConfig } from "../config/config";
 import { JwtVerifyType } from "../models/common";
 
+type ExtraData = {
+  deviceId?: string;
+  title?: string;
+  ip?: string;
+  lastActiveDate?: string;
+};
+
 export class JwtService {
-  static async createJWT(
+  static async createAccessToken(
     userId: string,
     expiresTime: string,
     secret: string
   ): Promise<string> {
     return jwt.sign({ userId: userId }, secret, {
+      expiresIn: expiresTime,
+    });
+  }
+
+  static async createRefreshToken(
+    userId: string,
+    expiresTime: string,
+    secret: string,
+    deviceInfo: ExtraData
+  ): Promise<string> {
+    const payload = {
+      userId,
+      deviceInfo,
+    };
+
+    return jwt.sign(payload, secret, {
       expiresIn: expiresTime,
     });
   }
