@@ -11,8 +11,8 @@ import { UserRepository } from "../repositories/user-repositories/user.repositor
 import { EmailService } from "./email-service";
 import { add } from "date-fns";
 import { appConfig } from "../config/config";
-import { DeviceService } from "./device-service";
 import { DeviceRepository } from "../repositories/device-repository/device.repository";
+import { AuthRepository } from "../repositories/auth-repositories/auth.repository";
 
 export class AuthService {
   static async login(
@@ -64,6 +64,32 @@ export class AuthService {
       accessToken,
       refreshToken,
     };
+  }
+
+  static async refreshToken(actualToken: string, userId: string) {
+    await AuthRepository.addRefreshTokenToBlackList(actualToken);
+
+    const accessToken = await JwtService.createAccessToken(
+      userId!,
+      appConfig.JWT_ACCESS_EXPIRES_TIME,
+      appConfig.JWT_ACCESS_SECRET
+    );
+
+    const jwtPayload = await JwtService.checkTokenValidation(
+      actualToken,
+      appConfig.JWT_REFRESH_SECRET
+    );
+
+    if (!jwtPayload) return null;
+
+    const refreshToken = await JwtService.createRefreshToken(
+      userId!,
+      appConfig.JWT_REFRESH_SECRET_EXPIRES_TIME,
+      appConfig.JWT_REFRESH_SECRET,
+      jwtPayload.deviceInfo
+    );
+
+    return { refreshToken, accessToken };
   }
 
   static async registerUser({

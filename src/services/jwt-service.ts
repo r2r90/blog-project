@@ -59,8 +59,9 @@ export class JwtService {
   static async checkTokenValidation(token: string, secret: string) {
     try {
       const payload = jwt.verify(token, secret);
-      let { userId, iat, exp } = payload as JwtVerifyType;
-      return { userId, iat, exp };
+      let { userId, iat, exp, deviceInfo } = payload as JwtVerifyType;
+
+      return { userId, iat, exp, deviceInfo };
     } catch (e) {
       return null;
     }

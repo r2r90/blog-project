@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { SortDirection } from "mongodb";
+import { DeviceInfoType } from "./auth/login.input";
 
 export type ParamType = {
   id: string;
@@ -17,6 +18,7 @@ export type JwtVerifyType = {
   userId: string;
   iat: number;
   exp: number;
+  deviceInfo: DeviceInfoType;
 };
 
 export type RequestType = Request<{}, {}, {}, {}>;

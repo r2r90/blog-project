@@ -11,12 +11,9 @@ import { registerCodeConfirmation } from "../middlewares/validators/register-cod
 import { EmailConfirmationCode } from "../models/auth/email.confirmation";
 import { resendEmailValidator } from "../middlewares/validators/resend-email-validator";
 import { jwtRefreshTokenGuard } from "../middlewares/auth/jwt-refresh-token-guard";
-import { JwtService } from "../services/jwt-service";
-import { appConfig } from "../config/config";
 import { UserQueryRepository } from "../repositories/user-repositories/user.query.repository";
 import { AuthRepository } from "../repositories/auth-repositories/auth.repository";
 import { requestQuantityFixer } from "../middlewares/device-secure/requestQuantityFixer";
-import { DeviceService } from "../services/device-service";
 
 export const authRouter = Router();
 
@@ -106,18 +103,14 @@ authRouter.post(
     const userId = req.userId;
     const token = req.cookies.refreshToken;
 
-    await AuthRepository.addRefreshTokenToBlackList(token);
-    const accessToken = await JwtService.createAccessToken(
-      userId!,
-      appConfig.JWT_ACCESS_EXPIRES_TIME,
-      appConfig.JWT_ACCESS_SECRET
-    );
+    const refreshResult = await AuthService.refreshToken(token, userId!);
 
-    const refreshToken = await JwtService.createAccessToken(
-      userId!,
-      appConfig.JWT_REFRESH_SECRET_EXPIRES_TIME,
-      appConfig.JWT_REFRESH_SECRET
-    );
+    if (!refreshResult) {
+      res.sendStatus(HTTP_RESPONSE_CODES.UNAUTHORIZED);
+      return;
+    }
+
+    const { refreshToken, accessToken } = refreshResult;
 
     res
       .cookie("refreshToken", refreshToken, {
