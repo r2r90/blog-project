@@ -31,8 +31,8 @@ export class DeviceRepository {
     return true;
   }
 
-  static async getAllDevices() {
-    const devices = await deviceConnectCollection.find({}).toArray();
+  static async getAllDevices(userId: string) {
+    const devices = await deviceConnectCollection.find({ userId }).toArray();
     return devices.map(deviceMapper);
   }
 }

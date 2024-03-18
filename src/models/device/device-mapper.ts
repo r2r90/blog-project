@@ -7,7 +7,7 @@ export const deviceMapper = (
 ): DeviceOutputModel => {
   return {
     ip: device.ip,
-    title: device.deviceName,
+    title: device.title,
     lastActiveDate: device.lastActiveDate,
     deviceId: device.deviceId,
   };

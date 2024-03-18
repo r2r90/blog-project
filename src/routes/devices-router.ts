@@ -9,7 +9,9 @@ devicesRouter.get(
   "/",
   requestQuantityFixer,
   async (req: Request, res: Response) => {
-    const devicesList = await DeviceRepository.getAllDevices();
+    const userId = req.userId;
+
+    const devicesList = await DeviceRepository.getAllDevices(userId!);
     devicesList
       ? res.send(devicesList).status(HTTP_RESPONSE_CODES.SUCCESS)
       : res.sendStatus(HTTP_RESPONSE_CODES.BAD_REQUEST);
