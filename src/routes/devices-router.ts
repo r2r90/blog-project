@@ -6,12 +6,14 @@ import { JwtService } from "../services/jwt-service";
 import { appConfig } from "../config/config";
 import { DeviceService } from "../services/device-service";
 import { jwtRefreshTokenGuard } from "../middlewares/auth/jwt-refresh-token-guard";
+import { checkOwnerValidator } from "../middlewares/validators/check-owner-validator";
 
 export const devicesRouter = Router();
 
 devicesRouter.get(
   "/",
   requestQuantityFixer,
+  checkOwnerValidator,
   jwtRefreshTokenGuard,
   async (req: Request, res: Response) => {
     const token = req.cookies.refreshToken;
