@@ -13,7 +13,6 @@ export const devicesRouter = Router();
 devicesRouter.get(
   "/",
   requestQuantityFixer,
-  checkOwnerValidator,
   jwtRefreshTokenGuard,
   async (req: Request, res: Response) => {
     const token = req.cookies.refreshToken;
@@ -34,6 +33,7 @@ devicesRouter.get(
 devicesRouter.delete(
   "/:id",
   requestQuantityFixer,
+  checkOwnerValidator,
   jwtRefreshTokenGuard,
   async (req, res) => {
     const deviceIdToDelete = req.params.id;
