@@ -4,6 +4,7 @@ import { JwtService } from "../../services/jwt-service";
 import { appConfig } from "../../config/config";
 import { DeviceRepository } from "../../repositories/device-repository/device.repository";
 import { DeviceService } from "../../services/device-service";
+import { HTTP_RESPONSE_CODES } from "../../models/common";
 
 export const checkOwnerValidator = async (
   req: Request,
@@ -19,10 +20,15 @@ export const checkOwnerValidator = async (
   const userId = jwtPayload?.userId;
   const deviceId = req.params.id;
 
-  const isDeviceExist = await DeviceService.getDeviceById(deviceId);
+  const findDevice = await DeviceService.getDeviceById(deviceId);
 
-  if (!isDeviceExist) {
-    res.sendStatus(404);
+  if (!findDevice) {
+    res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+    return;
+  }
+
+  if (findDevice.userId !== userId) {
+    res.sendStatus(HTTP_RESPONSE_CODES.FORBIDDEN);
     return;
   }
 };
