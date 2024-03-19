@@ -29,6 +29,7 @@ export class JwtService {
     const payload = {
       userId,
       deviceInfo,
+      deviceId: deviceInfo.deviceId,
     };
 
     return jwt.sign(payload, secret, {
