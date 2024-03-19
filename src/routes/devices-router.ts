@@ -14,6 +14,10 @@ devicesRouter.get(
   async (req: Request, res: Response) => {
     const token = req.cookies.refreshToken;
 
+    if (!token) {
+      res.sendStatus(HTTP_RESPONSE_CODES.UNAUTHORIZED);
+    }
+
     const jwtPayload = await JwtService.checkTokenValidation(
       token,
       appConfig.JWT_REFRESH_SECRET
