@@ -15,4 +15,12 @@ export class DeviceService {
   static async deleteAllDevices(userId: string) {
     return await DeviceRepository.deleteAllDevicesByUserId(userId);
   }
+
+  static async checkDeviceOwner(deviceId: string, userId: string) {
+    const findDevice = await deviceConnectCollection.findOne({
+      deviceId,
+    });
+
+    return findDevice!.deviceId === userId;
+  }
 }

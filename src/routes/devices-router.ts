@@ -42,10 +42,19 @@ devicesRouter.delete(
       appConfig.JWT_REFRESH_SECRET
     );
 
-    const userId = jwtPayload?.userId;
+    const userId = jwtPayload!.userId;
+
+    const checkOwner = await DeviceService.checkDeviceOwner(
+      deviceIdToDelete,
+      userId
+    );
+
+    if (!checkOwner) {
+      res.sendStatus(HTTP_RESPONSE_CODES.FORBIDDEN);
+      return;
+    }
 
     const deleteDevice = await DeviceService.deleteDevice(deviceIdToDelete);
-    console.log(deleteDevice);
 
     if (!deleteDevice) {
       res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
