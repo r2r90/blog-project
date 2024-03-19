@@ -39,12 +39,6 @@ authRouter.post(
   registerCodeConfirmation(),
   requestQuantityFixer,
   async (req: RequestWithBody<EmailConfirmationCode>, res: Response) => {
-    const result = await AuthService.confirmEmail(req.body.code);
-
-    if (!result) {
-      res.sendStatus(400);
-      return;
-    }
     res.status(204).send("OK!");
   }
 );

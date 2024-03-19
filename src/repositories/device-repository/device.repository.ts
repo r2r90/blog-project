@@ -35,4 +35,13 @@ export class DeviceRepository {
     const devices = await deviceConnectCollection.find({ userId }).toArray();
     return devices.map(deviceMapper);
   }
+
+  static async getDeviceById(deviceId: string) {
+    return await deviceConnectCollection.findOne({ deviceId });
+  }
+
+  static async deleteDeviceById(deviceId: string) {
+    const result = await deviceConnectCollection.deleteOne({ deviceId });
+    return result.deletedCount === 1;
+  }
 }
