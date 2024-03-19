@@ -44,4 +44,9 @@ export class DeviceRepository {
     const result = await deviceConnectCollection.deleteOne({ deviceId });
     return result.deletedCount === 1;
   }
+
+  static async deleteAllDevicesByUserId(userId: string) {
+    const result = await deviceConnectCollection.deleteMany({ userId });
+    return result.deletedCount;
+  }
 }
