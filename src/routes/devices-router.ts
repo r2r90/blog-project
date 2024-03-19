@@ -57,7 +57,7 @@ devicesRouter.delete(
     const isDeleted = await DeviceService.deleteDevice(deviceIdToDelete);
 
     isDeleted
-      ? res.send("OK").status(HTTP_RESPONSE_CODES.SUCCESS)
+      ? res.send("OK").status(HTTP_RESPONSE_CODES.NO_CONTENT)
       : res.sendStatus(HTTP_RESPONSE_CODES.BAD_REQUEST);
   }
 );
