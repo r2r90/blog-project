@@ -5,18 +5,16 @@ import { requestQuantityFixer } from "../middlewares/device-secure/requestQuanti
 import { JwtService } from "../services/jwt-service";
 import { appConfig } from "../config/config";
 import { DeviceService } from "../services/device-service";
+import { jwtRefreshTokenGuard } from "../middlewares/auth/jwt-refresh-token-guard";
 
 export const devicesRouter = Router();
 
 devicesRouter.get(
   "/",
   requestQuantityFixer,
+  jwtRefreshTokenGuard,
   async (req: Request, res: Response) => {
     const token = req.cookies.refreshToken;
-
-    if (!token) {
-      res.sendStatus(HTTP_RESPONSE_CODES.UNAUTHORIZED);
-    }
 
     const jwtPayload = await JwtService.checkTokenValidation(
       token,
@@ -31,13 +29,18 @@ devicesRouter.get(
       : res.sendStatus(HTTP_RESPONSE_CODES.BAD_REQUEST);
   }
 );
-devicesRouter.delete("/:id", async (req, res) => {
-  const deviceIdToDelete = req.params.id;
+devicesRouter.delete(
+  "/:id",
+  jwtRefreshTokenGuard,
+  requestQuantityFixer,
+  async (req, res) => {
+    const deviceIdToDelete = req.params.id;
 
-  const deleteDevice = await DeviceService.deleteDevice(deviceIdToDelete);
+    const deleteDevice = await DeviceService.deleteDevice(deviceIdToDelete);
 
-  deleteDevice
-    ? res.status(HTTP_RESPONSE_CODES.SUCCESS)
-    : res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
-});
+    deleteDevice
+      ? res.status(HTTP_RESPONSE_CODES.SUCCESS)
+      : res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+  }
+);
 devicesRouter.delete("/", (req, res) => {});
