@@ -1,8 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { AuthService } from "../../services/auth-service";
 import { JwtService } from "../../services/jwt-service";
 import { appConfig } from "../../config/config";
-import { DeviceRepository } from "../../repositories/device-repository/device.repository";
 import { DeviceService } from "../../services/device-service";
 import { HTTP_RESPONSE_CODES } from "../../models/common";
 
@@ -31,4 +29,6 @@ export const checkOwnerValidator = async (
     res.sendStatus(HTTP_RESPONSE_CODES.FORBIDDEN);
     return;
   }
+
+  next();
 };

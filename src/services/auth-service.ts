@@ -13,6 +13,7 @@ import { add } from "date-fns";
 import { appConfig } from "../config/config";
 import { DeviceRepository } from "../repositories/device-repository/device.repository";
 import { AuthRepository } from "../repositories/auth-repositories/auth.repository";
+import { DeviceService } from "./device-service";
 
 export class AuthService {
   static async login(
@@ -86,7 +87,7 @@ export class AuthService {
       userId!,
       appConfig.JWT_REFRESH_SECRET_EXPIRES_TIME,
       appConfig.JWT_REFRESH_SECRET,
-      jwtPayload.deviceInfo
+      { ...jwtPayload.deviceInfo, lastActiveDate: new Date().toISOString() }
     );
 
     return { refreshToken, accessToken };
