@@ -35,12 +35,23 @@ devicesRouter.delete(
   requestQuantityFixer,
   async (req, res) => {
     const deviceIdToDelete = req.params.id;
+    const token = req.cookies.refreshToken;
+
+    const jwtPayload = await JwtService.checkTokenValidation(
+      token,
+      appConfig.JWT_REFRESH_SECRET
+    );
+
+    const userId = jwtPayload?.userId;
 
     const deleteDevice = await DeviceService.deleteDevice(deviceIdToDelete);
+    console.log(deleteDevice);
 
-    deleteDevice
-      ? res.status(HTTP_RESPONSE_CODES.SUCCESS)
-      : res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+    if (!deleteDevice) {
+      res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+      return;
+    }
+    res.send("OK").status(HTTP_RESPONSE_CODES.SUCCESS);
   }
 );
 devicesRouter.delete(

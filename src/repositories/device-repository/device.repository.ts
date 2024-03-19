@@ -36,8 +36,8 @@ export class DeviceRepository {
     return devices.map(deviceMapper);
   }
 
-  static async getDeviceById(deviceId: string) {
-    return await deviceConnectCollection.findOne({ deviceId });
+  static async getDeviceByUser(deviceId: string, userId: string) {
+    return await deviceConnectCollection.findOne({ deviceId, userId });
   }
 
   static async deleteDeviceById(deviceId: string) {

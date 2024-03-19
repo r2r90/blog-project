@@ -1,12 +1,13 @@
 import { DeviceRepository } from "../repositories/device-repository/device.repository";
+import { deviceConnectCollection } from "../db/db";
 
 export class DeviceService {
   static async deleteDevice(deviceId: string) {
-    const foundDeviceToDelete = await DeviceRepository.deleteDeviceById(
-      deviceId
-    );
+    const findDeviceToDelete = await deviceConnectCollection.findOne({
+      deviceId,
+    });
 
-    if (!foundDeviceToDelete) return null;
+    if (!findDeviceToDelete) return null;
 
     return await DeviceRepository.deleteDeviceById(deviceId);
   }
