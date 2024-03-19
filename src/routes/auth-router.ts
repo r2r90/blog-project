@@ -36,8 +36,8 @@ authRouter.post(
 
 authRouter.post(
   "/registration-confirmation",
-  registerCodeConfirmation(),
   requestQuantityFixer,
+  registerCodeConfirmation(),
   async (req: RequestWithBody<EmailConfirmationCode>, res: Response) => {
     res.status(204).send("OK!");
   }

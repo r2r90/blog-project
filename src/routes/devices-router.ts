@@ -6,6 +6,7 @@ import { JwtService } from "../services/jwt-service";
 import { appConfig } from "../config/config";
 import { DeviceService } from "../services/device-service";
 import { jwtRefreshTokenGuard } from "../middlewares/auth/jwt-refresh-token-guard";
+import { deviceOwnerCheck } from "../middlewares/device-secure/device-owner-check";
 
 export const devicesRouter = Router();
 
@@ -31,28 +32,11 @@ devicesRouter.get(
 );
 devicesRouter.delete(
   "/:id",
-  jwtRefreshTokenGuard,
   requestQuantityFixer,
+  jwtRefreshTokenGuard,
+  deviceOwnerCheck,
   async (req, res) => {
     const deviceIdToDelete = req.params.id;
-    const token = req.cookies.refreshToken;
-
-    const jwtPayload = await JwtService.checkTokenValidation(
-      token,
-      appConfig.JWT_REFRESH_SECRET
-    );
-
-    const userId = jwtPayload!.userId;
-
-    const checkOwner = await DeviceService.checkDeviceOwner(
-      deviceIdToDelete,
-      userId
-    );
-
-    if (!checkOwner) {
-      res.sendStatus(HTTP_RESPONSE_CODES.FORBIDDEN);
-      return;
-    }
 
     const deleteDevice = await DeviceService.deleteDevice(deviceIdToDelete);
 
