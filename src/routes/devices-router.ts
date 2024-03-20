@@ -54,7 +54,7 @@ devicesRouter.delete(
     }
 
     const isDeleted = await DeviceService.deleteDevice(deviceIdToDelete);
-    await AuthRepository.addRefreshTokenToBlackList(token);
+
     isDeleted
       ? res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT)
       : res.sendStatus(HTTP_RESPONSE_CODES.BAD_REQUEST);
