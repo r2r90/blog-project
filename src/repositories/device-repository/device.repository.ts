@@ -15,7 +15,7 @@ export class DeviceRepository {
     // Get current date
     const currentDate = new Date();
     // Calculate the date before 10 seconds
-    const limitDate = new Date(currentDate.getTime() - 10 * 1000);
+    const limitDate = new Date(currentDate.getTime() - 10 * 1050);
 
     const query = {
       IP: ip,
