@@ -55,7 +55,7 @@ devicesRouter.delete(
     const isDeleted = await DeviceService.deleteDevice(deviceIdToDelete);
 
     isDeleted
-      ? res.send("OK").status(HTTP_RESPONSE_CODES.NO_CONTENT)
+      ? res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT)
       : res.sendStatus(HTTP_RESPONSE_CODES.BAD_REQUEST);
   }
 );
@@ -80,6 +80,6 @@ devicesRouter.delete("/", jwtRefreshTokenGuard, async (req, res) => {
   const result = await DeviceService.deleteAllDevices(userId);
 
   result
-    ? res.status(HTTP_RESPONSE_CODES.SUCCESS)
+    ? res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT)
     : res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
 });
