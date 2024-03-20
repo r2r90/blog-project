@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { appConfig } from "../config/config";
 import { JwtVerifyType } from "../models/common";
+import { DeviceConnectDbType } from "../models/db-types";
 
 type ExtraData = {
   deviceId?: string;
@@ -47,11 +48,11 @@ export class JwtService {
     }
   }
 
-  static async getUserIdByRefreshToken(token: string) {
+  static async getParamsFromRefreshToken(token: string) {
     try {
       const payload = jwt.verify(token, appConfig.JWT_REFRESH_SECRET);
-      let { userId } = payload as JwtVerifyType;
-      return userId;
+      let { userId, iat, exp, deviceInfo } = payload as JwtVerifyType;
+      return { userId, iat, exp, deviceInfo };
     } catch (e) {
       return null;
     }

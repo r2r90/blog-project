@@ -14,6 +14,8 @@ import { jwtRefreshTokenGuard } from "../middlewares/auth/jwt-refresh-token-guar
 import { UserQueryRepository } from "../repositories/user-repositories/user.query.repository";
 import { AuthRepository } from "../repositories/auth-repositories/auth.repository";
 import { requestQuantityFixer } from "../middlewares/device-secure/requestQuantityFixer";
+import { JwtService } from "../services/jwt-service";
+import { DeviceService } from "../services/device-service";
 
 export const authRouter = Router();
 
@@ -134,6 +136,17 @@ authRouter.post(
       res.sendStatus(HTTP_RESPONSE_CODES.UNAUTHORIZED);
       return;
     }
+
+    const deviceParams = await JwtService.getParamsFromRefreshToken(
+      refreshToken
+    );
+
+    if (!deviceParams) {
+      res.sendStatus(HTTP_RESPONSE_CODES.UNAUTHORIZED);
+      return;
+    }
+
+    await DeviceService.deleteDevice(deviceParams.deviceInfo.deviceId);
 
     const logoutResult = await AuthRepository.addRefreshTokenToBlackList(
       refreshToken
