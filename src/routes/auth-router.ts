@@ -17,6 +17,10 @@ import { requestQuantityFixer } from "../middlewares/device-secure/requestQuanti
 import { JwtService } from "../services/jwt-service";
 import { DeviceService } from "../services/device-service";
 
+import dotenv from "dotenv";
+
+dotenv.config();
+
 export const authRouter = Router();
 
 authRouter.post(
@@ -27,7 +31,8 @@ authRouter.post(
   async (req: RequestWithBody<UserCreateInputType>, res: Response) => {
     const { login, email, password } = req.body;
     const newUser = await AuthService.registerUser({ login, email, password });
-
+    console.log(process.env.EMAIL_LOGIN);
+    console.log(process.env.EMAIL_PASSWORD);
     if (!newUser) {
       res.sendStatus(HTTP_RESPONSE_CODES.BAD_REQUEST);
       return;
