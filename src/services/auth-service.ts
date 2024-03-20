@@ -81,20 +81,18 @@ export class AuthService {
       appConfig.JWT_REFRESH_SECRET
     );
 
-    console.log(jwtPayload);
-
     if (!jwtPayload) return null;
-
-    await DeviceService.updateLastActiveDate(
-      jwtPayload?.deviceInfo.deviceId,
-      userId
-    );
 
     const refreshToken = await JwtService.createRefreshToken(
       userId!,
       appConfig.JWT_REFRESH_SECRET_EXPIRES_TIME,
       appConfig.JWT_REFRESH_SECRET,
       jwtPayload.deviceInfo
+    );
+
+    await DeviceService.updateLastActiveDate(
+      jwtPayload?.deviceInfo.deviceId,
+      userId
     );
 
     return { refreshToken, accessToken };
