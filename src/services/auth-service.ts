@@ -14,6 +14,7 @@ import { appConfig } from "../config/config";
 import { DeviceRepository } from "../repositories/device-repository/device.repository";
 import { AuthRepository } from "../repositories/auth-repositories/auth.repository";
 import { DeviceService } from "./device-service";
+import { DeviceQueryRepository } from "../repositories/device-repository/device.query.repository";
 
 export class AuthService {
   static async login(
@@ -70,18 +71,24 @@ export class AuthService {
   static async refreshToken(actualToken: string, userId: string) {
     await AuthRepository.addRefreshTokenToBlackList(actualToken);
 
-    const accessToken = await JwtService.createAccessToken(
-      userId!,
-      appConfig.JWT_ACCESS_EXPIRES_TIME,
-      appConfig.JWT_ACCESS_SECRET
-    );
-
     const jwtPayload = await JwtService.checkTokenValidation(
       actualToken,
       appConfig.JWT_REFRESH_SECRET
     );
 
     if (!jwtPayload) return null;
+
+    const sessionVerification = await DeviceQueryRepository.findSessionDevice(
+      jwtPayload.deviceInfo.deviceId
+    );
+
+    if (!sessionVerification) return null;
+
+    const accessToken = await JwtService.createAccessToken(
+      userId!,
+      appConfig.JWT_ACCESS_EXPIRES_TIME,
+      appConfig.JWT_ACCESS_SECRET
+    );
 
     const refreshToken = await JwtService.createRefreshToken(
       userId!,
