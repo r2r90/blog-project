@@ -12,7 +12,6 @@ export const devicesRouter = Router();
 
 devicesRouter.get(
   "/",
-  requestQuantityFixer,
   jwtRefreshTokenGuard,
   async (req: Request, res: Response) => {
     const token = req.cookies.refreshToken;
