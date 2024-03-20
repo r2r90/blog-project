@@ -62,22 +62,22 @@ devicesRouter.delete(
 devicesRouter.delete("/", jwtRefreshTokenGuard, async (req, res) => {
   const token = req.cookies.refreshToken;
 
-  const jwtPayload = await JwtService.checkTokenValidation(
-    token,
-    appConfig.JWT_REFRESH_SECRET
-  );
+  const jwtPayload = await JwtService.getParamsFromRefreshToken(token);
 
   if (!jwtPayload) {
     res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
     return;
   }
 
-  const userId = jwtPayload.userId;
+  const { userId, deviceInfo } = jwtPayload;
   if (!userId) {
     res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
     return;
   }
-  const result = await DeviceService.deleteAllDevices(userId);
+  const result = await DeviceService.deleteAllDevices(
+    userId,
+    deviceInfo.deviceId
+  );
 
   result
     ? res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT)

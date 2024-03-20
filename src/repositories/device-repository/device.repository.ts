@@ -57,8 +57,15 @@ export class DeviceRepository {
     return result.deletedCount === 1;
   }
 
-  static async deleteAllDevicesByUserId(userId: string) {
-    const result = await deviceConnectCollection.deleteMany({ userId });
+  static async deleteAllDevicesByUserId(
+    userId: string,
+    currentDeviceId: string
+  ) {
+    const result = await deviceConnectCollection.deleteMany({
+      userId,
+      deviceId: { $ne: currentDeviceId },
+    });
+
     return result.deletedCount;
   }
 }

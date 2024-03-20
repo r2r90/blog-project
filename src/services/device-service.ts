@@ -12,8 +12,8 @@ export class DeviceService {
     return await DeviceRepository.deleteDeviceById(deviceId);
   }
 
-  static async deleteAllDevices(userId: string) {
-    return await DeviceRepository.deleteAllDevicesByUserId(userId);
+  static async deleteAllDevices(userId: string, deviceId: string) {
+    return await DeviceRepository.deleteAllDevicesByUserId(userId, deviceId);
   }
 
   static async getDeviceById(deviceId: string) {
