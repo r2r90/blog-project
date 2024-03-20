@@ -1,12 +1,12 @@
 import { Request, Response, Router } from "express";
 import { DeviceRepository } from "../repositories/device-repository/device.repository";
 import { HTTP_RESPONSE_CODES } from "../models/common";
-import { requestQuantityFixer } from "../middlewares/device-secure/requestQuantityFixer";
 import { JwtService } from "../services/jwt-service";
 import { appConfig } from "../config/config";
 import { DeviceService } from "../services/device-service";
 import { jwtRefreshTokenGuard } from "../middlewares/auth/jwt-refresh-token-guard";
 import { checkOwnerValidator } from "../middlewares/validators/check-owner-validator";
+import { AuthRepository } from "../repositories/auth-repositories/auth.repository";
 
 export const devicesRouter = Router();
 
@@ -52,6 +52,8 @@ devicesRouter.delete(
     if (device?.userId !== userId) {
       res.sendStatus(HTTP_RESPONSE_CODES.FORBIDDEN);
     }
+
+    await AuthRepository.addRefreshTokenToBlackList(token);
     const isDeleted = await DeviceService.deleteDevice(deviceIdToDelete);
 
     isDeleted
