@@ -40,6 +40,18 @@ export class DeviceRepository {
     return await deviceConnectCollection.findOne({ deviceId, userId });
   }
 
+  static async updateLastActiveDate(deviceId: string, userId: string) {
+    console.log(deviceId);
+    const res = await deviceConnectCollection.updateOne(
+      { deviceId },
+      { $set: { lastActiveDate: new Date().toISOString() } }
+    );
+
+    console.log(res);
+
+    return !!res.matchedCount;
+  }
+
   static async deleteDeviceById(deviceId: string) {
     const result = await deviceConnectCollection.deleteOne({ deviceId });
     return result.deletedCount === 1;

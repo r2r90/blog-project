@@ -21,4 +21,8 @@ export class DeviceService {
       deviceId,
     });
   }
+
+  static async updateLastActiveDate(deviceId: string, userId: string) {
+    await DeviceRepository.updateLastActiveDate(deviceId, userId);
+  }
 }
