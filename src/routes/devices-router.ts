@@ -32,7 +32,6 @@ devicesRouter.get(
 );
 devicesRouter.delete(
   "/:id",
-  requestQuantityFixer,
   jwtRefreshTokenGuard,
   checkOwnerValidator,
   async (req, res) => {
@@ -61,32 +60,27 @@ devicesRouter.delete(
       : res.sendStatus(HTTP_RESPONSE_CODES.BAD_REQUEST);
   }
 );
-devicesRouter.delete(
-  "/",
-  jwtRefreshTokenGuard,
-  requestQuantityFixer,
-  async (req, res) => {
-    const token = req.cookies.refreshToken;
+devicesRouter.delete("/", jwtRefreshTokenGuard, async (req, res) => {
+  const token = req.cookies.refreshToken;
 
-    const jwtPayload = await JwtService.checkTokenValidation(
-      token,
-      appConfig.JWT_REFRESH_SECRET
-    );
+  const jwtPayload = await JwtService.checkTokenValidation(
+    token,
+    appConfig.JWT_REFRESH_SECRET
+  );
 
-    if (!jwtPayload) {
-      res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
-      return;
-    }
-
-    const userId = jwtPayload.userId;
-    if (!userId) {
-      res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
-      return;
-    }
-    const result = await DeviceService.deleteAllDevices(userId);
-
-    result
-      ? res.status(HTTP_RESPONSE_CODES.SUCCESS)
-      : res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+  if (!jwtPayload) {
+    res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+    return;
   }
-);
+
+  const userId = jwtPayload.userId;
+  if (!userId) {
+    res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+    return;
+  }
+  const result = await DeviceService.deleteAllDevices(userId);
+
+  result
+    ? res.status(HTTP_RESPONSE_CODES.SUCCESS)
+    : res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+});
