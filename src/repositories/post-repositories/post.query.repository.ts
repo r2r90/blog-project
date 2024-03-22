@@ -4,7 +4,7 @@ import {
   PostOutputType,
   PostPagination,
 } from "../../models/posts/post.output.model";
-import { postsCollection } from "../../db/db";
+import { PostsModel } from "../../db/schemas/posts-schema";
 
 export type PostSortData = {
   sortBy: string;
@@ -19,13 +19,12 @@ export class PostQueryRepository {
   ): Promise<PostPagination<PostOutputType>> {
     const { sortBy, sortDirection, pageNumber, pageSize } = sortData;
 
-    const posts = await postsCollection
-      .find({})
-      .sort(sortBy, sortDirection)
+    const posts = await PostsModel.find({})
+      .sort({ [sortBy]: sortDirection })
       .skip((pageNumber - 1) * pageSize)
-      .limit(pageSize)
-      .toArray();
-    const totalCount = await postsCollection.countDocuments({});
+      .limit(pageSize);
+
+    const totalCount = await PostsModel.countDocuments(posts);
     const pagesCount = Math.ceil(totalCount / pageSize);
     return {
       pagesCount,
@@ -37,7 +36,7 @@ export class PostQueryRepository {
   }
 
   static async getPostById(id: string) {
-    const post = await postsCollection.findOne({ _id: new ObjectId(id) });
+    const post = await PostsModel.findOne({ _id: new ObjectId(id) });
     if (!post) {
       return null;
     }
@@ -49,13 +48,11 @@ export class PostQueryRepository {
     sortData: PostSortData
   ): Promise<PostPagination<PostOutputType>> {
     const { sortBy, sortDirection, pageNumber, pageSize } = sortData;
-    const postsCount = await postsCollection.countDocuments({ blogId });
-    const posts = await postsCollection
-      .find({ blogId })
-      .sort(sortBy, sortDirection)
+    const postsCount = await PostsModel.countDocuments({ blogId });
+    const posts = await PostsModel.find({ blogId })
+      .sort({ [sortBy]: sortDirection })
       .skip((pageNumber - 1) * pageSize)
-      .limit(pageSize)
-      .toArray();
+      .limit(pageSize);
 
     return {
       pagesCount: Math.ceil(postsCount / pageSize),

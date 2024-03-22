@@ -10,4 +10,4 @@ const PostsSchema = new mongoose.Schema<PostDbType>({
   createdAt: { type: String, required: true },
 });
 
-export const PostModel = mongoose.model("posts", PostsSchema);
+export const PostsModel = mongoose.model("posts", PostsSchema);

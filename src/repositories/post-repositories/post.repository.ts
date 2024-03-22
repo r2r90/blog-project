@@ -1,14 +1,15 @@
-import { blogsCollection, postsCollection } from "../../db/db";
 import { postMapper } from "../../models/posts/mappers/post-mapper";
 import { ObjectId } from "mongodb";
 import {
   PostCreateInputType,
   PostUpdateInputType,
 } from "../../models/posts/post-input-model/post.input.model";
+import { PostsModel } from "../../db/schemas/posts-schema";
+import { BlogsModel } from "../../db/schemas/blogs-schema";
 
 export class PostRepository {
   static async getPostById(id: string) {
-    const post = await postsCollection.findOne({ _id: new ObjectId(id) });
+    const post = await PostsModel.findOne({ _id: new ObjectId(id) });
     if (!post) {
       return null;
     }
@@ -17,7 +18,7 @@ export class PostRepository {
   }
 
   static async createPost(postCreateInputData: PostCreateInputType) {
-    const blog = await blogsCollection.findOne({
+    const blog = await BlogsModel.findOne({
       _id: new ObjectId(postCreateInputData.blogId),
     });
 
@@ -32,12 +33,12 @@ export class PostRepository {
       createdAt,
     };
 
-    const res = await postsCollection.insertOne({ ...createdPost });
-    return { id: res.insertedId.toString(), ...createdPost };
+    const res = await PostsModel.create({ ...createdPost });
+    return { id: res.id, ...createdPost };
   }
 
   static async updatePost(id: string, postUpdateData: PostUpdateInputType) {
-    const res = await postsCollection.updateOne(
+    const res = await PostsModel.updateOne(
       { _id: new ObjectId(id) },
       {
         $set: {
@@ -53,7 +54,7 @@ export class PostRepository {
   }
 
   static async deletePost(id: string) {
-    const res = await postsCollection.deleteOne({ _id: new ObjectId(id) });
+    const res = await PostsModel.deleteOne({ _id: new ObjectId(id) });
     return !!res.deletedCount;
   }
 }
