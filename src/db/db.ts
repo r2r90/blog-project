@@ -10,9 +10,12 @@ import {
   UserDbType,
 } from "../models/db-types";
 import { appConfig } from "../config/config";
+import mongoose from "mongoose";
 
 configDotenv();
-const url = appConfig.MONGO_URL;
+
+const dbName = "home-works";
+const url = appConfig.MONGO_URL || `mongodb://0.0.0.0:2017/${dbName}`;
 
 if (!url) {
   throw new Error(`! Url doesn't found`);
@@ -36,7 +39,7 @@ export const deviceConnectCollection =
 
 export const runDb = async () => {
   try {
-    await client.connect();
+    await mongoose.connect(url);
     console.log("Connected successfully to MongoDB ");
   } catch (e) {
     console.log(`ERROR: ${e}`);

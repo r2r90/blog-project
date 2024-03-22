@@ -4,7 +4,6 @@ import {
 } from "../repositories/post-repositories/post.query.repository";
 import { CreatePostFromBlogInputModel } from "../models/posts/post-input-model/create.post.from.blog.input.model";
 import { PostOutputType } from "../models/posts/post.output.model";
-import { BlogRepository } from "../repositories/blog-repositories/blog.repository";
 import { PostRepository } from "../repositories/post-repositories/post.repository";
 import {
   PostCreateInputType,
@@ -15,6 +14,7 @@ import { PostDbType } from "../models/db-types";
 import { CommentViewModel } from "../models/comments/comments.output.model";
 import { UserQueryRepository } from "../repositories/user-repositories/user.query.repository";
 import { CommentRepository } from "../repositories/comment-repositories/comment.repository";
+import { BlogQueryRepository } from "../repositories/blog-repositories/blog.query.repository";
 
 export class PostService {
   static async getAllPostsByBlogId(blogId: string, sortData: PostSortData) {
@@ -38,7 +38,7 @@ export class PostService {
     createPostModel: CreatePostFromBlogInputModel
   ): Promise<PostOutputType | null> {
     const { title, content, shortDescription } = createPostModel;
-    const blog = await BlogRepository.getBlogById(blogId);
+    const blog = await BlogQueryRepository.getBlogById(blogId);
     if (!blog) {
       return null;
     }

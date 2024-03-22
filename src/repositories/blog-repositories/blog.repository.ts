@@ -1,27 +1,19 @@
 import { BlogUpdateInputType } from "../../models/blogs/blog-input-model/blog.input.model";
-import { blogsCollection } from "../../db/db";
 import { BlogOutputType } from "../../models/blogs/output-model/blog.output.model";
 import { ObjectId } from "mongodb";
 import { BlogDbType } from "../../models/db-types";
+import { BlogsModel } from "../../db/schemas/blogs-schema";
 
 export class BlogRepository {
-  static async getBlogById(id: string): Promise<BlogDbType | null> {
-    const blog = await blogsCollection.findOne({ _id: new ObjectId(id) });
-    if (!blog) {
-      return null;
-    }
-    return blog;
-  }
-
   static async createBlog(blog: BlogDbType): Promise<BlogOutputType> {
-    const createdBlog = await blogsCollection.insertOne({ ...blog });
-    return { ...blog, id: createdBlog.insertedId.toString() };
+    const createdBlog = await BlogsModel.create({ ...blog });
+    return { ...blog, id: createdBlog.id };
   }
 
   static async updateBlog(
     blogUpdateData: BlogUpdateInputType & { id: string }
   ): Promise<boolean> {
-    const res = await blogsCollection.updateOne(
+    const res = await BlogsModel.updateOne(
       { _id: new ObjectId(blogUpdateData.id) },
       {
         $set: {
@@ -36,7 +28,7 @@ export class BlogRepository {
   }
 
   static async deleteBlog(id: string): Promise<boolean | null> {
-    const res = await blogsCollection.deleteOne({ _id: new ObjectId(id) });
+    const res = await BlogsModel.deleteOne({ _id: new ObjectId(id) });
     return !!res.deletedCount;
   }
 }
