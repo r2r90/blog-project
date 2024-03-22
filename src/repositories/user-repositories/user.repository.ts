@@ -2,6 +2,7 @@ import { usersCollection } from "../../db/db";
 import { UserDbType } from "../../models/db-types";
 import { ObjectId } from "mongodb";
 import { add } from "date-fns";
+import { UsersModel } from "../../db/schemas/users-schema";
 
 export class UserRepository {
   static async createUser(user: UserDbType) {
@@ -11,7 +12,7 @@ export class UserRepository {
 
     if (isUserExist) return null;
 
-    const createdUser = await usersCollection.insertOne({
+    const createdUser = await UsersModel.create({
       createdAt,
       login,
       email,
@@ -24,20 +25,14 @@ export class UserRepository {
       },
     });
 
-    return createdUser.insertedId.toString();
+    return createdUser.id;
   }
-
-  /*  confirmationCode: registerUUIDCode,
-    expirationDate: add(new Date(), {
-    hours: 1,
-    minutes: 3,
-  }),*/
 
   static async updateUserConfirmCodeAndExpDate(
     id: ObjectId,
     newConfirmCode: string
   ): Promise<boolean> {
-    let result = await usersCollection.updateOne(
+    let result = await UsersModel.updateOne(
       { _id: new ObjectId(id) },
       {
         $set: {
@@ -57,19 +52,23 @@ export class UserRepository {
       { _id: new ObjectId(id) },
       { $set: { "emailConfirmation.isConfirmed": true } }
     );
-    console.log(result);
     return !!result.modifiedCount;
   }
 
   static async deleteUser(id: string) {
-    const res = await usersCollection.deleteOne({ _id: new ObjectId(id) });
+    const res = await UsersModel.deleteOne({ _id: new ObjectId(id) });
     return !!res.deletedCount;
   }
 
   static async doesExistByLoginOrEmail(login?: string, email?: string) {
-    // Check if User already is existing in DB
-    return await usersCollection.findOne({
-      $or: [{ login }, { email }],
-    });
+    try {
+      const user = await UsersModel.findOne({
+        $or: [{ login }, { email }],
+      });
+      return !!user; // If user exists, returns true, otherwise false
+    } catch (error) {
+      console.error("Error checking user existence:", error);
+      throw error; // Rethrow the error to be handled elsewhere
+    }
   }
 }

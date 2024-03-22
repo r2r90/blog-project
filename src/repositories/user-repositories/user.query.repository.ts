@@ -3,10 +3,10 @@ import {
   UserPaginationType,
   UserViewModel,
 } from "../../models/users/users-output/user.output.model";
-import { usersCollection } from "../../db/db";
 import { userMapper } from "../../models/users/mappers/users-mapper";
 import { UserDbType } from "../../models/db-types";
-import { ObjectId, WithId } from "mongodb";
+import { WithId } from "mongodb";
+import { UsersModel } from "../../db/schemas/users-schema";
 
 export class UserQueryRepository {
   static async getAllUsers(
@@ -47,13 +47,11 @@ export class UserQueryRepository {
       filter = { $or: filterOptions };
     }
 
-    const users = await usersCollection
-      .find(filter)
-      .sort(sortBy, sortDirection)
+    const users = await UsersModel.find(filter)
+      .sort({ [sortBy]: sortDirection })
       .skip((pageNumber - 1) * pageSize)
-      .limit(pageSize)
-      .toArray();
-    const totalCount = await usersCollection.countDocuments(filter);
+      .limit(pageSize);
+    const totalCount = await UsersModel.countDocuments(filter);
     const pagesCount = Math.ceil(totalCount / pageSize);
     return {
       pageSize,
@@ -67,7 +65,7 @@ export class UserQueryRepository {
   static async getUserByLoginOrEmail(
     loginOrEmail: string
   ): Promise<WithId<UserDbType> | null> {
-    const foundUser = await usersCollection.findOne({
+    const foundUser = await UsersModel.findOne({
       $or: [{ login: loginOrEmail }, { email: loginOrEmail }],
     });
 
@@ -77,7 +75,7 @@ export class UserQueryRepository {
   static async getUserByConfirmationCode(
     emailConfirmationCode: string
   ): Promise<WithId<UserDbType> | null> {
-    const foundUser = await usersCollection.findOne({
+    const foundUser = await UsersModel.findOne({
       "emailConfirmation.confirmationCode": emailConfirmationCode,
     });
 
@@ -85,8 +83,11 @@ export class UserQueryRepository {
   }
 
   static async getUserById(id: string): Promise<WithId<UserDbType> | null> {
-    return await usersCollection.findOne({
-      _id: new ObjectId(id),
-    });
+    try {
+      return await UsersModel.findById(id); // If user exists, returns user document, otherwise null
+    } catch (error) {
+      console.error("Error fetching user by ID:", error);
+      throw error; // Rethrow the error to be handled elsewhere
+    }
   }
 }
