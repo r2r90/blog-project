@@ -1,19 +1,19 @@
 import { Request, Response, Router } from "express";
 import {
   blackListCollection,
-  blogsCollection,
   commentsCollection,
   deviceConnectCollection,
-  postsCollection,
-  usersCollection,
 } from "../db/db";
+import { BlogsModel } from "../db/schemas/blogs-schema";
+import { PostsModel } from "../db/schemas/posts-schema";
+import { UsersModel } from "../db/schemas/users-schema";
 
 export const testingRouter = Router();
 
 testingRouter.delete("/all-data", async (req: Request, res: Response) => {
-  await blogsCollection.deleteMany({});
-  await postsCollection.deleteMany({});
-  await usersCollection.deleteMany({});
+  await BlogsModel.deleteMany({});
+  await PostsModel.deleteMany({});
+  await UsersModel.deleteMany({});
   await blackListCollection.deleteMany({});
   await commentsCollection.deleteMany({});
   await deviceConnectCollection.deleteMany({});
