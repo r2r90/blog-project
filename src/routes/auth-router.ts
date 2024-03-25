@@ -1,23 +1,24 @@
 import { Request, Response, Router } from "express";
-import { HTTP_RESPONSE_CODES, RequestWithBody } from "../models/common";
-import { DeviceInfoType, LoginInputType } from "../models/auth/login.input";
+import { HTTP_RESPONSE_CODES, RequestWithBody } from "../types/common";
+import { DeviceInfoType, LoginInputType } from "../types/auth/login.input";
 import { AuthService } from "../services/auth-service";
 import { loginOrEmailValidation } from "../middlewares/validators/auth-login-validator";
 import { jwtAccessGuard } from "../middlewares/auth/jwt-access-guard";
-import { UserCreateInputType } from "../models/users/users-input/user.input.model";
+import { UserCreateInputType } from "../types/users/users-input/user.input.model";
 import { userValidator } from "../middlewares/validators/user-validator";
 import { registerValidator } from "../middlewares/validators/register-validator";
 import { registerCodeConfirmation } from "../middlewares/validators/register-code-confirmation";
-import { EmailConfirmationCode } from "../models/auth/email.confirmation";
+import { EmailConfirmationCode } from "../types/auth/email.confirmation";
 import { resendEmailValidator } from "../middlewares/validators/resend-email-validator";
 import { jwtRefreshTokenGuard } from "../middlewares/auth/jwt-refresh-token-guard";
 import { UserQueryRepository } from "../repositories/user-repositories/user.query.repository";
 import { AuthRepository } from "../repositories/auth-repositories/auth.repository";
-import { requestQuantityFixer } from "../middlewares/device-secure/requestQuantityFixer";
+import { requestQuantityFixer } from "../middlewares/device-secure-guard/requestQuantityFixer";
 import { JwtService } from "../services/jwt-service";
-import { DeviceService } from "../services/device-service";
+import { SessionService } from "../services/session-service";
 
 import dotenv from "dotenv";
+import { emailValidation } from "../middlewares/validators/email-validator";
 
 dotenv.config();
 
@@ -157,11 +158,9 @@ authRouter.post(
       return;
     }
 
-    await DeviceService.deleteDevice(deviceParams.deviceInfo.deviceId);
+    await SessionService.deleteSession(deviceParams.deviceInfo.deviceId);
 
-    const logoutResult = await AuthRepository.addRefreshTokenToBlackList(
-      refreshToken
-    );
+    const logoutResult = await AuthRepository.expireToken(refreshToken);
 
     if (!logoutResult) {
       res.sendStatus(HTTP_RESPONSE_CODES.UNAUTHORIZED);
@@ -169,5 +168,28 @@ authRouter.post(
     }
 
     res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT);
+  }
+);
+
+//  ******* Password recovery ***** //
+//
+// POST - api/auth/password-recovery
+// POST - api/auth/new-password
+// authRouter.post("/new-password", (req: Request, res: Response) => {});
+
+authRouter.post(
+  "/password-recovery",
+  requestQuantityFixer,
+  emailValidation(),
+  async (req: RequestWithBody<{ email: string }>, res: Response) => {
+    const email = req.body.email;
+    const isExist = await UserQueryRepository.getUserByLoginOrEmail(email);
+    if (!isExist) {
+      res
+        .send(
+          "Oops! It seems like the email address provided doesn't match any account in our system. Please verify and try again."
+        )
+        .status(204);
+    }
   }
 );

@@ -1,9 +1,9 @@
-import { postMapper } from "../../models/posts/mappers/post-mapper";
+import { postMapper } from "../../types/posts/mappers/post-mapper";
 import { ObjectId } from "mongodb";
 import {
   PostCreateInputType,
   PostUpdateInputType,
-} from "../../models/posts/post-input-model/post.input.model";
+} from "../../types/posts/post-input-model/post.input.model";
 import { PostsModel } from "../../db/schemas/posts-schema";
 import { BlogsModel } from "../../db/schemas/blogs-schema";
 

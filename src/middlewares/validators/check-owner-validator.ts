@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { JwtService } from "../../services/jwt-service";
 import { appConfig } from "../../config/config";
-import { DeviceService } from "../../services/device-service";
-import { HTTP_RESPONSE_CODES } from "../../models/common";
+import { SessionService } from "../../services/session-service";
+import { HTTP_RESPONSE_CODES } from "../../types/common";
 
 export const checkOwnerValidator = async (
   req: Request,
@@ -18,7 +18,7 @@ export const checkOwnerValidator = async (
   const userId = jwtPayload?.userId;
   const deviceId = req.params.id;
 
-  const findDevice = await DeviceService.getDeviceById(deviceId);
+  const findDevice = await SessionService.getSessionById(deviceId);
 
   if (!findDevice) {
     res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);

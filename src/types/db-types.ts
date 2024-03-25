@@ -47,11 +47,3 @@ export type DeviceRequestDBType = {
   URL: string;
   date: Date;
 };
-
-export type DeviceConnectDbType = {
-  userId: string;
-  deviceId: string;
-  title: string;
-  ip: string;
-  lastActiveDate: string;
-};

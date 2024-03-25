@@ -3,9 +3,9 @@ import {
   HTTP_RESPONSE_CODES,
   RequestWithParam,
   RequestWithParamAndBody,
-} from "../models/common";
+} from "../types/common";
 import { CommentQueryRepository } from "../repositories/comment-repositories/comment.query.repository";
-import { CommentCreateInputModel } from "../models/comments/comment.input.model";
+import { CommentCreateInputModel } from "../types/comments/comment.input.model";
 import { jwtAccessGuard } from "../middlewares/auth/jwt-access-guard";
 import { commentValidator } from "../middlewares/validators/comment-validator";
 import { CommentRepository } from "../repositories/comment-repositories/comment.repository";

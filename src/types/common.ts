@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { SortDirection } from "mongodb";
-import { DeviceInfoType } from "./auth/login.input";
-import { DeviceConnectDbType } from "./db-types";
+import { SessionDbType } from "../db/schemas/session-schema";
 
 export type ParamType = {
   id: string;
@@ -19,7 +18,7 @@ export type JwtVerifyType = {
   userId: string;
   iat: number;
   exp: number;
-  deviceInfo: DeviceConnectDbType;
+  deviceInfo: SessionDbType;
 };
 
 export type RequestType = Request<{}, {}, {}, {}>;

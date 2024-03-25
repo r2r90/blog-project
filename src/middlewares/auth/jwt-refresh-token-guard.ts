@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { JwtService } from "../../services/jwt-service";
-import { HTTP_RESPONSE_CODES } from "../../models/common";
+import { HTTP_RESPONSE_CODES } from "../../types/common";
 import { appConfig } from "../../config/config";
 import { AuthRepository } from "../../repositories/auth-repositories/auth.repository";
 
@@ -28,7 +28,7 @@ export const jwtRefreshTokenGuard = async (
       .send("Token is not valid.");
   }
 
-  const isTokenBlacklisted = await AuthRepository.findTokenInBlackList(token);
+  const isTokenBlacklisted = await AuthRepository.findTokenInExpiredList(token);
 
   if (isTokenBlacklisted) {
     return res

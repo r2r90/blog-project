@@ -3,14 +3,14 @@ import { MongoClient } from "mongodb";
 import {
   BlogDbType,
   CommentDbType,
-  DeviceConnectDbType,
   DeviceRequestDBType,
   PostDbType,
   RefreshTokenDbType,
   UserDbType,
-} from "../models/db-types";
+} from "../types/db-types";
 import { appConfig } from "../config/config";
 import mongoose from "mongoose";
+import { SessionDbType } from "./schemas/session-schema";
 
 configDotenv();
 
@@ -35,7 +35,7 @@ export const deviceRequestsCollection =
   database.collection<DeviceRequestDBType>("device-requests");
 
 export const deviceConnectCollection =
-  database.collection<DeviceConnectDbType>("device-connects");
+  database.collection<SessionDbType>("device-connects");
 
 export const runDb = async () => {
   try {

@@ -1,5 +1,4 @@
-import { usersCollection } from "../../db/db";
-import { UserDbType } from "../../models/db-types";
+import { UserDbType } from "../../types/db-types";
 import { ObjectId } from "mongodb";
 import { add } from "date-fns";
 import { UsersModel } from "../../db/schemas/users-schema";
@@ -48,7 +47,7 @@ export class UserRepository {
   }
 
   static async updateUserConfirmation(id: ObjectId): Promise<boolean> {
-    let result = await usersCollection.updateOne(
+    let result = await UsersModel.updateOne(
       { _id: new ObjectId(id) },
       { $set: { "emailConfirmation.isConfirmed": true } }
     );

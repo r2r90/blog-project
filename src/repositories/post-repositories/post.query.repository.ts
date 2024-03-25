@@ -1,9 +1,9 @@
-import { postMapper } from "../../models/posts/mappers/post-mapper";
+import { postMapper } from "../../types/posts/mappers/post-mapper";
 import { ObjectId, SortDirection } from "mongodb";
 import {
   PostOutputType,
   PostPagination,
-} from "../../models/posts/post.output.model";
+} from "../../types/posts/post.output.model";
 import { PostsModel } from "../../db/schemas/posts-schema";
 
 export type PostSortData = {

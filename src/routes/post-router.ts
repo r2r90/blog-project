@@ -8,7 +8,7 @@ import {
   RequestWithParamAndBody,
   RequestWithParamAndQuery,
   RequestWithQuery,
-} from "../models/common";
+} from "../types/common";
 
 import { basicAuthMiddleware } from "../middlewares/auth/basic-auth-middleware";
 import { createPostValidation } from "../middlewares/validators/post-validators";
@@ -16,14 +16,14 @@ import { ObjectId } from "mongodb";
 import {
   PostCreateInputType,
   PostUpdateInputType,
-} from "../models/posts/post-input-model/post.input.model";
+} from "../types/posts/post-input-model/post.input.model";
 import { PostQueryRepository } from "../repositories/post-repositories/post.query.repository";
 import { PostService } from "../services/post-service";
 import { jwtAccessGuard } from "../middlewares/auth/jwt-access-guard";
 import { commentValidator } from "../middlewares/validators/comment-validator";
-import { CommentCreateInputModel } from "../models/comments/comment.input.model";
+import { CommentCreateInputModel } from "../types/comments/comment.input.model";
 import { CommentQueryRepository } from "../repositories/comment-repositories/comment.query.repository";
-import { CommentQueryInputModel } from "../models/comments/comment.query.input";
+import { CommentQueryInputModel } from "../types/comments/comment.query.input";
 
 export const postRouter = Router();
 

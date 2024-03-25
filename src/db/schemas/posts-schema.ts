@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { PostDbType } from "../../models/db-types";
+import { PostDbType } from "../../types/db-types";
 
 const PostsSchema = new mongoose.Schema<PostDbType>({
   title: { type: String, required: true, maxlength: 30 },

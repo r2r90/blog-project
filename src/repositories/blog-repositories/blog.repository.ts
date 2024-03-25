@@ -1,7 +1,7 @@
-import { BlogUpdateInputType } from "../../models/blogs/blog-input-model/blog.input.model";
-import { BlogOutputType } from "../../models/blogs/output-model/blog.output.model";
+import { BlogUpdateInputType } from "../../types/blogs/blog-input-model/blog.input.model";
+import { BlogOutputType } from "../../types/blogs/output-model/blog.output.model";
 import { ObjectId } from "mongodb";
-import { BlogDbType } from "../../models/db-types";
+import { BlogDbType } from "../../types/db-types";
 import { BlogsModel } from "../../db/schemas/blogs-schema";
 
 export class BlogRepository {

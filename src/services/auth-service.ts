@@ -1,20 +1,21 @@
 import { UserQueryRepository } from "../repositories/user-repositories/user.query.repository";
-import { DeviceInfoType, LoginInputType } from "../models/auth/login.input";
+import { DeviceInfoType, LoginInputType } from "../types/auth/login.input";
 import bcrypt from "bcrypt";
 import { JwtService } from "./jwt-service";
-import { UserCreateInputType } from "../models/users/users-input/user.input.model";
-import { UserViewModel } from "../models/users/users-output/user.output.model";
+import { UserCreateInputType } from "../types/users/users-input/user.input.model";
+import { UserViewModel } from "../types/users/users-output/user.output.model";
 import { BcryptService } from "./bcrypt-service";
 import { randomUUID } from "crypto";
-import { DeviceConnectDbType, UserDbType } from "../models/db-types";
+import { UserDbType } from "../types/db-types";
 import { UserRepository } from "../repositories/user-repositories/user.repository";
 import { EmailService } from "./email-service";
 import { add } from "date-fns";
 import { appConfig } from "../config/config";
-import { DeviceRepository } from "../repositories/device-repository/device.repository";
+import { SessionRepository } from "../repositories/session-repository/session.repository";
 import { AuthRepository } from "../repositories/auth-repositories/auth.repository";
-import { DeviceService } from "./device-service";
-import { DeviceQueryRepository } from "../repositories/device-repository/device.query.repository";
+import { SessionService } from "./session-service";
+import { SessionQueryRepository } from "../repositories/session-repository/session.query.repository";
+import { SessionDbType } from "../db/schemas/session-schema";
 
 export class AuthService {
   static async login(
@@ -45,7 +46,7 @@ export class AuthService {
 
     if (!userId) return null;
 
-    const sessionData: DeviceConnectDbType = {
+    const sessionData: SessionDbType = {
       userId,
       deviceId: randomUUID(),
       title: clientDeviceData.title,
@@ -53,7 +54,7 @@ export class AuthService {
       lastActiveDate: new Date().toISOString(),
     };
 
-    await DeviceRepository.saveDeviceSession(sessionData);
+    await SessionRepository.saveDeviceSession(sessionData);
 
     const refreshToken = await JwtService.createRefreshToken(
       user._id.toString(),
@@ -69,7 +70,7 @@ export class AuthService {
   }
 
   static async refreshToken(actualToken: string, userId: string) {
-    await AuthRepository.addRefreshTokenToBlackList(actualToken);
+    await AuthRepository.expireToken(actualToken);
 
     const jwtPayload = await JwtService.checkTokenValidation(
       actualToken,
@@ -78,7 +79,7 @@ export class AuthService {
 
     if (!jwtPayload) return null;
 
-    const sessionVerification = await DeviceQueryRepository.findSessionDevice(
+    const sessionVerification = await SessionQueryRepository.findSessionDevice(
       jwtPayload.deviceInfo.deviceId
     );
 
@@ -97,7 +98,7 @@ export class AuthService {
       jwtPayload.deviceInfo
     );
 
-    await DeviceService.updateLastActiveDate(
+    await SessionService.updateLastActiveDate(
       jwtPayload?.deviceInfo.deviceId,
       userId
     );

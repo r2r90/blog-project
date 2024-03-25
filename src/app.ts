@@ -6,7 +6,7 @@ import { postRouter } from "./routes/post-router";
 import { userRouter } from "./routes/user-router";
 import { authRouter } from "./routes/auth-router";
 import { commentsRouter } from "./routes/comments-router";
-import { devicesRouter } from "./routes/devices-router";
+import { sessionRouter } from "./routes/session-router";
 
 export const app = express();
 
@@ -22,5 +22,5 @@ app.use("/posts", postRouter);
 app.use("/comments", commentsRouter);
 app.use("/users", userRouter);
 app.use("/auth", authRouter);
-app.use("/security/devices", devicesRouter);
+app.use("/security/devices", sessionRouter);
 app.use("/testing", testingRouter);

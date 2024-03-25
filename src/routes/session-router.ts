@@ -1,16 +1,15 @@
 import { Request, Response, Router } from "express";
-import { DeviceRepository } from "../repositories/device-repository/device.repository";
-import { HTTP_RESPONSE_CODES } from "../models/common";
+import { SessionRepository } from "../repositories/session-repository/session.repository";
+import { HTTP_RESPONSE_CODES } from "../types/common";
 import { JwtService } from "../services/jwt-service";
 import { appConfig } from "../config/config";
-import { DeviceService } from "../services/device-service";
+import { SessionService } from "../services/session-service";
 import { jwtRefreshTokenGuard } from "../middlewares/auth/jwt-refresh-token-guard";
 import { checkOwnerValidator } from "../middlewares/validators/check-owner-validator";
-import { AuthRepository } from "../repositories/auth-repositories/auth.repository";
 
-export const devicesRouter = Router();
+export const sessionRouter = Router();
 
-devicesRouter.get(
+sessionRouter.get(
   "/",
   jwtRefreshTokenGuard,
   async (req: Request, res: Response) => {
@@ -23,13 +22,13 @@ devicesRouter.get(
 
     const userId = jwtPayload?.userId;
 
-    const devicesList = await DeviceRepository.getAllDevices(userId!);
+    const devicesList = await SessionRepository.getAllSessions(userId!);
     devicesList
       ? res.send(devicesList).status(HTTP_RESPONSE_CODES.SUCCESS)
       : res.sendStatus(HTTP_RESPONSE_CODES.BAD_REQUEST);
   }
 );
-devicesRouter.delete(
+sessionRouter.delete(
   "/:id",
   jwtRefreshTokenGuard,
   checkOwnerValidator,
@@ -44,7 +43,7 @@ devicesRouter.delete(
 
     const userId = jwtPayload?.userId;
 
-    const device = await DeviceService.getDeviceById(deviceIdToDelete);
+    const device = await SessionService.getSessionById(deviceIdToDelete);
     if (!device) {
       res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
     }
@@ -53,14 +52,14 @@ devicesRouter.delete(
       res.sendStatus(HTTP_RESPONSE_CODES.FORBIDDEN);
     }
 
-    const isDeleted = await DeviceService.deleteDevice(deviceIdToDelete);
+    const isDeleted = await SessionService.deleteSession(deviceIdToDelete);
 
     isDeleted
       ? res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT)
       : res.sendStatus(HTTP_RESPONSE_CODES.BAD_REQUEST);
   }
 );
-devicesRouter.delete("/", jwtRefreshTokenGuard, async (req, res) => {
+sessionRouter.delete("/", jwtRefreshTokenGuard, async (req, res) => {
   const token = req.cookies.refreshToken;
 
   const jwtPayload = await JwtService.getParamsFromRefreshToken(token);
@@ -75,7 +74,7 @@ devicesRouter.delete("/", jwtRefreshTokenGuard, async (req, res) => {
     res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
     return;
   }
-  const result = await DeviceService.deleteAllDevices(
+  const result = await SessionService.deleteAllSessions(
     userId,
     deviceInfo.deviceId
   );

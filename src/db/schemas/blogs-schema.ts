@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { BlogDbType } from "../../models/db-types";
+import { BlogDbType } from "../../types/db-types";
 import { WithId } from "mongodb";
 
 const BlogsSchema = new mongoose.Schema({

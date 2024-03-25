@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { UserDbType } from "../../models/db-types";
+import { UserDbType } from "../../types/db-types";
 
 const UsersSchema = new mongoose.Schema<UserDbType>({
   login: { type: String, minLength: 3, maxlength: 10, required: true },

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { DeviceRepository } from "../../repositories/device-repository/device.repository";
-import { HTTP_RESPONSE_CODES } from "../../models/common";
+import { SessionRepository } from "../../repositories/session-repository/session.repository";
+import { HTTP_RESPONSE_CODES } from "../../types/common";
 
 export async function requestQuantityFixer(
   req: Request,
@@ -8,8 +8,8 @@ export async function requestQuantityFixer(
   next: NextFunction
 ) {
   try {
-    await DeviceRepository.requestFromDeviceFixing(req.ip!, req.url);
-    const requestCount = await DeviceRepository.deviceRequestCounter(
+    await SessionRepository.requestFromDeviceFixing(req.ip!, req.url);
+    const requestCount = await SessionRepository.deviceRequestCounter(
       req.ip!,
       req.url
     );
