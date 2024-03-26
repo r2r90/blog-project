@@ -6,8 +6,7 @@ import mongoose from "mongoose";
 configDotenv();
 
 const dbName = "home-works";
-const url =
-  appConfig.MONGO_URL + "/" + dbName || `mongodb://0.0.0.0:2017/${dbName}`;
+const url = appConfig.MONGO_URL || `mongodb://0.0.0.0:2017/${dbName}`;
 
 if (!url) {
   throw new Error(`! Url doesn't found`);
