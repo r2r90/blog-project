@@ -6,7 +6,6 @@ import { UserCreateInputType } from "../types/users/users-input/user.input.model
 import { UserViewModel } from "../types/users/users-output/user.output.model";
 import { BcryptService } from "./bcrypt-service";
 import { randomUUID } from "crypto";
-import { UserDbType } from "../types/db-types";
 import { UserRepository } from "../repositories/user-repositories/user.repository";
 import { EmailService } from "./email-service";
 import { add } from "date-fns";
@@ -16,6 +15,7 @@ import { AuthRepository } from "../repositories/auth-repositories/auth.repositor
 import { SessionService } from "./session-service";
 import { SessionQueryRepository } from "../repositories/session-repository/session.query.repository";
 import { SessionDbType } from "../db/schemas/session-schema";
+import { UserDbType } from "../db/schemas/users-schema";
 
 export class AuthService {
   static async login(
@@ -133,6 +133,7 @@ export class AuthService {
         }),
         isConfirmed: false,
       },
+      recoveryCode: null,
     };
 
     const createdUserId = await UserRepository.createUser(user);
@@ -165,6 +166,14 @@ export class AuthService {
 
     if (!user) return false;
     return await UserRepository.updateUserConfirmation(user._id);
+  }
+
+  static async sendPasswordRecoveryCode(email: string) {
+    const recoveryCode = await JwtService.createRecoveryCode(email);
+    await UserRepository.setUserRecoveryCode(email, recoveryCode);
+    await EmailService.recoveryCodeSend(email, recoveryCode);
+    await UserRepository.setUserRecoveryCode(email, recoveryCode);
+    return true;
   }
 
   static async _validatePassword(password: string, salt: string, hash: string) {

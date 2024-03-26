@@ -4,9 +4,8 @@ import {
   UserViewModel,
 } from "../../types/users/users-output/user.output.model";
 import { userMapper } from "../../types/users/mappers/users-mapper";
-import { UserDbType } from "../../types/db-types";
 import { WithId } from "mongodb";
-import { UsersModel } from "../../db/schemas/users-schema";
+import { UserDbType, UsersModel } from "../../db/schemas/users-schema";
 
 export class UserQueryRepository {
   static async getAllUsers(

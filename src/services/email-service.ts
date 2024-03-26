@@ -11,4 +11,15 @@ export class EmailService {
  </p>`,
     });
   }
+
+  static recoveryCodeSend(userEmail: string, recoveryCode: string) {
+    return EmailAdapter.sendEmail({
+      to: userEmail,
+      subject: "Password recovery code",
+      html: ` <h1>Password recovery</h1>
+       <p>To finish password recovery please follow the link below:
+          <a href='https://blog-project-wheat-sigma.vercel.app/auth/password-recovery?recoveryCode=${recoveryCode}'>recovery password</a>
+      </p>`,
+    });
+  }
 }

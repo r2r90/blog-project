@@ -191,5 +191,14 @@ authRouter.post(
         )
         .status(204);
     }
+
+    const sendRecoveryCode = await AuthService.sendPasswordRecoveryCode(email);
+    if (!sendRecoveryCode) {
+      res.sendStatus(HTTP_RESPONSE_CODES.BAD_REQUEST);
+    }
+
+    res
+      .send("Recovery code sent successfully")
+      .status(HTTP_RESPONSE_CODES.NO_CONTENT);
   }
 );

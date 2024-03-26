@@ -1,16 +1,3 @@
-export type UserDbType = {
-  login: string;
-  email: string;
-  createdAt: string;
-  passwordHash: string;
-  passwordSalt: string;
-  emailConfirmation: {
-    confirmationCode: string;
-    expirationDate: Date;
-    isConfirmed: boolean;
-  };
-};
-
 export type PostDbType = {
   title: string;
   shortDescription: string;

@@ -1,7 +1,7 @@
-import { UserDbType } from "../../types/db-types";
 import { ObjectId } from "mongodb";
 import { add } from "date-fns";
-import { UsersModel } from "../../db/schemas/users-schema";
+import { UserDbType, UsersModel } from "../../db/schemas/users-schema";
+import { UserQueryRepository } from "./user.query.repository";
 
 export class UserRepository {
   static async createUser(user: UserDbType) {
@@ -69,5 +69,15 @@ export class UserRepository {
       console.error("Error checking user existence:", error);
       throw error; // Rethrow the error to be handled elsewhere
     }
+  }
+
+  static async setUserRecoveryCode(email: string, recoveryCode: string) {
+    const user = await UserQueryRepository.getUserByLoginOrEmail(email);
+    if (!user) return null;
+    let result = await UsersModel.updateOne(
+      { _id: new ObjectId(user._id) },
+      { $set: { recoveryCode: recoveryCode } }
+    );
+    return !!result.modifiedCount;
   }
 }

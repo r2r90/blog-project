@@ -37,6 +37,12 @@ export class JwtService {
     });
   }
 
+  static async createRecoveryCode(email: string) {
+    return jwt.sign({ email }, appConfig.EMAIL_RECOVERY_SECRET, {
+      expiresIn: appConfig.EMAIL_RECOVERY_EXPIRES_TIME,
+    });
+  }
+
   static async getUserIdByAccessToken(token: string) {
     try {
       const payload = jwt.verify(token, appConfig.JWT_ACCESS_SECRET);
