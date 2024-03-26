@@ -80,4 +80,16 @@ export class UserRepository {
     );
     return !!result.modifiedCount;
   }
+
+  static async setNewPassword(
+    userId: string,
+    recoveryCode: string,
+    newPasswordHash: string
+  ) {
+    let result = await UsersModel.updateOne(
+      { _id: new ObjectId(userId) },
+      { $set: { recoveryCode: recoveryCode, passwordHash: newPasswordHash } }
+    );
+    return !!result.modifiedCount;
+  }
 }

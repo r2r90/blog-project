@@ -19,6 +19,7 @@ import { SessionService } from "../services/session-service";
 
 import dotenv from "dotenv";
 import { emailValidation } from "../middlewares/validators/email-validator";
+import { newPasswordValidation } from "../middlewares/validators/new-password-validator";
 
 dotenv.config();
 
@@ -175,7 +176,6 @@ authRouter.post(
 //
 // POST - api/auth/password-recovery
 // POST - api/auth/new-password
-// authRouter.post("/new-password", (req: Request, res: Response) => {});
 
 authRouter.post(
   "/password-recovery",
@@ -186,10 +186,10 @@ authRouter.post(
     const isExist = await UserQueryRepository.getUserByLoginOrEmail(email);
     if (!isExist) {
       res
+        .status(204)
         .send(
           "Oops! It seems like the email address provided doesn't match any account in our system. Please verify and try again."
-        )
-        .status(204);
+        );
     }
 
     const sendRecoveryCode = await AuthService.sendPasswordRecoveryCode(email);
@@ -198,7 +198,38 @@ authRouter.post(
     }
 
     res
-      .send("Recovery code sent successfully")
-      .status(HTTP_RESPONSE_CODES.NO_CONTENT);
+      .status(HTTP_RESPONSE_CODES.NO_CONTENT)
+      .send("Recovery code sent successfully");
+  }
+);
+
+authRouter.post(
+  "/new-password",
+  newPasswordValidation(),
+  async (
+    req: RequestWithBody<{ recoveryCode: string; newPassword: string }>,
+    res: Response
+  ) => {
+    const recoveryCode = req.body.recoveryCode;
+    const newPassword = req.body.newPassword;
+
+    const isCodeValid = await JwtService.checkRecoveryCode(recoveryCode);
+
+    if (!isCodeValid) {
+      res.status(400).send("Recovery code is not valid!");
+      return;
+    }
+
+    const setNewPassword = await AuthService.setNewPassword(
+      recoveryCode,
+      newPassword
+    );
+
+    if (!setNewPassword) {
+      res.sendStatus(400);
+      return;
+    }
+
+    res.status(204).send("Password updated!");
   }
 );

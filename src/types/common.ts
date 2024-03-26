@@ -21,10 +21,11 @@ export type JwtVerifyType = {
   deviceInfo: SessionDbType;
 };
 
-export type RequestType = Request<{}, {}, {}, {}>;
+export type RecoveryJwtType = {
+  email: string;
+};
 
 export type RequestWithParam<P> = Request<P, {}, {}, {}>;
-
 export type RequestWithBody<B> = Request<{}, {}, B>;
 export type RequestWithParamAndBody<P, B> = Request<P, {}, B>;
 export type RequestWithQuery<Q> = Request<{}, {}, {}, Q>;

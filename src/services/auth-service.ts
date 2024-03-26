@@ -176,6 +176,23 @@ export class AuthService {
     return true;
   }
 
+  static async setNewPassword(recoveryCode: string, password: string) {
+    const user = await UserQueryRepository.getUserByRecoveryCode(recoveryCode);
+    if (!user) return null;
+
+    const passwordSalt = user.passwordSalt;
+    const passwordHash = await BcryptService.generateHash(
+      passwordSalt,
+      password
+    );
+
+    return await UserRepository.setNewPassword(
+      user._id.toString(),
+      recoveryCode,
+      passwordHash
+    );
+  }
+
   static async _validatePassword(password: string, salt: string, hash: string) {
     const passwordHash = await bcrypt.hash(password, salt);
     return passwordHash === hash;

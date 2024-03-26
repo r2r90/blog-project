@@ -73,4 +73,13 @@ export class JwtService {
       return null;
     }
   }
+
+  static async checkRecoveryCode(token: string) {
+    try {
+      jwt.verify(token, appConfig.EMAIL_RECOVERY_SECRET);
+      return true;
+    } catch (e) {
+      return null;
+    }
+  }
 }

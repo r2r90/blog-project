@@ -89,4 +89,15 @@ export class UserQueryRepository {
       throw error; // Rethrow the error to be handled elsewhere
     }
   }
+
+  static async getUserByRecoveryCode(
+    recoveryCode: string
+  ): Promise<WithId<UserDbType> | null> {
+    try {
+      return await UsersModel.findById(recoveryCode); // If user exists, returns user document, otherwise null
+    } catch (error) {
+      console.error("Error fetching user by ID:", error);
+      throw error; // Rethrow the error to be handled elsewhere
+    }
+  }
 }
