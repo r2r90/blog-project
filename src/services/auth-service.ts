@@ -180,17 +180,19 @@ export class AuthService {
     const user = await UserQueryRepository.getUserByRecoveryCode(recoveryCode);
     if (!user) return null;
 
+    console.log(user);
+
     const passwordSalt = user.passwordSalt;
     const passwordHash = await BcryptService.generateHash(
       passwordSalt,
       password
     );
 
-    return await UserRepository.setNewPassword(
+    /* return await UserRepository.setNewPassword(
       user._id.toString(),
       recoveryCode,
       passwordHash
-    );
+    );*/
   }
 
   static async _validatePassword(password: string, salt: string, hash: string) {

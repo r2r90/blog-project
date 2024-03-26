@@ -216,6 +216,7 @@ authRouter.post(
     const isCodeValid = await JwtService.checkRecoveryCode(recoveryCode);
 
     if (!isCodeValid) {
+      console.log("22222");
       res.status(400).send("Recovery code is not valid!");
       return;
     }
