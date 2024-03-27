@@ -1,11 +1,9 @@
 import { configDotenv } from "dotenv";
-import { appConfig } from "../config/config";
 import mongoose from "mongoose";
 
 configDotenv();
 
-const dbName = "blog-project";
-const url = appConfig.MONGO_URL || `mongodb://0.0.0.0:2017/${dbName}`;
+const url = "mongodb://127.0.0.1:27017/blog-project";
 
 if (!url) {
   throw new Error(`! Url doesn't found`);
