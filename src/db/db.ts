@@ -6,7 +6,7 @@ const uriComplete = `${uri}/${dbName}?authSource=admin`;
 
 export const runDb = async () => {
   try {
-    await mongoose.connect(uriComplete);
+    await mongoose.connect(uri);
     console.log("Connected successfully to MongoDB database");
   } catch (e) {
     console.error(`${e}`);
