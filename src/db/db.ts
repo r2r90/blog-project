@@ -1,11 +1,10 @@
 import { configDotenv } from "dotenv";
-import { MongoClient } from "mongodb";
 import { appConfig } from "../config/config";
 import mongoose from "mongoose";
 
 configDotenv();
 
-const dbName = "home-works";
+const dbName = "blog-project";
 const url = appConfig.MONGO_URL || `mongodb://0.0.0.0:2017/${dbName}`;
 
 if (!url) {
