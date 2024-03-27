@@ -1,21 +1,31 @@
 import { configDotenv } from "dotenv";
+import { MongoClient } from "mongodb";
+import { BlogDbType, CommentDbType, PostDbType } from "../types/db-types";
 import { appConfig } from "../config/config";
-import mongoose from "mongoose";
 
 configDotenv();
-
 const url = appConfig.MONGO_URL;
 
 if (!url) {
   throw new Error(`! Url doesn't found`);
 }
+const client = new MongoClient(url);
+const database = client.db("blog-app");
+
+export const blogsCollection = database.collection<BlogDbType>("blogs");
+export const postsCollection = database.collection<PostDbType>("posts");
+export const usersCollection = database.collection<UserDbType>("users");
+export const commentsCollection =
+  database.collection<CommentDbType>("comments");
+export const blackListCollection =
+  database.collection<RefreshTokenBdType>("refresh-tokens");
 
 export const runDb = async () => {
   try {
-    await mongoose.connect(url);
+    await client.connect();
     console.log("Connected successfully to MongoDB ");
   } catch (e) {
     console.log(`ERROR: ${e}`);
-    await mongoose.disconnect();
+    await client.close();
   }
 };
