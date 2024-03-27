@@ -1,22 +1,15 @@
-import { configDotenv } from "dotenv";
 import mongoose from "mongoose";
 
-configDotenv();
-
-const url = "mongodb://127.0.0.1:27017/blog-project";
-
-if (!url) {
-  throw new Error(`! Url doesn't found`);
-}
-// const client = new MongoClient(url);
+const uri = process.env.MONGO_URI ?? "mongodb://localhost:27017";
+const dbName = process.env.MONGO_DB_NAME ?? "blogs-app";
+const uriComplete = `${uri}/${dbName}?authSource=admin`;
 
 export const runDb = async () => {
   try {
-    console.log(url);
-    await mongoose.connect(url);
-    console.log("Connected successfully to MongoDB ");
+    await mongoose.connect(uriComplete);
+    console.log("Connected successfully to MongoDB database");
   } catch (e) {
-    console.log(`ERROR: ${e}`);
+    console.error(`${e}`);
     await mongoose.disconnect();
   }
 };
