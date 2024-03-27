@@ -188,11 +188,11 @@ export class AuthService {
       password
     );
 
-    /* return await UserRepository.setNewPassword(
+    return await UserRepository.setNewPassword(
       user._id.toString(),
       recoveryCode,
       passwordHash
-    );*/
+    );
   }
 
   static async _validatePassword(password: string, salt: string, hash: string) {
