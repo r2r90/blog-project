@@ -9,11 +9,6 @@ export const basicAuthMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  /* if (req.headers["authorization"] !== "Basic YWRtaW4vcXdlcnR5") {
-    res.sendStatus(401);
-    return;
-  }*/
-
   const auth = req.headers["authorization"];
 
   if (!auth) {

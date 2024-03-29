@@ -1,4 +1,5 @@
 import { Request, Response, Router } from "express";
+import dotenv from "dotenv";
 import { HTTP_RESPONSE_CODES, RequestWithBody } from "../types/common";
 import { DeviceInfoType, LoginInputType } from "../types/auth/login.input";
 import { AuthService } from "../services/auth-service";
@@ -17,9 +18,9 @@ import { requestQuantityFixer } from "../middlewares/device-secure-guard/request
 import { JwtService } from "../services/jwt-service";
 import { SessionService } from "../services/session-service";
 
-import dotenv from "dotenv";
 import { emailValidation } from "../middlewares/validators/email-validator";
-import { newPasswordValidation } from "../middlewares/validators/new-password-validator";
+import { recoveryCodeGuard } from "../middlewares/auth/recovery-code-guard";
+import { newPasswordValidations } from "../middlewares/validators/recovery-password-validator";
 
 dotenv.config();
 
@@ -143,6 +144,7 @@ authRouter.get("/me", jwtAccessGuard, async (req: Request, res: Response) => {
 authRouter.post(
   "/logout",
   jwtRefreshTokenGuard,
+  requestQuantityFixer,
   async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
@@ -190,22 +192,27 @@ authRouter.post(
         .send(
           "Oops! It seems like the email address provided doesn't match any account in our system. Please verify and try again."
         );
+      return;
     }
 
     const sendRecoveryCode = await AuthService.sendPasswordRecoveryCode(email);
     if (!sendRecoveryCode) {
       res.sendStatus(HTTP_RESPONSE_CODES.BAD_REQUEST);
+      return;
     }
 
     res
       .status(HTTP_RESPONSE_CODES.NO_CONTENT)
       .send("Recovery code sent successfully");
+    return;
   }
 );
 
 authRouter.post(
   "/new-password",
-  newPasswordValidation(),
+  requestQuantityFixer,
+  newPasswordValidations(),
+  recoveryCodeGuard,
   async (
     req: RequestWithBody<{ recoveryCode: string; newPassword: string }>,
     res: Response
@@ -216,7 +223,6 @@ authRouter.post(
     const isCodeValid = await JwtService.checkRecoveryCode(recoveryCode);
 
     if (!isCodeValid) {
-      console.log("22222");
       res.status(400).send("Recovery code is not valid!");
       return;
     }
@@ -225,12 +231,11 @@ authRouter.post(
       recoveryCode,
       newPassword
     );
-
     if (!setNewPassword) {
       res.sendStatus(400);
       return;
     }
 
-    res.status(204).send("Password updated!");
+    res.sendStatus(204);
   }
 );

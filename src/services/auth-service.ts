@@ -180,8 +180,6 @@ export class AuthService {
     const user = await UserQueryRepository.getUserByRecoveryCode(recoveryCode);
     if (!user) return null;
 
-    console.log(user);
-
     const passwordSalt = user.passwordSalt;
     const passwordHash = await BcryptService.generateHash(
       passwordSalt,
@@ -190,7 +188,6 @@ export class AuthService {
 
     return await UserRepository.setNewPassword(
       user._id.toString(),
-      recoveryCode,
       passwordHash
     );
   }

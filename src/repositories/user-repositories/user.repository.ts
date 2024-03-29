@@ -64,31 +64,34 @@ export class UserRepository {
       const user = await UsersModel.findOne({
         $or: [{ login }, { email }],
       });
-      return !!user; // If user exists, returns true, otherwise false
+      return !!user;
     } catch (error) {
       console.error("Error checking user existence:", error);
-      throw error; // Rethrow the error to be handled elsewhere
+      throw error;
     }
   }
 
   static async setUserRecoveryCode(email: string, recoveryCode: string) {
-    const user = await UserQueryRepository.getUserByLoginOrEmail(email);
-    if (!user) return null;
-    let result = await UsersModel.updateOne(
-      { _id: new ObjectId(user._id) },
-      { $set: { recoveryCode: recoveryCode } }
-    );
-    return !!result.modifiedCount;
+    try {
+      const user = await UserQueryRepository.getUserByLoginOrEmail(email);
+      if (!user) return null;
+
+      const result = await UsersModel.updateOne(
+        { _id: new ObjectId(user._id) },
+        { $set: { recoveryCode: recoveryCode } }
+      );
+
+      return !!result.modifiedCount;
+    } catch (error) {
+      console.error("Error setting user recovery code:", error);
+      throw error;
+    }
   }
 
-  static async setNewPassword(
-    userId: string,
-    recoveryCode: string,
-    newPasswordHash: string
-  ) {
+  static async setNewPassword(userId: string, newPasswordHash: string) {
     let result = await UsersModel.updateOne(
-      { _id: new ObjectId(userId) },
-      { $set: { recoveryCode: recoveryCode, passwordHash: newPasswordHash } }
+      { _id: new ObjectId(userId).toString() },
+      { $set: { recoveryCode: null, passwordHash: newPasswordHash } }
     );
     return !!result.modifiedCount;
   }
