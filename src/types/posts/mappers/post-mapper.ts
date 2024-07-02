@@ -1,6 +1,6 @@
 import { WithId } from "mongodb";
 import { PostOutputType } from "../post.output.model";
-import { PostDbType } from "../../db-types";
+import { PostDbType } from "../../../db/schemas/posts-schema";
 
 export const postMapper = (post: WithId<PostDbType>): PostOutputType => {
   return {

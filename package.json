@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "yarn nodemon --inspect dist/index.js",
+    "build": "yarn install && tsc",
     "watch": "tsc -w",
     "test": "jest"
   },

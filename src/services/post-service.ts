@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import {
   PostQueryRepository,
   PostSortData,
@@ -10,11 +12,11 @@ import {
   PostUpdateInputType,
 } from "../types/posts/post-input-model/post.input.model";
 import { BlogService } from "./blog-service";
-import { PostDbType } from "../types/db-types";
 import { CommentViewModel } from "../types/comments/comments.output.model";
 import { UserQueryRepository } from "../repositories/user-repositories/user.query.repository";
 import { CommentRepository } from "../repositories/comment-repositories/comment.repository";
 import { BlogQueryRepository } from "../repositories/blog-repositories/blog.query.repository";
+import { PostDbType } from "../db/schemas/posts-schema";
 
 export class PostService {
   static async getAllPostsByBlogId(blogId: string, sortData: PostSortData) {

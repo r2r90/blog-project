@@ -1,7 +1,6 @@
 import { CommentViewModel } from "../../types/comments/comments.output.model";
-import { CommentDbType } from "../../types/db-types";
 import { ObjectId } from "mongodb";
-import { CommentsModel } from "../../db/schemas/comments-schema";
+import { CommentDbType, CommentsModel } from "../../db/schemas/comments-schema";
 
 export class CommentRepository {
   static async createComment(

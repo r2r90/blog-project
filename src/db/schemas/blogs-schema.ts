@@ -8,6 +8,7 @@ export type BlogDbType = {
   createdAt: string;
   isMembership: boolean;
 };
+
 export const BlogsSchema = new mongoose.Schema({
   name: { type: String, required: true, maxlength: 15 },
   description: { type: String, required: true, maxlength: 500 },

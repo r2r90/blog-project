@@ -1,8 +1,7 @@
 import { BlogUpdateInputType } from "../../types/blogs/blog-input-model/blog.input.model";
 import { BlogOutputType } from "../../types/blogs/output-model/blog.output.model";
 import { ObjectId } from "mongodb";
-import { BlogDbType } from "../../types/db-types";
-import { BlogsModel } from "../../db/schemas/blogs-schema";
+import { BlogDbType, BlogsModel } from "../../db/schemas/blogs-schema";
 
 export class BlogRepository {
   static async createBlog(blog: BlogDbType): Promise<BlogOutputType> {

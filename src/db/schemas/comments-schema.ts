@@ -12,6 +12,7 @@ export type CommentDbType = {
 };
 
 export type LikesInfoViewModel = {
+  usersLiked: any;
   likesCount: number;
   disLikesCount: number;
   myStatus: LikeStatus;

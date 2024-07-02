@@ -5,8 +5,7 @@ import {
 import { blogMapper } from "../../types/blogs/mappers/blog-mapper";
 import { ObjectId } from "mongodb";
 import { BlogSortData } from "../../types/blogs/blog-input-model/blog.query.input.model";
-import { BlogsModel } from "../../db/schemas/blogs-schema";
-import { BlogDbType } from "../../types/db-types";
+import { BlogDbType, BlogsModel } from "../../db/schemas/blogs-schema";
 
 export class BlogQueryRepository {
   static async getAllBlogs(
