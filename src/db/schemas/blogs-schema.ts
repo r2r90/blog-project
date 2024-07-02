@@ -1,7 +1,13 @@
 import mongoose from "mongoose";
-import { BlogDbType } from "../../types/db-types";
 import { WithId } from "mongodb";
 
+export type BlogDbType = {
+  name: string;
+  description: string;
+  websiteUrl: string;
+  createdAt: string;
+  isMembership: boolean;
+};
 export const BlogsSchema = new mongoose.Schema({
   name: { type: String, required: true, maxlength: 15 },
   description: { type: String, required: true, maxlength: 500 },

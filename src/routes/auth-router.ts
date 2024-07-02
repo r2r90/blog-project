@@ -17,7 +17,6 @@ import { AuthRepository } from "../repositories/auth-repositories/auth.repositor
 import { requestQuantityFixer } from "../middlewares/device-secure-guard/requestQuantityFixer";
 import { JwtService } from "../services/jwt-service";
 import { SessionService } from "../services/session-service";
-
 import { emailValidation } from "../middlewares/validators/email-validator";
 import { recoveryCodeGuard } from "../middlewares/auth/recovery-code-guard";
 import { newPasswordValidations } from "../middlewares/validators/recovery-password-validator";
