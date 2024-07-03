@@ -1,7 +1,5 @@
-// @ts-nocheck
-
 import { WithId } from "mongodb";
-import { CommentDbType, LikeStatus } from "../../db/schemas/comments-schema";
+import { CommentDbType } from "../../db/schemas/comments-schema";
 
 export const commentMapper = (
   comment: WithId<CommentDbType>
@@ -23,8 +21,7 @@ export const commentMapper = (
     likesCount: comment.likesInfo.likesCount,
     dislikesCount: comment.likesInfo.disLikesCount,
     myStatus:
-      comment.likesInfo.usersLiked?.find(
-        (like: LikeStatus.Like) => like.userId === userId // @ts-ignore comment above the problematic line
-      )?.likeStatus || "None",
+      comment.likesInfo.usersLiked?.find((like) => like.userId === userId)
+        ?.likeStatus || "None",
   },
 });

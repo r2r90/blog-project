@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import {
   PostQueryRepository,
   PostSortData,
@@ -91,6 +89,11 @@ export class PostService {
       commentatorInfo: {
         userId,
         userLogin: user.login,
+      },
+      likesInfo: {
+        likesCount: 0,
+        disLikesCount: 0,
+        usersLiked: [],
       },
     });
   }
