@@ -4,7 +4,7 @@ config();
 export const appConfig = {
   PORT: process.env.PORT,
 
-  MONGO_URL: process.env.MONGO_URL,
+  MONGO_URI: process.env.MONGO_URI,
   JWT_ACCESS_SECRET: process.env.JWT_SECRET || "123",
   JWT_REFRESH_SECRET: process.env.JWT_SECRET || "456",
   JWT_ACCESS_EXPIRES_TIME: "10s",
