@@ -28,16 +28,14 @@ export const blogsRoute = Router();
 blogsRoute.get(
   "/",
   async (req: RequestWithQuery<BlogQueryInputModel>, res: Response) => {
-    // const sortData = {
-    //   searchNameTerm: req.query.searchNameTerm ?? null,
-    //   sortBy: req.query.sortBy ?? "createdAt",
-    //   sortDirection: req.query.sortDirection ?? "desc",
-    //   pageNumber: req.query.pageNumber ? +req.query.pageNumber : 1,
-    //   pageSize: req.query.pageSize ? +req.query.pageSize : 10,
-    // };
-    // const blogs = await BlogService.getAllBlogs(sortData);
-
-    const blogs = ["a", "b", "c"];
+    const sortData = {
+      searchNameTerm: req.query.searchNameTerm ?? null,
+      sortBy: req.query.sortBy ?? "createdAt",
+      sortDirection: req.query.sortDirection ?? "desc",
+      pageNumber: req.query.pageNumber ? +req.query.pageNumber : 1,
+      pageSize: req.query.pageSize ? +req.query.pageSize : 10,
+    };
+    const blogs = await BlogService.getAllBlogs(sortData);
     res.send(blogs).status(HTTP_RESPONSE_CODES.SUCCESS);
   }
 );

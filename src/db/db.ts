@@ -3,7 +3,6 @@ import { appConfig } from "../config/config";
 import mongoose from "mongoose";
 
 configDotenv();
-
 const url = appConfig.MONGO_URI;
 
 if (!url) {
