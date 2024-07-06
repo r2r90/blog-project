@@ -33,8 +33,6 @@ authRouter.post(
   async (req: RequestWithBody<UserCreateInputType>, res: Response) => {
     const { login, email, password } = req.body;
     const newUser = await AuthService.registerUser({ login, email, password });
-    console.log(process.env.EMAIL_LOGIN);
-    console.log(process.env.EMAIL_PASSWORD);
     if (!newUser) {
       res.sendStatus(HTTP_RESPONSE_CODES.BAD_REQUEST);
       return;

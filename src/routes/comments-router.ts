@@ -27,6 +27,7 @@ commentsRouter.get(
       res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
       return;
     }
+
     return res.send(foundedComment).status(HTTP_RESPONSE_CODES.SUCCESS);
   }
 );

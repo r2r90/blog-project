@@ -11,7 +11,6 @@ const newPasswordValidator = body("newPassword")
 
 const recoveryCodeValidator = body("recoveryCode").custom(
   async (recoveryCode: string) => {
-    console.log(recoveryCode);
     if (!recoveryCode) {
       throw new Error("Missing Recovery Code");
     }

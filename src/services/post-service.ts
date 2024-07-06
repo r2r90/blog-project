@@ -92,7 +92,7 @@ export class PostService {
       },
       likesInfo: {
         likesCount: 0,
-        disLikesCount: 0,
+        dislikesCount: 0,
         usersLiked: [],
       },
     });

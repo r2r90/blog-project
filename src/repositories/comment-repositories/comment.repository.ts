@@ -1,6 +1,10 @@
 import { CommentViewModel } from "../../types/comments/comments.output.model";
 import { ObjectId } from "mongodb";
-import { CommentDBType, CommentsModel } from "../../db/schemas/comments-schema";
+import {
+  CommentDBType,
+  CommentsModel,
+  LikeStatus,
+} from "../../db/schemas/comments-schema";
 
 export class CommentRepository {
   static async createComment(
@@ -17,6 +21,11 @@ export class CommentRepository {
       commentatorInfo: {
         userId: commentToCreate.commentatorInfo.userId,
         userLogin: commentToCreate.commentatorInfo.userLogin,
+      },
+      likesInfo: {
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: LikeStatus.None,
       },
     };
   }

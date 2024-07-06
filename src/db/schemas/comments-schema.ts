@@ -11,7 +11,7 @@ export class CommentDBType {
     },
     public likesInfo: {
       likesCount: number;
-      disLikesCount: number;
+      dislikesCount: number;
       usersLiked?: {
         userId: string;
         likesStatus: LikeStatus;
@@ -24,7 +24,6 @@ const CommentsSchema = new mongoose.Schema({
   content: { type: String, required: true },
   createdAt: { type: String, required: true },
   postId: { type: String, required: true },
-  postTitle: { type: String, required: true },
   commentatorInfo: {
     userId: { type: String, required: true },
     userLogin: { type: String, required: true },
@@ -44,7 +43,7 @@ const CommentsSchema = new mongoose.Schema({
 export type LikesInfoViewModel = {
   usersLiked: any;
   likesCount: number;
-  disLikesCount: number;
+  dislikesCount: number;
   myStatus: LikeStatus;
 };
 

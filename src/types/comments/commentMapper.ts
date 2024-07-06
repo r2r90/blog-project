@@ -19,7 +19,7 @@ export const commentMapper = (
   },
   likesInfo: {
     likesCount: comment.likesInfo.likesCount,
-    dislikesCount: comment.likesInfo.disLikesCount,
+    dislikesCount: comment.likesInfo.dislikesCount,
     myStatus:
       comment.likesInfo.usersLiked?.find(
         (like) => like.userId === comment.commentatorInfo.userId
