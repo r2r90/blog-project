@@ -1,8 +1,8 @@
 import { WithId } from "mongodb";
-import { CommentDbType } from "../../db/schemas/comments-schema";
+import { CommentDBType } from "../../db/schemas/comments-schema";
 
 export const commentMapper = (
-  comment: WithId<CommentDbType>
+  comment: WithId<CommentDBType>
 ): {
   createdAt: string;
   commentatorInfo: { userLogin: string; userId: string };
@@ -21,7 +21,8 @@ export const commentMapper = (
     likesCount: comment.likesInfo.likesCount,
     dislikesCount: comment.likesInfo.disLikesCount,
     myStatus:
-      comment.likesInfo.usersLiked?.find((like) => like.userId === userId)
-        ?.likeStatus || "None",
+      comment.likesInfo.usersLiked?.find(
+        (like) => like.userId === comment.commentatorInfo.userId
+      )?.likesStatus || "None",
   },
 });

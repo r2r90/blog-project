@@ -1,10 +1,10 @@
 import { CommentViewModel } from "../../types/comments/comments.output.model";
 import { ObjectId } from "mongodb";
-import { CommentDbType, CommentsModel } from "../../db/schemas/comments-schema";
+import { CommentDBType, CommentsModel } from "../../db/schemas/comments-schema";
 
 export class CommentRepository {
   static async createComment(
-    commentToCreate: CommentDbType
+    commentToCreate: CommentDBType
   ): Promise<CommentViewModel | null> {
     const createdComment = await CommentsModel.create(commentToCreate);
 

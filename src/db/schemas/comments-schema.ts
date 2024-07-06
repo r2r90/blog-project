@@ -1,32 +1,30 @@
 import mongoose from "mongoose";
 
-export type CommentDbType = {
-  content: string;
-  createdAt: string;
-  postId: string;
-  commentatorInfo: {
-    userId: string;
-    userLogin: string;
-  };
-  likesInfo: LikesInfoViewModel;
-};
-
-export type LikesInfoViewModel = {
-  usersLiked: any;
-  likesCount: number;
-  disLikesCount: number;
-  myStatus: LikeStatus;
-};
-
-export enum LikeStatus {
-  None = "None",
-  Like = "Like",
-  Dislike = "Dislike",
+export class CommentDBType {
+  constructor(
+    public content: string,
+    public createdAt: string,
+    public postId: string,
+    public commentatorInfo: {
+      userId: string;
+      userLogin: string;
+    },
+    public likesInfo: {
+      likesCount: number;
+      disLikesCount: number;
+      usersLiked?: {
+        userId: string;
+        likesStatus: LikeStatus;
+      }[];
+    }
+  ) {}
 }
 
-const CommentsSchema = new mongoose.Schema<CommentDbType>({
-  content: { type: String },
+const CommentsSchema = new mongoose.Schema({
+  content: { type: String, required: true },
+  createdAt: { type: String, required: true },
   postId: { type: String, required: true },
+  postTitle: { type: String, required: true },
   commentatorInfo: {
     userId: { type: String, required: true },
     userLogin: { type: String, required: true },
@@ -43,4 +41,20 @@ const CommentsSchema = new mongoose.Schema<CommentDbType>({
   },
 });
 
-export const CommentsModel = mongoose.model("comments", CommentsSchema);
+export type LikesInfoViewModel = {
+  usersLiked: any;
+  likesCount: number;
+  disLikesCount: number;
+  myStatus: LikeStatus;
+};
+
+export enum LikeStatus {
+  None = "None",
+  Like = "Like",
+  Dislike = "Dislike",
+}
+
+export const CommentsModel = mongoose.model<CommentDBType>(
+  "comments",
+  CommentsSchema
+);
