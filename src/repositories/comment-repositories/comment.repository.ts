@@ -43,10 +43,48 @@ export class CommentRepository {
     return !!res.matchedCount;
   }
 
+  static async LikeComment(commentId: string): Promise<boolean> {
+    try {
+      const res = await CommentsModel.updateOne(
+        { _id: new ObjectId(commentId) },
+        {
+          $inc: { "likesInfo.likesCount": 1 },
+        }
+      );
+
+      if (res.matchedCount > 0) return true;
+    } catch (error) {
+      console.error("Error liking the comment:", error);
+      throw error;
+    }
+  }
+
+  static async DislikeComment(commentId: string): Promise<boolean> {
+    try {
+      const res = await CommentsModel.updateOne(
+        { _id: new ObjectId(commentId) },
+        {
+          $inc: { "likesInfo.dislikesCount": -1 },
+        }
+      );
+
+      if (res.matchedCount > 0) return true;
+    } catch (error) {
+      console.error("Error liking the comment:", error);
+      throw error;
+    }
+  }
+
   static async deleteComment(commentId: string): Promise<boolean> {
     const res = await CommentsModel.deleteOne({
       _id: new ObjectId(commentId),
     });
     return !!res.deletedCount;
   }
+
+  static async likeComment(
+    likeStatus: LikeStatus,
+    authorId: string,
+    userId: string
+  ) {}
 }
