@@ -46,9 +46,9 @@ commentsRouter.put(
       isAuthor,
       likeStatus
     );
-    if (!liked) {
-      res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
-    }
+    // if (!liked) {
+    //   res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+    // }
     return res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT);
   }
 );
