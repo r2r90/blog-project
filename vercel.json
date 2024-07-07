@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "blog-app",
+  "name": "blog-project-express",
   "builds": [
     {
       "src": "src/index.ts",
