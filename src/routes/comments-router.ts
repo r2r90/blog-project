@@ -41,13 +41,15 @@ commentsRouter.put(
     const isAuthor = commentToLike.commentatorInfo.userId === req.userId;
     const likeStatus = req.body.likeStatus;
 
-    const commentLiked = await LikeService.likeComment(
+    const liked = await LikeService.likeComment(
       commentId,
       isAuthor,
       likeStatus
     );
-
-    commentLiked ? res.sendStatus(204) : res.send("Error");
+    if (!liked) {
+      res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+    }
+    return res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT);
   }
 );
 
