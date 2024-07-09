@@ -58,6 +58,7 @@ postRouter.get(
     res: Response
   ) => {
     const postId = req.params.id;
+    const userId = req.userId;
     const sortData = {
       pageNumber: req.query.pageNumber ? +req.query.pageNumber : 1,
       pageSize: req.query.pageSize ? +req.query.pageSize : 10,
@@ -78,7 +79,8 @@ postRouter.get(
 
     const comments = await CommentQueryRepository.getAllCommentsByPostId(
       postId,
-      sortData
+      sortData,
+      userId
     );
 
     comments

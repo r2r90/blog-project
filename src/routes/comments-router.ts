@@ -12,6 +12,7 @@ import { ObjectId } from "mongodb";
 import { LikeStatus } from "../db/schemas/comments-schema";
 import { LikeService } from "../services/like-service";
 import { likeStatusValidator } from "../middlewares/validators/like-validator";
+import { JwtService } from "../services/jwt-service";
 
 export const commentsRouter = Router();
 
@@ -24,7 +25,7 @@ commentsRouter.put(
     res: Response
   ) => {
     const commentId = req.params.id;
-
+    const userId = req?.userId;
     if (!ObjectId.isValid(commentId)) {
       res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
       return;
@@ -41,11 +42,7 @@ commentsRouter.put(
     const isAuthor = commentToLike.commentatorInfo.userId === req.userId;
     const likeStatus = req.body.likeStatus;
 
-    const liked = await LikeService.likeComment(
-      commentId,
-      isAuthor,
-      likeStatus
-    );
+    const liked = await LikeService.likeComment(commentId, likeStatus, userId);
     // if (!liked) {
     //   res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
     // }
@@ -56,12 +53,21 @@ commentsRouter.put(
 commentsRouter.get(
   "/:id",
   async (req: RequestWithParam<{ id: string }>, res: Response) => {
+    let userId;
+    const token = req.headers.authorization?.split(" ")[1];
+    if (token) {
+      userId = await JwtService.getUserIdByAccessToken(token);
+    }
+
+    const commentId = req.params.id;
     if (!ObjectId.isValid(req.params.id)) {
       res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
       return;
     }
+
     const foundedComment = await CommentQueryRepository.getCommentById(
-      req.params.id
+      commentId,
+      userId
     );
     if (!foundedComment) {
       res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);

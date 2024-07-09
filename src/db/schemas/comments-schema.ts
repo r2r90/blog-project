@@ -13,7 +13,7 @@ export class CommentDBType {
       likesCount: number;
       dislikesCount: number;
       usersLiked?: {
-        userId: string;
+        likedUserId: string;
         likesStatus: LikeStatus;
       }[];
     }
@@ -33,7 +33,7 @@ const CommentsSchema = new mongoose.Schema({
     dislikesCount: { type: Number, default: 0 },
     usersLiked: [
       {
-        userid: { type: String, required: true },
+        likedUserId: { type: String, required: true },
         likesStatus: { type: String, required: true },
       },
     ],

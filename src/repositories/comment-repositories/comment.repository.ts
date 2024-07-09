@@ -43,36 +43,58 @@ export class CommentRepository {
     return !!res.matchedCount;
   }
 
-  static async LikeComment(commentId: string): Promise<boolean> {
-    try {
-      const res = await CommentsModel.updateOne(
-        { _id: new ObjectId(commentId) },
-        {
-          $inc: { "likesInfo.likesCount": 1 },
-        }
-      );
+  static async LikeComment(
+    commentId: string,
+    userId: string | null,
+    newLikeStatus: LikeStatus
+  ) {
+    const comment = await CommentsModel.findOne({ _id: commentId });
+    const userLiked = comment?.likesInfo.usersLiked?.find(
+      (like) => like.likedUserId === userId
+    );
 
-      if (res.matchedCount > 0) return true;
-    } catch (error) {
-      console.error("Error liking the comment:", error);
-      throw error;
+    if (!comment) return false;
+
+    if (!userLiked && userId) {
+      comment.likesInfo.usersLiked?.push({
+        likedUserId: userId,
+        likesStatus: newLikeStatus,
+      });
+      if (newLikeStatus === LikeStatus.Like) {
+        comment.likesInfo.likesCount += 1;
+      } else if (newLikeStatus === LikeStatus.Dislike) {
+        comment.likesInfo.dislikesCount += 1;
+      }
     }
-  }
 
-  static async DislikeComment(commentId: string): Promise<boolean> {
-    try {
-      const res = await CommentsModel.updateOne(
-        { _id: new ObjectId(commentId) },
-        {
-          $inc: { "likesInfo.dislikesCount": -1 },
+    if (userLiked) {
+      if (
+        (newLikeStatus === LikeStatus.Like &&
+          userLiked.likesStatus === LikeStatus.Like) ||
+        (newLikeStatus === LikeStatus.Dislike &&
+          userLiked.likesStatus === LikeStatus.Dislike)
+      ) {
+        comment.likesInfo.usersLiked = comment?.likesInfo.usersLiked?.filter(
+          (like) => like.likedUserId !== userId
+        );
+
+        await comment!.save();
+
+        if (
+          newLikeStatus === LikeStatus.Like &&
+          userLiked.likesStatus === LikeStatus.Like
+        ) {
+          comment.likesInfo.likesCount -= 1;
+        } else if (
+          newLikeStatus === LikeStatus.Dislike &&
+          userLiked.likesStatus === LikeStatus.Dislike
+        ) {
+          comment.likesInfo.dislikesCount -= 1;
         }
-      );
-
-      if (res.matchedCount > 0) return true;
-    } catch (error) {
-      console.error("Error liking the comment:", error);
-      throw error;
+      }
     }
+
+    await comment!.save();
   }
 
   static async deleteComment(commentId: string): Promise<boolean> {
@@ -81,10 +103,4 @@ export class CommentRepository {
     });
     return !!res.deletedCount;
   }
-
-  static async likeComment(
-    likeStatus: LikeStatus,
-    authorId: string,
-    userId: string
-  ) {}
 }

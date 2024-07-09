@@ -1,13 +1,17 @@
 import { ObjectId } from "mongodb";
 import { CommentSortData } from "../../types/comments/comment.query.input";
 import { commentMapper } from "../../types/comments/commentMapper";
-import { CommentsGetResponse } from "../../types/comments/comments.output.model";
+import {
+  CommentsGetResponse,
+  CommentViewModel,
+} from "../../types/comments/comments.output.model";
 import { CommentsModel } from "../../db/schemas/comments-schema";
 
 export class CommentQueryRepository {
   static async getAllCommentsByPostId(
     postId: string,
-    sortData: CommentSortData
+    sortData: CommentSortData,
+    userId?: string | null
   ): Promise<CommentsGetResponse> {
     const { pageNumber, pageSize, sortBy, sortDirection } = sortData;
     const comments = await CommentsModel.find({ postId: postId })
@@ -24,15 +28,18 @@ export class CommentQueryRepository {
       page: pageNumber,
       pageSize,
       totalCount: commentsCount,
-      items: comments.map(commentMapper),
+      items: comments.map((comment) => commentMapper(comment, userId)),
     };
   }
 
-  static async getCommentById(commentId: string) {
+  static async getCommentById(
+    commentId: string,
+    userId?: string | null
+  ): Promise<CommentViewModel | null> {
     const comment = await CommentsModel.findOne({
       _id: new ObjectId(commentId),
     });
 
-    return comment ? commentMapper(comment) : null;
+    return comment ? commentMapper(comment, userId) : null;
   }
 }
