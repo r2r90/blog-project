@@ -24,6 +24,7 @@ import { commentValidator } from "../middlewares/validators/comment-validator";
 import { CommentCreateInputModel } from "../types/comments/comment.input.model";
 import { CommentQueryRepository } from "../repositories/comment-repositories/comment.query.repository";
 import { CommentQueryInputModel } from "../types/comments/comment.query.input";
+import { JwtService } from "../services/jwt-service";
 
 export const postRouter = Router();
 
@@ -58,7 +59,12 @@ postRouter.get(
     res: Response
   ) => {
     const postId = req.params.id;
-    const userId = req.userId;
+    let userId;
+    const token = req.headers.authorization?.split(" ")[1];
+    if (token) {
+      userId = await JwtService.getUserIdByAccessToken(token);
+    }
+
     const sortData = {
       pageNumber: req.query.pageNumber ? +req.query.pageNumber : 1,
       pageSize: req.query.pageSize ? +req.query.pageSize : 10,

@@ -49,52 +49,54 @@ export class CommentRepository {
     newLikeStatus: LikeStatus
   ) {
     const comment = await CommentsModel.findOne({ _id: commentId });
+    if (!comment || !userId) return false;
     const userLiked = comment?.likesInfo.usersLiked?.find(
       (like) => like.likedUserId === userId
     );
 
-    if (!comment) return false;
-
-    if (!userLiked && userId) {
+    if (!userLiked || userLiked.likesStatus === LikeStatus.None) {
       comment.likesInfo.usersLiked?.push({
         likedUserId: userId,
         likesStatus: newLikeStatus,
       });
-      if (newLikeStatus === LikeStatus.Like) {
-        comment.likesInfo.likesCount += 1;
-      } else if (newLikeStatus === LikeStatus.Dislike) {
-        comment.likesInfo.dislikesCount += 1;
-      }
+      newLikeStatus === LikeStatus.Like
+        ? comment.likesInfo.likesCount++
+        : comment.likesInfo.dislikesCount++;
     }
 
-    if (userLiked) {
+    if (userLiked && userLiked.likesStatus !== LikeStatus.None) {
+      if (userLiked.likesStatus === newLikeStatus) return false;
+
       if (
-        (newLikeStatus === LikeStatus.Like &&
-          userLiked.likesStatus === LikeStatus.Like) ||
-        (newLikeStatus === LikeStatus.Dislike &&
-          userLiked.likesStatus === LikeStatus.Dislike)
+        userLiked.likesStatus === LikeStatus.Like &&
+        newLikeStatus === LikeStatus.Dislike
       ) {
-        comment.likesInfo.usersLiked = comment?.likesInfo.usersLiked?.filter(
+        comment.likesInfo.likesCount -= 1;
+        comment.likesInfo.dislikesCount += 1;
+        userLiked.likesStatus = newLikeStatus;
+      }
+
+      if (
+        userLiked.likesStatus === LikeStatus.Dislike &&
+        newLikeStatus === LikeStatus.Like
+      ) {
+        comment.likesInfo.likesCount += 1;
+        comment.likesInfo.dislikesCount -= 1;
+        userLiked.likesStatus = newLikeStatus;
+      }
+
+      if (newLikeStatus === LikeStatus.None) {
+        userLiked.likesStatus === LikeStatus.Like
+          ? comment.likesInfo.likesCount--
+          : comment.likesInfo.dislikesCount--;
+        comment.likesInfo.usersLiked = comment?.likesInfo?.usersLiked?.filter(
           (like) => like.likedUserId !== userId
         );
-
-        await comment!.save();
-
-        if (
-          newLikeStatus === LikeStatus.Like &&
-          userLiked.likesStatus === LikeStatus.Like
-        ) {
-          comment.likesInfo.likesCount -= 1;
-        } else if (
-          newLikeStatus === LikeStatus.Dislike &&
-          userLiked.likesStatus === LikeStatus.Dislike
-        ) {
-          comment.likesInfo.dislikesCount -= 1;
-        }
       }
     }
 
     await comment!.save();
+    return true;
   }
 
   static async deleteComment(commentId: string): Promise<boolean> {
