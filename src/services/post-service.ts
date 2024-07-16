@@ -15,6 +15,7 @@ import { UserQueryRepository } from "../repositories/user-repositories/user.quer
 import { CommentRepository } from "../repositories/comment-repositories/comment.repository";
 import { BlogQueryRepository } from "../repositories/blog-repositories/blog.query.repository";
 import { PostDbType } from "../db/schemas/posts-schema";
+import { LikeStatus } from "../db/schemas/comments-schema";
 
 export class PostService {
   static async getAllPostsByBlogId(blogId: string, sortData: PostSortData) {
@@ -49,6 +50,12 @@ export class PostService {
       blogId,
       blogName: blog.name,
       createdAt: new Date().toISOString(),
+      extendedLikesInfo: {
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: LikeStatus.None,
+        newestLikes: [],
+      },
     };
     const createdPost = await PostRepository.createPost(newPost);
     if (!createdPost) {
