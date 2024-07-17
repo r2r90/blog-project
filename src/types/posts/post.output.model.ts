@@ -1,3 +1,5 @@
+import { LikeStatus } from "../../db/schemas/comments-schema";
+
 export type PostOutputType = {
   id: string;
   title: string;
@@ -6,6 +8,7 @@ export type PostOutputType = {
   blogId: string;
   blogName: string;
   createdAt: string;
+  extendedLikesInfo: ExtendedLikesInfoType;
 };
 
 export type PostPagination<I> = {
@@ -13,5 +16,18 @@ export type PostPagination<I> = {
   page: number;
   pageSize: number;
   totalCount: number;
-  items: I[];
+  items: PostOutputType[];
+};
+
+export type ExtendedLikesInfoType = {
+  likesCount: number;
+  dislikesCount: number;
+  myStatus: string;
+  newestLikes: NewestLikesInfoType[];
+};
+
+export type NewestLikesInfoType = {
+  addedAt: string;
+  userId: string;
+  login: string;
 };

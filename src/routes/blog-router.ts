@@ -66,6 +66,7 @@ blogsRoute.get(
     req: RequestWithParamAndQuery<ParamType, PostQueryInputModel>,
     res: Response
   ) => {
+    const userId = req.userId || undefined;
     const blogId = req.params.id;
     const sortData = {
       pageNumber: req.query.pageNumber ? +req.query.pageNumber : 1,
@@ -85,7 +86,11 @@ blogsRoute.get(
       return;
     }
 
-    const posts = await PostService.getAllPostsByBlogId(blogId, sortData);
+    const posts = await PostService.getAllPostsByBlogId(
+      blogId,
+      sortData,
+      userId
+    );
 
     posts
       ? res.status(HTTP_RESPONSE_CODES.SUCCESS).send(posts)

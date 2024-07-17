@@ -1,6 +1,7 @@
 import { Response, Router } from "express";
 import {
   HTTP_RESPONSE_CODES,
+  LikeInputModel,
   RequestWithParam,
   RequestWithParamAndBody,
 } from "../types/common";
@@ -9,7 +10,6 @@ import { CommentCreateInputModel } from "../types/comments/comment.input.model";
 import { jwtAccessGuard } from "../middlewares/auth/jwt-access-guard";
 import { CommentRepository } from "../repositories/comment-repositories/comment.repository";
 import { ObjectId } from "mongodb";
-import { LikeStatus } from "../db/schemas/comments-schema";
 import { LikeService } from "../services/like-service";
 import { likeStatusValidator } from "../middlewares/validators/like-validator";
 import { JwtService } from "../services/jwt-service";
@@ -21,7 +21,7 @@ commentsRouter.put(
   jwtAccessGuard,
   likeStatusValidator(),
   async (
-    req: RequestWithParamAndBody<{ id: string }, { likeStatus: LikeStatus }>,
+    req: RequestWithParamAndBody<{ id: string }, LikeInputModel>,
     res: Response
   ) => {
     const commentId = req.params.id;

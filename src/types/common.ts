@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { SortDirection } from "mongodb";
 import { SessionDbType } from "../db/schemas/session-schema";
+import { LikeStatus } from "../db/schemas/comments-schema";
 
 export type ParamType = {
   id: string;
@@ -73,4 +74,8 @@ export type QueryInputModel = {
   sortDirection?: SortDirection;
   pageNumber?: string;
   pageSize?: string;
+};
+
+export type LikeInputModel = {
+  likeStatus: LikeStatus;
 };

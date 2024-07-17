@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express";
 import { PostRepository } from "../repositories/post-repositories/post.repository";
 import {
   HTTP_RESPONSE_CODES,
+  LikeInputModel,
   ParamType,
   QueryInputModel,
   RequestWithBody,
@@ -25,30 +26,33 @@ import { CommentCreateInputModel } from "../types/comments/comment.input.model";
 import { CommentQueryRepository } from "../repositories/comment-repositories/comment.query.repository";
 import { CommentQueryInputModel } from "../types/comments/comment.query.input";
 import { JwtService } from "../services/jwt-service";
+import { likeStatusValidator } from "../middlewares/validators/like-validator";
 
 export const postRouter = Router();
 
 postRouter.get(
   "/",
   async (req: RequestWithQuery<QueryInputModel>, res: Response) => {
+    const userId = req.userId || undefined;
     const sortData = {
       pageNumber: req.query.pageNumber ? +req.query.pageNumber : 1,
       pageSize: req.query.pageSize ? +req.query.pageSize : 10,
       sortBy: req.query.sortBy ?? "createdAt",
       sortDirection: req.query.sortDirection ?? "desc",
     };
-    let posts = await PostQueryRepository.getAllPosts(sortData);
+    let posts = await PostQueryRepository.getAllPosts(sortData, userId);
     res.send(posts).status(HTTP_RESPONSE_CODES.SUCCESS);
   }
 );
 
 postRouter.get("/:id", async (req: Request<ParamType>, res: Response) => {
   const id = req.params.id;
+  const userId = req?.userId || undefined;
   if (!ObjectId.isValid(id)) {
     res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
     return;
   }
-  let post = await PostService.getPostById(id);
+  let post = await PostService.getPostById(id, userId);
   post ? res.send(post) : res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
 });
 
@@ -77,7 +81,7 @@ postRouter.get(
       return;
     }
 
-    const post = await PostQueryRepository.getPostById(postId);
+    const post = await PostQueryRepository.getPostById(postId, userId);
     if (!post) {
       res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
       return;
@@ -109,6 +113,7 @@ postRouter.post(
       blogId,
     };
     let createdPost = await PostService.createPost(newPostData);
+
     createdPost
       ? res.status(HTTP_RESPONSE_CODES.CREATED).send(createdPost)
       : res.send(HTTP_RESPONSE_CODES.NOT_FOUND);
@@ -178,5 +183,34 @@ postRouter.post(
     }
 
     res.status(201).send(comment);
+  }
+);
+
+postRouter.put(
+  "/:id/like-status",
+  jwtAccessGuard,
+  likeStatusValidator(),
+  async (
+    req: RequestWithParamAndBody<{ id: string }, LikeInputModel>,
+    res: Response
+  ) => {
+    const userId = req.userId || undefined;
+    const postId = req.params.id;
+    const { likeStatus } = req.body;
+    if (!ObjectId.isValid(postId)) {
+      res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+      return;
+    }
+
+    const postToLike = await PostRepository.getPostById(postId, userId);
+
+    if (!postToLike) {
+      res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+      return;
+    }
+
+    const result = await PostRepository.likePost(postId, userId, likeStatus);
+
+    return res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT);
   }
 );

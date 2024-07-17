@@ -15,7 +15,8 @@ export type PostSortData = {
 
 export class PostQueryRepository {
   static async getAllPosts(
-    sortData: PostSortData
+    sortData: PostSortData,
+    userId: string | undefined
   ): Promise<PostPagination<PostOutputType>> {
     const { sortBy, sortDirection, pageNumber, pageSize } = sortData;
 
@@ -31,23 +32,25 @@ export class PostQueryRepository {
       pageSize,
       page: pageNumber,
       totalCount,
-      items: posts.map(postMapper),
+      items: posts.map((post) => postMapper(post, userId)),
     };
   }
 
-  static async getPostById(id: string) {
+  static async getPostById(id: string, userId: any) {
     const post = await PostsModel.findOne({ _id: new ObjectId(id) });
     if (!post) {
       return null;
     }
-    return postMapper(post);
+    return postMapper(post, userId);
   }
 
   static async getAllPostsByBlogId(
     blogId: string,
-    sortData: PostSortData
+    sortData: PostSortData,
+    userId: string | undefined
   ): Promise<PostPagination<PostOutputType>> {
     const { sortBy, sortDirection, pageNumber, pageSize } = sortData;
+
     const postsCount = await PostsModel.countDocuments({ blogId });
     const posts = await PostsModel.find({ blogId })
       .sort({ [sortBy]: sortDirection })
@@ -59,7 +62,7 @@ export class PostQueryRepository {
       page: pageNumber,
       pageSize,
       totalCount: postsCount,
-      items: posts.map(postMapper),
+      items: posts.map((post) => postMapper(post, userId)),
     };
   }
 }

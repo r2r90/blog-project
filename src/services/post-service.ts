@@ -18,12 +18,23 @@ import { PostDbType } from "../db/schemas/posts-schema";
 import { LikeStatus } from "../db/schemas/comments-schema";
 
 export class PostService {
-  static async getAllPostsByBlogId(blogId: string, sortData: PostSortData) {
-    return await PostQueryRepository.getAllPostsByBlogId(blogId, sortData);
+  static async getAllPostsByBlogId(
+    blogId: string,
+    sortData: PostSortData,
+    userId: string | undefined
+  ) {
+    return await PostQueryRepository.getAllPostsByBlogId(
+      blogId,
+      sortData,
+      userId
+    );
   }
 
-  static async getPostById(id: string): Promise<PostOutputType | null> {
-    return await PostQueryRepository.getPostById(id);
+  static async getPostById(
+    id: string,
+    userId: string | undefined
+  ): Promise<PostOutputType | null> {
+    return await PostQueryRepository.getPostById(id, userId);
   }
 
   static async createPost(newPostData: PostCreateInputType) {
@@ -43,6 +54,7 @@ export class PostService {
     if (!blog) {
       return null;
     }
+
     const newPost: PostDbType = {
       title,
       content,
@@ -56,13 +68,16 @@ export class PostService {
         myStatus: LikeStatus.None,
         newestLikes: [],
       },
+      usersLiked: [],
     };
+
     const createdPost = await PostRepository.createPost(newPost);
+
     if (!createdPost) {
       return null;
     }
     const createdPostId = createdPost.id;
-    const post = await PostQueryRepository.getPostById(createdPostId);
+    const post = await PostQueryRepository.getPostById(createdPostId, "");
     if (!post) {
       return null;
     }
@@ -85,7 +100,7 @@ export class PostService {
     content: string,
     userId: string
   ): Promise<CommentViewModel | null> {
-    const post = await PostRepository.getPostById(postId);
+    const post = await PostRepository.getPostById(postId, userId);
     const user = await UserQueryRepository.getUserById(userId);
     if (!post || !user) return null;
 
