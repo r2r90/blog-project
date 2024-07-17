@@ -25,8 +25,8 @@ import { commentValidator } from "../middlewares/validators/comment-validator";
 import { CommentCreateInputModel } from "../types/comments/comment.input.model";
 import { CommentQueryRepository } from "../repositories/comment-repositories/comment.query.repository";
 import { CommentQueryInputModel } from "../types/comments/comment.query.input";
-import { JwtService } from "../services/jwt-service";
 import { likeStatusValidator } from "../middlewares/validators/like-validator";
+import { isLoggedCheck } from "../middlewares/auth/is-logged-check";
 
 export const postRouter = Router();
 
@@ -58,17 +58,13 @@ postRouter.get("/:id", async (req: Request<ParamType>, res: Response) => {
 
 postRouter.get(
   "/:id/comments",
+  isLoggedCheck,
   async (
     req: RequestWithParamAndQuery<ParamType, CommentQueryInputModel>,
     res: Response
   ) => {
     const postId = req.params.id;
-    let userId;
-    const token = req.headers.authorization?.split(" ")[1];
-    if (token) {
-      userId = await JwtService.getUserIdByAccessToken(token);
-    }
-
+    const userId = req.userId;
     const sortData = {
       pageNumber: req.query.pageNumber ? +req.query.pageNumber : 1,
       pageSize: req.query.pageSize ? +req.query.pageSize : 10,
