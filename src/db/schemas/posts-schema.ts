@@ -1,10 +1,6 @@
 import mongoose from "mongoose";
 import { LikeStatus } from "./comments-schema";
-import {
-  NewestLikesInputType,
-  UserLiked,
-} from "../../types/posts/post-input-model/post.input.model";
-import { NewestLikesInfoType } from "../../types/posts/post.output.model";
+import { UserLikedInfoType } from "../../types/posts/post.output.model";
 
 export type PostDbType = {
   title: string;
@@ -18,9 +14,8 @@ export type PostDbType = {
     likesCount: number;
     dislikesCount: number;
     myStatus: LikeStatus;
-    newestLikes: NewestLikesInputType[];
+    usersLiked?: UserLikedInfoType[];
   };
-  usersLiked?: UserLiked[];
 };
 
 const PostsSchema = new mongoose.Schema<PostDbType>({
@@ -34,21 +29,15 @@ const PostsSchema = new mongoose.Schema<PostDbType>({
   extendedLikesInfo: {
     likesCount: { type: Number, default: 0 },
     dislikesCount: { type: Number, default: 0 },
-    myStatus: { type: String, default: "None" },
-    newestLikes: [
+    usersLiked: [
       {
         addedAt: { type: String },
         userId: { type: String },
         login: { type: String },
+        likedStatus: { type: String, enum: LikeStatus },
       },
     ],
   },
-  usersLiked: [
-    {
-      likedUserId: { type: String },
-      likesStatus: { type: String },
-    },
-  ],
 });
 
-export const PostsModel = mongoose.model("posts", PostsSchema);
+export const PostsModel = mongoose.model<PostDbType>("posts", PostsSchema);

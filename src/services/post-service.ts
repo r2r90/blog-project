@@ -66,9 +66,8 @@ export class PostService {
         likesCount: 0,
         dislikesCount: 0,
         myStatus: LikeStatus.None,
-        newestLikes: [],
+        usersLiked: [],
       },
-      usersLiked: [],
     };
 
     const createdPost = await PostRepository.createPost(newPost);

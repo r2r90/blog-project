@@ -13,14 +13,11 @@ export type PostUpdateInputType = {
 };
 
 export type NewestLikesInputType = {
+  likedUserId: string;
+  likesStatus: string;
   addedAt: string;
   userId: string;
   login: string;
-};
-
-export type UserLiked = {
-  likedUserId: string;
-  likesStatus: string;
 };
 
 export type ExtendedLikesInfoType = {
@@ -28,6 +25,6 @@ export type ExtendedLikesInfoType = {
   dislikesCount: number;
   myStatus: string;
   newestLikes: NewestLikesInputType[];
-  usersLiked: UserLiked[];
+  usersLiked: NewestLikesInputType[];
   blacklist: string[];
 };

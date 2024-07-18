@@ -31,3 +31,10 @@ export type NewestLikesInfoType = {
   userId: string;
   login: string;
 };
+
+export type UserLikedInfoType = {
+  addedAt: string;
+  userId: string;
+  login: string;
+  likedStatus: string;
+};

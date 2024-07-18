@@ -32,6 +32,7 @@ export const postRouter = Router();
 
 postRouter.get(
   "/",
+  isLoggedCheck,
   async (req: RequestWithQuery<QueryInputModel>, res: Response) => {
     const userId = req.userId || undefined;
     const sortData = {
@@ -45,16 +46,20 @@ postRouter.get(
   }
 );
 
-postRouter.get("/:id", async (req: Request<ParamType>, res: Response) => {
-  const id = req.params.id;
-  const userId = req?.userId || undefined;
-  if (!ObjectId.isValid(id)) {
-    res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
-    return;
+postRouter.get(
+  "/:id",
+  isLoggedCheck,
+  async (req: Request<ParamType>, res: Response) => {
+    const id = req.params.id;
+    const userId = req?.userId || undefined;
+    if (!ObjectId.isValid(id)) {
+      res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
+      return;
+    }
+    let post = await PostService.getPostById(id, userId);
+    post ? res.send(post) : res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
   }
-  let post = await PostService.getPostById(id, userId);
-  post ? res.send(post) : res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
-});
+);
 
 postRouter.get(
   "/:id/comments",
@@ -186,6 +191,7 @@ postRouter.put(
   "/:id/like-status",
   jwtAccessGuard,
   likeStatusValidator(),
+
   async (
     req: RequestWithParamAndBody<{ id: string }, LikeInputModel>,
     res: Response
@@ -204,7 +210,6 @@ postRouter.put(
       res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);
       return;
     }
-
     const result = await PostRepository.likePost(postId, userId, likeStatus);
 
     return res.sendStatus(HTTP_RESPONSE_CODES.NO_CONTENT);

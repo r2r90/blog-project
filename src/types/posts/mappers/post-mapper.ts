@@ -7,12 +7,6 @@ export const postMapper = (
   post: WithId<PostDbType>,
   userId: string | undefined
 ): PostOutputType => {
-  const sortedNewestLikes = post.extendedLikesInfo.newestLikes
-    .sort(
-      (a, b) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime()
-    )
-    .slice(0, 3);
-
   return {
     id: post._id.toString(),
     title: post.title,
@@ -25,9 +19,22 @@ export const postMapper = (
       likesCount: post.extendedLikesInfo.likesCount,
       dislikesCount: post.extendedLikesInfo.dislikesCount,
       myStatus:
-        post.usersLiked?.find((like) => like.likedUserId === userId)
-          ?.likesStatus || LikeStatus.None,
-      newestLikes: sortedNewestLikes,
+        post.extendedLikesInfo.usersLiked?.find(
+          (like) => like.userId === userId
+        )?.likedStatus || LikeStatus.None,
+      newestLikes:
+        post.extendedLikesInfo.usersLiked
+          ?.filter((like) => like.likedStatus === "Like")
+          .sort(
+            (a, b) =>
+              new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime()
+          )
+          .map((like) => ({
+            addedAt: like.addedAt,
+            login: like.login,
+            userId: like.userId,
+          }))
+          .slice(0, 3) || [],
     },
   };
 };
