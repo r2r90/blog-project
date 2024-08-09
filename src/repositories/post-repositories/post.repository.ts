@@ -130,15 +130,12 @@ export class PostRepository {
         userAlreadyLiked.likedStatus === LikeStatus.Like
           ? post.extendedLikesInfo.likesCount--
           : post.extendedLikesInfo.dislikesCount--;
+        post.extendedLikesInfo.usersLiked =
+          post.extendedLikesInfo.usersLiked?.filter(
+            (like: UserLikedInfoType) => like.userId !== userId
+          );
       }
-
-      post.extendedLikesInfo.usersLiked =
-        post.extendedLikesInfo.usersLiked?.filter(
-          (like: UserLikedInfoType) => like.userId !== userId
-        );
     }
-
-    console.log(post);
 
     await post.save();
     return true;

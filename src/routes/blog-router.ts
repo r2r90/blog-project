@@ -22,6 +22,7 @@ import { BlogService } from "../services/blog-service";
 import { PostQueryInputModel } from "../types/posts/post-input-model/post.query.input.model";
 import { CreatePostFromBlogInputModel } from "../types/posts/post-input-model/create.post.from.blog.input.model";
 import { PostService } from "../services/post-service";
+import { isLoggedCheck } from "../middlewares/auth/is-logged-check";
 
 export const blogsRoute = Router();
 
@@ -62,6 +63,7 @@ blogsRoute.get(
 
 blogsRoute.get(
   "/:id/posts",
+  isLoggedCheck,
   async (
     req: RequestWithParamAndQuery<ParamType, PostQueryInputModel>,
     res: Response
@@ -117,11 +119,13 @@ blogsRoute.post(
   "/:id/posts",
   basicAuthMiddleware,
   createPostFromBlogValidation(),
+  isLoggedCheck,
   async (
     req: RequestWithParamAndBody<ParamType, CreatePostFromBlogInputModel>,
     res: ResponseType<PostOutputType>
   ) => {
     const id = req.params.id;
+    const userId = req.userId || undefined;
 
     if (!ObjectId.isValid(id)) {
       res.sendStatus(HTTP_RESPONSE_CODES.NOT_FOUND);

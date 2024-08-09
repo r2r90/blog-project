@@ -1,5 +1,4 @@
 import { WithId } from "mongodb";
-
 import { BlogOutputType } from "../output-model/blog.output.model";
 import { BlogDbType } from "../../../db/schemas/blogs-schema";
 
